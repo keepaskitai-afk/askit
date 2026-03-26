@@ -174,22 +174,24 @@
 
   /* Social proof */
   .social-proof {
-    display: flex; align-items: center; justify-content: center; gap: 12px;
+    display: flex; align-items: center; justify-content: center;
     margin-top: 48px;
     animation: fadeUp 0.7s 0.5s ease both;
   }
-  .avatars { display: flex; }
-  .avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 2.5px solid var(--cream);
-    margin-left: -10px; overflow: hidden;
-    background: linear-gradient(135deg, var(--rust-light), var(--gold));
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fraunces', serif; font-weight: 600; color: #fff; font-size: 13px;
+  .founding-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 18px; border-radius: 100px;
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    font-size: 13px; font-weight: 500; color: var(--ink);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   }
-  .avatar:first-child { margin-left: 0; }
-  .social-text { font-size: 14px; color: var(--muted); }
-  .social-text strong { color: var(--ink); }
+  .founding-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--rust);
+    box-shadow: 0 0 0 3px rgba(200,82,26,0.18);
+    flex-shrink: 0;
+  }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
@@ -485,13 +487,10 @@
     </div>
 
     <div class="social-proof">
-      <div class="avatars">
-        <div class="avatar">M</div>
-        <div class="avatar" style="background:linear-gradient(135deg,#4A7C59,#6AAD80)">S</div>
-        <div class="avatar" style="background:linear-gradient(135deg,#4A6FA5,#6B8FC7)">R</div>
-        <div class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#A78BFA)">J</div>
+      <div class="founding-badge">
+        <span class="founding-dot"></span>
+        Be one of our founding members — early access open now
       </div>
-      <p class="social-text"><strong>840+ people</strong> already on the waitlist</p>
     </div>
   </div>
 </section>
