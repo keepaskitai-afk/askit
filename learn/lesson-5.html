@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5: Your First Real AI Win — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800;
+    color: var(--rust); letter-spacing: -0.5px; text-decoration: none;
+  }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta {
+    background: var(--rust); color: #fff;
+    padding: 10px 22px; border-radius: 100px;
+    font-weight: 500; font-size: 14px;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+  .progress-bar-wrap {
+    position: fixed; top: 73px; left: 0; right: 0; z-index: 99;
+    height: 3px; background: var(--border);
+  }
+  .progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--rust), var(--gold));
+    transition: width 0.1s linear;
+  }
+
+  /* ── HERO ── */
+  .lesson-hero {
+    padding: 140px 24px 80px;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .lesson-hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 15% 25%, rgba(200,82,26,0.1) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 70% at 85% 75%, rgba(232,162,48,0.08) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(74,124,89,0.05) 0%, transparent 60%);
+  }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted); margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .track-breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number {
+    display: inline-block; font-size: 12px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--rust);
+    margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both;
+  }
+  .lesson-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -1.5px; color: var(--ink);
+    margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .lesson-meta {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    font-size: 14px; color: var(--muted);
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── BODY ── */
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .lesson-body h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700; line-height: 1.2;
+    letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink);
+  }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .lesson-body p {
+    font-size: 17px; line-height: 1.75;
+    color: #3D3A36; font-weight: 300; margin-bottom: 20px;
+  }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  .content-block { margin-bottom: 48px; }
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ══════════════════════════════
+     CHALLENGE PICKER
+  ══════════════════════════════ */
+  .challenge-intro {
+    background: var(--ink); border-radius: 28px;
+    padding: 40px 36px; margin: 48px 0;
+    position: relative; overflow: hidden;
+  }
+  .challenge-intro::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% -10%, rgba(232,162,48,0.07), transparent);
+    pointer-events: none;
+  }
+  .challenge-intro h3 {
+    font-family: 'Fraunces', serif; font-size: 26px;
+    font-weight: 700; color: var(--cream); margin-bottom: 10px;
+  }
+  .challenge-intro > p {
+    color: rgba(250,247,242,0.65); font-size: 15px;
+    line-height: 1.6; margin-bottom: 28px;
+  }
+  .challenge-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .challenge-option {
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 18px; padding: 22px 20px;
+    cursor: pointer; transition: all 0.2s; text-align: left;
+  }
+  .challenge-option:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--gold); transform: translateY(-2px);
+  }
+  .challenge-option.selected {
+    background: rgba(200,82,26,0.2);
+    border-color: var(--rust);
+  }
+  .challenge-emoji { font-size: 28px; margin-bottom: 10px; display: block; }
+  .challenge-title {
+    font-family: 'Fraunces', serif; font-size: 17px;
+    font-weight: 700; color: var(--cream); margin-bottom: 4px;
+  }
+  .challenge-desc { font-size: 13px; color: rgba(250,247,242,0.55); line-height: 1.4; }
+  .challenge-cta {
+    display: none; margin-top: 24px;
+    padding: 16px 28px; border-radius: 100px;
+    background: var(--rust); color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    border: none; cursor: pointer; width: 100%;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .challenge-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+  .challenge-cta.show { display: block; animation: fadeUp 0.3s ease both; }
+
+  /* ══════════════════════════════
+     MISSION BLOCK
+  ══════════════════════════════ */
+  .mission-block {
+    display: none; margin: 32px 0;
+  }
+  .mission-block.show { display: block; animation: fadeUp 0.5s ease both; }
+
+  .mission-header {
+    background: linear-gradient(135deg, var(--rust), var(--rust-light));
+    border-radius: 24px 24px 0 0; padding: 28px 32px;
+  }
+  .mission-label {
+    font-size: 11px; letter-spacing: 2px; font-weight: 600;
+    text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 8px;
+  }
+  .mission-title {
+    font-family: 'Fraunces', serif; font-size: 26px;
+    font-weight: 800; color: #fff; line-height: 1.2;
+  }
+
+  .mission-body {
+    background: var(--warm-white); border: 1px solid var(--border);
+    border-top: none; border-radius: 0 0 24px 24px;
+    padding: 32px;
+  }
+
+  .mission-step {
+    display: flex; gap: 16px; margin-bottom: 28px;
+    padding-bottom: 28px; border-bottom: 1px solid var(--border);
+  }
+  .mission-step:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .mission-step-num {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    background: var(--rust); color: #fff;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+  .mission-step-content h4 {
+    font-family: 'Fraunces', serif; font-size: 18px;
+    font-weight: 700; color: var(--ink); margin-bottom: 6px;
+  }
+  .mission-step-content p {
+    font-size: 15px !important; color: var(--muted) !important;
+    line-height: 1.6; margin-bottom: 12px !important;
+  }
+
+  .prompt-box {
+    background: var(--cream); border: 1px solid var(--border);
+    border-left: 3px solid var(--rust);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 18px;
+    font-size: 15px; color: var(--ink); line-height: 1.65;
+    font-style: italic; margin-bottom: 10px;
+    position: relative;
+  }
+  .copy-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500; color: var(--rust);
+    background: none; border: 1px solid rgba(200,82,26,0.3);
+    padding: 5px 12px; border-radius: 100px;
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .copy-btn:hover { background: rgba(200,82,26,0.07); }
+  .copy-btn.copied { color: var(--sage); border-color: rgba(74,124,89,0.3); }
+
+  .step-tip {
+    background: rgba(232,162,48,0.08); border: 1px solid rgba(232,162,48,0.25);
+    border-radius: 10px; padding: 10px 14px;
+    font-size: 13px; color: #8A5C0A; line-height: 1.5;
+    margin-top: 10px;
+  }
+
+  /* ── REFLECTION TEXTAREA ── */
+  .reflect-area {
+    width: 100%; min-height: 120px;
+    padding: 16px 18px;
+    background: var(--cream); border: 1.5px solid var(--border);
+    border-radius: 14px; resize: vertical;
+    font-family: 'DM Sans', sans-serif; font-size: 15px;
+    color: var(--ink); line-height: 1.65; outline: none;
+    transition: border-color 0.2s; margin-top: 10px;
+  }
+  .reflect-area:focus { border-color: var(--rust); }
+  .reflect-area::placeholder { color: #C0B8B0; }
+
+  /* ══════════════════════════════
+     TRACK COMPLETE CELEBRATION
+  ══════════════════════════════ */
+  .celebration {
+    display: none; text-align: center;
+    padding: 64px 32px; margin: 48px 0;
+    background: var(--ink); border-radius: 28px;
+    position: relative; overflow: hidden;
+  }
+  .celebration.show { display: block; animation: fadeUp 0.6s ease both; }
+  .celebration::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,162,48,0.12), transparent),
+      radial-gradient(ellipse 60% 80% at 0% 100%, rgba(200,82,26,0.1), transparent);
+    pointer-events: none;
+  }
+  .confetti-emoji {
+    font-size: 48px; display: block; margin-bottom: 20px;
+    animation: bounce 1s ease infinite alternate;
+  }
+  @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+
+  .celebration h3 {
+    font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800; color: var(--cream); line-height: 1.15;
+    margin-bottom: 16px; letter-spacing: -1px; position: relative;
+  }
+  .celebration h3 em { color: var(--gold); font-style: italic; font-weight: 300; }
+  .celebration > p {
+    font-size: 17px; color: rgba(250,247,242,0.65);
+    max-width: 480px; margin: 0 auto 36px; line-height: 1.7;
+    position: relative;
+  }
+
+  .badge-earned {
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 10px; background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px; padding: 28px 36px;
+    margin-bottom: 36px; position: relative;
+  }
+  .badge-icon { font-size: 52px; }
+  .badge-name {
+    font-family: 'Fraunces', serif; font-size: 20px;
+    font-weight: 700; color: var(--gold);
+  }
+  .badge-sub { font-size: 13px; color: rgba(250,247,242,0.45); }
+
+  .track-complete-stats {
+    display: flex; gap: 16px; justify-content: center;
+    flex-wrap: wrap; margin-bottom: 36px; position: relative;
+  }
+  .stat-pill {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 100px; padding: 10px 20px;
+    font-size: 14px; color: rgba(250,247,242,0.7);
+  }
+  .stat-pill strong { color: var(--cream); }
+
+  .next-track-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--rust); color: #fff;
+    padding: 16px 32px; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    text-decoration: none; position: relative;
+    transition: background 0.2s, transform 0.15s;
+    margin-right: 12px; margin-bottom: 12px;
+  }
+  .next-track-btn:hover { background: var(--rust-light); transform: translateY(-2px); }
+  .share-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.1); color: var(--cream);
+    padding: 16px 28px; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer; transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .share-btn:hover { background: rgba(255,255,255,0.16); }
+
+  /* ── WHAT'S NEXT CARDS ── */
+  .next-tracks-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin: 32px 0;
+  }
+  .next-track-card {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 24px;
+    text-decoration: none; color: var(--ink);
+    transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  .next-track-card::after {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+  }
+  .next-track-card.gold::after { background: linear-gradient(90deg, var(--gold), #F5C842); }
+  .next-track-card.sage::after { background: linear-gradient(90deg, var(--sage), #6AAD80); }
+  .next-track-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(26,23,20,0.09); border-color: var(--rust); }
+  .next-track-emoji { font-size: 28px; margin-bottom: 12px; }
+  .next-track-name {
+    font-family: 'Fraunces', serif; font-size: 18px;
+    font-weight: 700; color: var(--ink); margin-bottom: 6px;
+  }
+  .next-track-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .next-track-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+  }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 20px; padding: 28px 32px;
+    margin-bottom: 32px; border: 1px solid var(--border);
+  }
+  .callout-plain { background: var(--warm-white); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 10px; color: var(--rust);
+  }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+
+  .complete-btn {
+    display: block; width: 100%;
+    padding: 18px; border-radius: 14px;
+    background: var(--sage); color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    border: none; cursor: pointer; text-align: center;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: 32px;
+  }
+  .complete-btn:hover { background: #3d6b4a; transform: translateY(-1px); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 120px 24px 60px; }
+    .challenge-grid { grid-template-columns: 1fr; }
+    .next-tracks-grid { grid-template-columns: 1fr; }
+    .track-complete-stats { flex-direction: column; align-items: center; }
+    .challenge-intro, .mission-block { padding: 28px 22px; }
+    .mission-body { padding: 24px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🧠 Understanding AI</strong></span>
+    <a href="/#waitlist" class="nav-cta">Join the waitlist</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>🧠 Understanding AI</span>
+      <span class="breadcrumb-sep">›</span>
+      <span>Lesson 5</span>
+    </div>
+    <div class="lesson-number">Lesson 5 of 5 — The Finale</div>
+    <h1 class="lesson-title">Your first<br><em>real AI win</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 10–15 min</span>
+      <span class="meta-dot"></span>
+      <span>🎯 Real challenge</span>
+      <span class="meta-dot"></span>
+      <span>🏆 Earn your badge</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>You've made it to the final lesson. You know what AI is, how it thinks, what it can do, and which tools to use. That puts you ahead of most people.</p>
+    <p>But knowledge only goes so far. <strong>The real shift happens when you use AI for something that actually matters to you — and it works.</strong> That's what this lesson is about.</p>
+    <p>You're going to pick a real challenge, work through it step by step using AI, and walk away with something tangible. No fluff. Let's go.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- CHALLENGE PICKER -->
+  <div class="content-block reveal">
+    <h2>Pick your<br><em>challenge</em></h2>
+    <p>Choose the one that feels most useful to your actual life right now. There's no wrong answer — every challenge is real, practical, and completable in under 15 minutes.</p>
+  </div>
+
+  <div class="challenge-intro reveal">
+    <h3>What do you want to walk away with?</h3>
+    <p>Pick one. You'll get a step-by-step mission tailored to exactly that goal.</p>
+
+    <div class="challenge-grid">
+      <div class="challenge-option" onclick="selectChallenge(this, 'email')">
+        <span class="challenge-emoji">✉️</span>
+        <div class="challenge-title">A hard email, done</div>
+        <div class="challenge-desc">That message you've been putting off — finally written, clearly and confidently</div>
+      </div>
+      <div class="challenge-option" onclick="selectChallenge(this, 'explain')">
+        <span class="challenge-emoji">🔍</span>
+        <div class="challenge-title">Something finally explained</div>
+        <div class="challenge-desc">A confusing document, bill, or concept — broken down in plain English just for you</div>
+      </div>
+      <div class="challenge-option" onclick="selectChallenge(this, 'plan')">
+        <span class="challenge-emoji">📋</span>
+        <div class="challenge-title">A plan you've been putting off</div>
+        <div class="challenge-desc">A project, goal, or idea — turned into a clear, actionable first step</div>
+      </div>
+      <div class="challenge-option" onclick="selectChallenge(this, 'bio')">
+        <span class="challenge-emoji">👤</span>
+        <div class="challenge-title">A bio or intro that actually sounds like you</div>
+        <div class="challenge-desc">LinkedIn, email signature, website — finally written without the cringe</div>
+      </div>
+    </div>
+
+    <button class="challenge-cta" id="challengeBtn" onclick="startChallenge()">
+      Start my challenge →
+    </button>
+  </div>
+
+  <!-- MISSIONS — shown based on selection -->
+
+  <!-- MISSION: EMAIL -->
+  <div class="mission-block" id="mission-email">
+    <div class="mission-header">
+      <div class="mission-label">✉️ Your Mission</div>
+      <div class="mission-title">Write that hard email — in the next 10 minutes</div>
+    </div>
+    <div class="mission-body">
+
+      <div class="mission-step">
+        <div class="mission-step-num">1</div>
+        <div class="mission-step-content">
+          <h4>Open your AI tool</h4>
+          <p>Go to <a href="https://claude.ai" target="_blank" style="color:var(--rust)">claude.ai</a> or <a href="https://chatgpt.com" target="_blank" style="color:var(--rust)">chatgpt.com</a> in a new tab. Both are free. Claude tends to write more naturally — your call.</p>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">2</div>
+        <div class="mission-step-content">
+          <h4>Use this prompt — fill in the blanks</h4>
+          <p>Copy this and replace the parts in brackets with your actual situation:</p>
+          <div class="prompt-box" id="emailPrompt">
+            "I need to write an email to [person or organization]. The situation is: [explain what happened or what you need in 2–3 sentences]. I want the tone to be [professional / friendly / firm but polite]. Please write a clear, concise email that [specific outcome you want — e.g. requests a refund, explains the situation, asks for a meeting]."
+          </div>
+          <button class="copy-btn" onclick="copyPrompt('emailPrompt', this)">📋 Copy prompt</button>
+          <div class="step-tip">💡 Tip: The more specific you are in the brackets, the better the result. Don't be vague — AI works best with real details.</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">3</div>
+        <div class="mission-step-content">
+          <h4>Refine it until it sounds like you</h4>
+          <p>Read what AI gives you. Does it sound right? Too formal? Too long? Just tell it. Try one of these follow-up messages:</p>
+          <div class="prompt-box">"Make it shorter and more direct."</div>
+          <div class="prompt-box">"The tone feels too formal — make it warmer."</div>
+          <div class="prompt-box">"Add a line about [specific thing you forgot to mention]."</div>
+          <div class="step-tip">💡 Tip: You're the editor. AI gives you the draft — you decide when it's ready. Two or three back-and-forths is totally normal.</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">4</div>
+        <div class="mission-step-content">
+          <h4>Send it</h4>
+          <p>Copy the final version into your email client. Read it one last time. Make any final tweaks. Then send it. That's the win.</p>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">5</div>
+        <div class="mission-step-content">
+          <h4>Reflect — what just happened?</h4>
+          <p>Write a line or two below. How long did it take? How does it compare to writing it from scratch?</p>
+          <textarea class="reflect-area" placeholder="e.g. Took me 8 minutes. Would have put this off for another week without AI. The third draft was perfect..."></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MISSION: EXPLAIN -->
+  <div class="mission-block" id="mission-explain">
+    <div class="mission-header">
+      <div class="mission-label">🔍 Your Mission</div>
+      <div class="mission-title">Get something confusing explained — finally, clearly</div>
+    </div>
+    <div class="mission-body">
+
+      <div class="mission-step">
+        <div class="mission-step-num">1</div>
+        <div class="mission-step-content">
+          <h4>Pick your confusing thing</h4>
+          <p>It can be anything — a clause in a lease, a medical term, a tax notice, a privacy policy, a news story you didn't understand. Pick something real that has been nagging at you.</p>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">2</div>
+        <div class="mission-step-content">
+          <h4>Paste it in and use this prompt</h4>
+          <p>Copy the confusing text, then open <a href="https://claude.ai" target="_blank" style="color:var(--rust)">claude.ai</a> and use this:</p>
+          <div class="prompt-box" id="explainPrompt">
+            "Please explain the following to me in plain English, as if I have no background in this topic. Highlight anything important I should pay attention to, and let me know if there's anything I should be concerned about or act on. Here it is: [paste your text here]"
+          </div>
+          <button class="copy-btn" onclick="copyPrompt('explainPrompt', this)">📋 Copy prompt</button>
+          <div class="step-tip">💡 Tip: You can paste entire pages of text. Claude handles long documents well. Don't worry about it being too long.</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">3</div>
+        <div class="mission-step-content">
+          <h4>Ask follow-up questions until you actually get it</h4>
+          <p>Don't stop at the first response. If anything is still unclear, keep going:</p>
+          <div class="prompt-box">"Can you simplify the part about [specific section] even further?"</div>
+          <div class="prompt-box">"What does [specific term] actually mean in simple words?"</div>
+          <div class="prompt-box">"Is this normal, or should I be worried about this?"</div>
+          <div class="step-tip">💡 Tip: There are no stupid questions. AI doesn't judge. This is the best use of AI for many people — a patient explainer available 24/7.</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">4</div>
+        <div class="mission-step-content">
+          <h4>Write down what you now understand</h4>
+          <p>Summarise what you learned in your own words. This helps it stick — and it confirms you actually understand it.</p>
+          <textarea class="reflect-area" placeholder="e.g. The clause means my landlord can raise rent once a year with 60 days notice. The part I was worried about is actually standard..."></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MISSION: PLAN -->
+  <div class="mission-block" id="mission-plan">
+    <div class="mission-header">
+      <div class="mission-label">📋 Your Mission</div>
+      <div class="mission-title">Turn your vague idea into a real first step</div>
+    </div>
+    <div class="mission-body">
+
+      <div class="mission-step">
+        <div class="mission-step-num">1</div>
+        <div class="mission-step-content">
+          <h4>Name the thing you want to do</h4>
+          <p>It could be starting a side project, getting healthier, learning something new, organising your finances, launching a product — anything you've been "thinking about" but haven't started.</p>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">2</div>
+        <div class="mission-step-content">
+          <h4>Use this prompt to get unstuck</h4>
+          <p>Open <a href="https://claude.ai" target="_blank" style="color:var(--rust)">claude.ai</a> and try this:</p>
+          <div class="prompt-box" id="planPrompt">
+            "I want to [describe your goal]. I haven't started yet because [main obstacle or reason — be honest]. I have roughly [available time per week] to work on this. Please give me: 1) A very simple first step I can complete this week, 2) Three questions I should answer before going further, and 3) One thing most people get wrong when starting this."
+          </div>
+          <button class="copy-btn" onclick="copyPrompt('planPrompt', this)">📋 Copy prompt</button>
+          <div class="step-tip">💡 Tip: Be honest about your obstacle. AI gives much better advice when you tell it why you're stuck — not just what you want to achieve.</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">3</div>
+        <div class="mission-step-content">
+          <h4>Push back and pressure-test it</h4>
+          <p>Don't just accept the first plan. Challenge it:</p>
+          <div class="prompt-box">"That first step still feels too big — what's the smallest possible version of it?"</div>
+          <div class="prompt-box">"What would you do differently if I only had 30 minutes a week?"</div>
+          <div class="prompt-box">"What are the most common reasons people quit on something like this?"</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">4</div>
+        <div class="mission-step-content">
+          <h4>Commit to one action</h4>
+          <p>Write down the single first step you're committing to — and when you'll do it.</p>
+          <textarea class="reflect-area" placeholder="e.g. My first step is to spend 20 minutes on Sunday writing out my three product ideas. I'll do it before I check my phone in the morning..."></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MISSION: BIO -->
+  <div class="mission-block" id="mission-bio">
+    <div class="mission-header">
+      <div class="mission-label">👤 Your Mission</div>
+      <div class="mission-title">Write a bio that actually sounds like you</div>
+    </div>
+    <div class="mission-body">
+
+      <div class="mission-step">
+        <div class="mission-step-num">1</div>
+        <div class="mission-step-content">
+          <h4>Decide where this bio will live</h4>
+          <p>LinkedIn profile? Email signature? Website about page? A conference speaker bio? The context changes the tone completely — so pick one specific place first.</p>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">2</div>
+        <div class="mission-step-content">
+          <h4>Give AI the raw ingredients</h4>
+          <p>Open <a href="https://claude.ai" target="_blank" style="color:var(--rust)">claude.ai</a> and use this prompt — fill it in with your real info:</p>
+          <div class="prompt-box" id="bioPrompt">
+            "Please write a [short / medium length] bio for my [LinkedIn profile / email signature / website / other]. Here are the facts about me: [your job or role], [years of experience or background], [2–3 things you're proud of or known for], [one personal detail that makes you human — a hobby, where you're from, etc.]. Tone should be [professional but warm / conversational / confident and direct]. Do NOT make it sound generic or corporate. Make it sound like a real person wrote it."
+          </div>
+          <button class="copy-btn" onclick="copyPrompt('bioPrompt', this)">📋 Copy prompt</button>
+          <div class="step-tip">💡 Tip: The "do not make it sound generic" instruction is important. AI defaults to bland corporate language — this fights that tendency.</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">3</div>
+        <div class="mission-step-content">
+          <h4>Tune it until it's actually you</h4>
+          <p>Read it out loud. Does it sound like you? Would you be embarrassed if a friend read it? Use these to fix it:</p>
+          <div class="prompt-box">"This sounds too formal — I'd never say this. Make it more like how I'd introduce myself at a dinner party."</div>
+          <div class="prompt-box">"Cut it down to 3 sentences. The most important 3."</div>
+          <div class="prompt-box">"The last line feels weak. Give me 5 alternative closing lines."</div>
+          <div class="step-tip">💡 Tip: Reading it out loud is the best test. If you stumble on a word, AI probably wrote it — not you. Change it.</div>
+        </div>
+      </div>
+
+      <div class="mission-step">
+        <div class="mission-step-num">4</div>
+        <div class="mission-step-content">
+          <h4>Paste your final version here</h4>
+          <p>Write the final bio below. You'll use this in the next 24 hours — no more putting it off.</p>
+          <textarea class="reflect-area" placeholder="Paste your final bio here..."></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COMPLETE BUTTON -->
+  <div id="completeWrap" style="display:none">
+    <div class="callout callout-sage reveal">
+      <div class="callout-label">✅ Almost there</div>
+      <p>Once you've worked through your mission above — even if it's not perfect — click the button below. Done beats perfect every time.</p>
+    </div>
+    <button class="complete-btn" onclick="completeCourse()">
+      🏆 I did it — complete the track
+    </button>
+  </div>
+
+  <!-- CELEBRATION -->
+  <div class="celebration" id="celebration">
+    <span class="confetti-emoji">🎉</span>
+    <h3>You finished<br><em>Understanding AI</em></h3>
+    <p>You went from "I've heard of AI" to actually using it for something real. That's not nothing — most people never get here.</p>
+
+    <div class="badge-earned">
+      <div class="badge-icon">🧠</div>
+      <div class="badge-name">AI Foundation</div>
+      <div class="badge-sub">Understanding AI · Track Complete</div>
+    </div>
+
+    <div class="track-complete-stats">
+      <div class="stat-pill">✅ <strong>5</strong> lessons completed</div>
+      <div class="stat-pill">🎮 <strong>6</strong> interactive challenges</div>
+      <div class="stat-pill">💬 <strong>1</strong> real AI conversation</div>
+      <div class="stat-pill">🏆 <strong>1</strong> real-world task done</div>
+    </div>
+
+    <div>
+      <a href="/#tracks" class="next-track-btn">Explore next tracks →</a>
+      <button class="share-btn" onclick="shareResult()">↗ Share your win</button>
+    </div>
+  </div>
+
+  <!-- WHAT'S NEXT -->
+  <div id="whatsNext" style="display:none">
+    <hr class="lesson-divider">
+    <div class="content-block">
+      <h2>What's next<br><em>on your journey</em></h2>
+      <p>You've built the foundation. The tracks below are where things get really practical — choose based on what matters most to your life right now.</p>
+    </div>
+
+    <div class="next-tracks-grid">
+      <a href="/#tracks" class="next-track-card gold">
+        <div class="next-track-label">Core skill</div>
+        <div class="next-track-emoji">💬</div>
+        <div class="next-track-name">Talking to AI</div>
+        <div class="next-track-desc">Learn to write prompts that actually get results. The difference between a useful answer and a useless one is how you ask.</div>
+      </a>
+      <a href="/#tracks" class="next-track-card sage">
+        <div class="next-track-label">For work</div>
+        <div class="next-track-emoji">⚡</div>
+        <div class="next-track-name">AI for Work</div>
+        <div class="next-track-desc">Emails, reports, research, meetings — save hours every week with tools built around real work tasks.</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  document.getElementById('progressBar').style.width =
+    (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+});
+
+// ── SCROLL REVEAL ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 50);
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ── CHALLENGE PICKER ──
+let selectedChallengeId = null;
+
+function selectChallenge(el, id) {
+  document.querySelectorAll('.challenge-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedChallengeId = id;
+  const btn = document.getElementById('challengeBtn');
+  btn.className = 'challenge-cta show';
+  const labels = { email: 'Start: Write that email →', explain: 'Start: Get it explained →', plan: 'Start: Build my plan →', bio: 'Start: Write my bio →' };
+  btn.textContent = labels[id];
+}
+
+function startChallenge() {
+  if (!selectedChallengeId) return;
+  // Hide all missions
+  document.querySelectorAll('.mission-block').forEach(m => m.classList.remove('show'));
+  // Show selected
+  const mission = document.getElementById('mission-' + selectedChallengeId);
+  mission.classList.add('show');
+  // Show complete wrap
+  document.getElementById('completeWrap').style.display = 'block';
+  // Smooth scroll
+  setTimeout(() => {
+    mission.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// ── COPY PROMPT ──
+function copyPrompt(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy prompt';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ── COMPLETE COURSE ──
+function completeCourse() {
+  // Save completion
+  localStorage.setItem('lesson-5-complete', 'true');
+  localStorage.setItem('track-understanding-ai-complete', 'true');
+
+  // Hide complete btn
+  document.getElementById('completeWrap').style.display = 'none';
+
+  // Show celebration
+  const celebration = document.getElementById('celebration');
+  celebration.classList.add('show');
+  celebration.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // Show what's next after delay
+  setTimeout(() => {
+    document.getElementById('whatsNext').style.display = 'block';
+  }, 1200);
+
+  // Fire confetti-like emoji burst (CSS only)
+  triggerConfetti();
+}
+
+function triggerConfetti() {
+  const emojis = ['🎉', '✨', '🏆', '🌟', '🎊'];
+  for (let i = 0; i < 12; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.cssText = `
+        position:fixed; pointer-events:none; z-index:9999;
+        font-size:${24 + Math.random() * 20}px;
+        left:${Math.random() * 100}vw;
+        top:-40px;
+        animation: confettiFall ${1.5 + Math.random() * 1.5}s ease-in forwards;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }, i * 120);
+  }
+}
+
+// Add confetti animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(105vh) rotate(${Math.random() > 0.5 ? '' : '-'}360deg); opacity: 0; }
+  }
+`;
+document.head.appendChild(style);
+
+// ── SHARE ──
+function shareResult() {
+  const text = "Just finished the Understanding AI track on AskIt! 🧠 I finally get how AI actually works — and I used it to get something real done. askit.ca";
+  if (navigator.share) {
+    navigator.share({ text, url: 'https://askit.ca' });
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Copied to clipboard — paste it anywhere you want to share!');
+    });
+  }
+}
+
+// Restore completion state
+if (localStorage.getItem('track-understanding-ai-complete') === 'true') {
+  document.getElementById('celebration').classList.add('show');
+  document.getElementById('whatsNext').style.display = 'block';
+  document.getElementById('completeWrap').style.display = 'none';
+}
+</script>
+
+</body>
+</html>

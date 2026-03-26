@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4: The Tools You Need to Know — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800;
+    color: var(--rust); letter-spacing: -0.5px; text-decoration: none;
+  }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta {
+    background: var(--rust); color: #fff;
+    padding: 10px 22px; border-radius: 100px;
+    font-weight: 500; font-size: 14px;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+  .progress-bar-wrap {
+    position: fixed; top: 73px; left: 0; right: 0; z-index: 99;
+    height: 3px; background: var(--border);
+  }
+  .progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--rust), var(--rust-light));
+    transition: width 0.1s linear;
+  }
+
+  /* ── HERO ── */
+  .lesson-hero {
+    padding: 140px 24px 80px;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .lesson-hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(200,82,26,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(74,124,89,0.06) 0%, transparent 70%);
+  }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted); margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .track-breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number {
+    display: inline-block; font-size: 12px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--rust);
+    margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both;
+  }
+  .lesson-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -1.5px; color: var(--ink);
+    margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .lesson-meta {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    font-size: 14px; color: var(--muted);
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── BODY ── */
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .lesson-body h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700; line-height: 1.2;
+    letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink);
+  }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .lesson-body p {
+    font-size: 17px; line-height: 1.75;
+    color: #3D3A36; font-weight: 300; margin-bottom: 20px;
+  }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  .content-block { margin-bottom: 48px; }
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ══════════════════════════════
+     TOOL CARDS
+  ══════════════════════════════ */
+  .tools-grid {
+    display: flex; flex-direction: column; gap: 20px;
+    margin: 32px 0;
+  }
+  .tool-card {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 24px; overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .tool-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(26,23,20,0.09); }
+  .tool-card-header {
+    display: flex; align-items: center; gap: 18px;
+    padding: 26px 28px;
+  }
+  .tool-logo {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .tool-logo.claude-logo { background: linear-gradient(135deg, #C8521A, #F0784A); }
+  .tool-logo.gpt-logo { background: linear-gradient(135deg, #10a37f, #1abc9c); }
+  .tool-logo.gemini-logo { background: linear-gradient(135deg, #4285F4, #34A853); }
+  .tool-logo.perplexity-logo { background: linear-gradient(135deg, #20808d, #1a6b76); }
+
+  .tool-header-text { flex: 1; }
+  .tool-name {
+    font-family: 'Fraunces', serif; font-size: 20px;
+    font-weight: 700; color: var(--ink); margin-bottom: 3px;
+  }
+  .tool-maker { font-size: 13px; color: var(--muted); }
+  .tool-badge {
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 100px;
+    white-space: nowrap;
+  }
+  .badge-free { background: var(--sage-light); color: var(--sage); border: 1px solid rgba(74,124,89,0.25); }
+  .badge-freemium { background: rgba(232,162,48,0.1); color: #B87D1A; border: 1px solid rgba(232,162,48,0.3); }
+
+  .tool-card-body {
+    padding: 0 28px 26px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .tool-card.open .tool-card-body { display: block; }
+  .tool-card.open .tool-card-header { border-bottom: none; }
+
+  .tool-tagline {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 17px; font-weight: 300; color: var(--rust);
+    padding: 18px 0 16px; border-bottom: 1px solid var(--border);
+    margin-bottom: 18px; line-height: 1.5;
+  }
+
+  .tool-detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-bottom: 20px;
+  }
+  .tool-detail {
+    background: var(--cream); border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .tool-detail-label {
+    font-size: 10px; letter-spacing: 1.5px; font-weight: 600;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 5px;
+  }
+  .tool-detail-value { font-size: 14px; color: var(--ink); line-height: 1.45; }
+
+  .tool-best-for {
+    margin-bottom: 18px;
+  }
+  .tool-best-for-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--rust); margin-bottom: 10px;
+  }
+  .best-for-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .best-for-chip {
+    font-size: 13px; padding: 6px 14px; border-radius: 100px;
+    background: var(--cream); border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .tool-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ink); color: var(--cream);
+    padding: 12px 22px; border-radius: 100px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .tool-link:hover { background: var(--rust); transform: translateY(-1px); }
+
+  .tool-expand-hint {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--muted); margin-left: auto;
+    transition: transform 0.2s;
+  }
+  .tool-card.open .tool-expand-hint { transform: rotate(180deg); }
+
+  /* ══════════════════════════════
+     QUIZ — WHICH TOOL FOR YOU?
+  ══════════════════════════════ */
+  .quiz-block {
+    background: var(--ink); border-radius: 28px;
+    padding: 40px 36px; margin: 48px 0;
+    position: relative; overflow: hidden;
+  }
+  .quiz-block::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 85% 10%, rgba(200,82,26,0.08), transparent);
+    pointer-events: none;
+  }
+  .demo-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+  }
+  .demo-label-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(0.8);} }
+  .quiz-block h3 {
+    font-family: 'Fraunces', serif; font-size: 26px;
+    font-weight: 700; color: var(--cream); margin-bottom: 10px;
+  }
+  .quiz-block > p {
+    color: rgba(250,247,242,0.65); font-size: 15px;
+    line-height: 1.6; margin-bottom: 32px;
+  }
+
+  .quiz-question { margin-bottom: 28px; }
+  .quiz-q-text {
+    font-size: 16px; color: var(--cream);
+    font-weight: 500; margin-bottom: 14px; line-height: 1.5;
+  }
+  .quiz-q-num {
+    font-size: 11px; color: rgba(250,247,242,0.4);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 6px; display: block;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    padding: 13px 18px; border-radius: 12px;
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    color: rgba(250,247,242,0.8); font-size: 15px;
+    cursor: pointer; transition: all 0.18s; text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .quiz-option:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.2); color: var(--cream); }
+  .quiz-option.selected { background: var(--rust); border-color: var(--rust); color: #fff; }
+
+  .quiz-progress {
+    display: flex; gap: 6px; margin-bottom: 28px;
+  }
+  .quiz-prog-dot {
+    height: 3px; flex: 1; border-radius: 100px;
+    background: rgba(255,255,255,0.1); transition: background 0.3s;
+  }
+  .quiz-prog-dot.done { background: var(--gold); }
+
+  .quiz-result {
+    display: none;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 28px 26px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .quiz-result.show { display: block; }
+  .quiz-result-label {
+    font-size: 11px; letter-spacing: 2px; font-weight: 600;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+  }
+  .quiz-result-tool {
+    font-family: 'Fraunces', serif; font-size: 28px;
+    font-weight: 800; color: var(--cream); margin-bottom: 8px;
+  }
+  .quiz-result-reason {
+    font-size: 15px; color: rgba(250,247,242,0.7);
+    line-height: 1.65; margin-bottom: 20px;
+  }
+  .quiz-restart {
+    font-size: 13px; color: rgba(250,247,242,0.4);
+    background: none; border: none; cursor: pointer;
+    text-decoration: underline; font-family: 'DM Sans', sans-serif;
+    padding: 0;
+  }
+  .quiz-restart:hover { color: var(--gold); }
+
+  /* ══════════════════════════════
+     CHEAT SHEET
+  ══════════════════════════════ */
+  .cheat-sheet {
+    background: var(--ink); border-radius: 28px;
+    padding: 40px 36px; margin: 48px 0;
+  }
+  .cheat-title {
+    font-family: 'Fraunces', serif; font-size: 24px;
+    font-weight: 700; color: var(--cream); margin-bottom: 8px;
+  }
+  .cheat-sub {
+    font-size: 14px; color: rgba(250,247,242,0.5);
+    margin-bottom: 28px; line-height: 1.6;
+  }
+  .cheat-rows { display: flex; flex-direction: column; gap: 12px; }
+  .cheat-row {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px; border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .cheat-task {
+    font-size: 15px; color: rgba(250,247,242,0.85);
+    flex: 1; line-height: 1.45;
+  }
+  .cheat-tool {
+    font-size: 13px; font-weight: 600; color: var(--gold);
+    white-space: nowrap; flex-shrink: 0; padding-top: 1px;
+  }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 20px; padding: 28px 32px;
+    margin-bottom: 32px; border: 1px solid var(--border);
+  }
+  .callout-plain { background: var(--warm-white); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-gold { background: rgba(232,162,48,0.08); border-color: rgba(232,162,48,0.3); }
+  .callout-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 10px; color: var(--rust);
+  }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout-gold .callout-label { color: #B87D1A; }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+
+  /* ── KEY TAKEAWAY ── */
+  .key-takeaway {
+    background: linear-gradient(135deg, var(--rust), var(--rust-light));
+    border-radius: 24px; padding: 36px; margin: 48px 0; text-align: center;
+  }
+  .key-takeaway .kt-label {
+    font-size: 11px; letter-spacing: 2px; font-weight: 600;
+    text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 12px;
+  }
+  .key-takeaway p {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 600; line-height: 1.45;
+    color: #fff !important; margin-bottom: 0 !important;
+  }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  /* ── LESSON NAV ── */
+  .lesson-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 32px 0; border-top: 1px solid var(--border);
+    margin-top: 64px; gap: 16px;
+  }
+  .lesson-nav-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 22px; border-radius: 14px;
+    text-decoration: none; font-size: 14px; font-weight: 500;
+    border: 1.5px solid var(--border);
+    color: var(--ink); background: var(--warm-white); transition: all 0.2s;
+  }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next {
+    background: var(--rust); color: #fff; border-color: var(--rust); font-weight: 600;
+  }
+  .lesson-nav-btn.next:hover { background: var(--rust-light); border-color: var(--rust-light); color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  .completion-check {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 24px; border-radius: 14px;
+    background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25);
+    cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 32px;
+  }
+  .completion-check:hover { border-color: var(--sage); }
+  .check-box {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .completion-check.checked .check-box { background: var(--sage); border-color: var(--sage); }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 120px 24px 60px; }
+    .tool-detail-grid { grid-template-columns: 1fr; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+    .quiz-block, .cheat-sheet { padding: 28px 22px; }
+    .cheat-row { flex-direction: column; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🧠 Understanding AI</strong></span>
+    <a href="/#waitlist" class="nav-cta">Join the waitlist</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- HERO -->
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>🧠 Understanding AI</span>
+      <span class="breadcrumb-sep">›</span>
+      <span>Lesson 4</span>
+    </div>
+    <div class="lesson-number">Lesson 4 of 5</div>
+    <h1 class="lesson-title">The tools you<br><em>actually need</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 10 min</span>
+      <span class="meta-dot"></span>
+      <span>🔍 4 tools compared</span>
+      <span class="meta-dot"></span>
+      <span>🎯 Find your match</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>There are hundreds of AI tools out there. That's overwhelming — but here's the good news: <strong>you only need to know four.</strong> These four cover 95% of what most people actually want to do with AI.</p>
+    <p>We'll show you exactly what each one is, who it's for, and when to use it. Then a quick quiz finds your best match.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- TOOL CARDS -->
+  <div class="content-block reveal">
+    <h2>The four tools<br><em>worth your time</em></h2>
+    <p>Tap any card to expand it and see the details.</p>
+  </div>
+
+  <div class="tools-grid reveal">
+
+    <!-- CLAUDE -->
+    <div class="tool-card" onclick="toggleTool(this)">
+      <div class="tool-card-header">
+        <div class="tool-logo claude-logo">🟠</div>
+        <div class="tool-header-text">
+          <div class="tool-name">Claude</div>
+          <div class="tool-maker">by Anthropic · claude.ai</div>
+        </div>
+        <span class="tool-badge badge-freemium">Free + paid</span>
+        <span class="tool-expand-hint">▾</span>
+      </div>
+      <div class="tool-card-body">
+        <div class="tool-tagline">"The thoughtful one. Best for writing, nuanced conversations, and anything where you want a careful, honest answer."</div>
+        <div class="tool-detail-grid">
+          <div class="tool-detail">
+            <div class="tool-detail-label">Best for</div>
+            <div class="tool-detail-value">Long writing, explaining complex topics, sensitive conversations</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Tone</div>
+            <div class="tool-detail-value">Warm, thorough, honest about uncertainty</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Free tier</div>
+            <div class="tool-detail-value">Yes — generous daily usage at claude.ai</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Unique strength</div>
+            <div class="tool-detail-value">Handles very long documents and nuanced instructions well</div>
+          </div>
+        </div>
+        <div class="tool-best-for">
+          <div class="tool-best-for-label">Perfect for</div>
+          <div class="best-for-chips">
+            <span class="best-for-chip">📝 Long essays & reports</span>
+            <span class="best-for-chip">💌 Sensitive emails</span>
+            <span class="best-for-chip">📄 Summarising docs</span>
+            <span class="best-for-chip">🤔 Thinking through decisions</span>
+          </div>
+        </div>
+        <a href="https://claude.ai" target="_blank" class="tool-link">Try Claude free →</a>
+      </div>
+    </div>
+
+    <!-- CHATGPT -->
+    <div class="tool-card" onclick="toggleTool(this)">
+      <div class="tool-card-header">
+        <div class="tool-logo gpt-logo">🟢</div>
+        <div class="tool-header-text">
+          <div class="tool-name">ChatGPT</div>
+          <div class="tool-maker">by OpenAI · chatgpt.com</div>
+        </div>
+        <span class="tool-badge badge-freemium">Free + paid</span>
+        <span class="tool-expand-hint">▾</span>
+      </div>
+      <div class="tool-card-body">
+        <div class="tool-tagline">"The popular one. The most widely used AI tool in the world — massive ecosystem, lots of plugins, great all-rounder."</div>
+        <div class="tool-detail-grid">
+          <div class="tool-detail">
+            <div class="tool-detail-label">Best for</div>
+            <div class="tool-detail-value">General tasks, coding help, everyday questions, image generation</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Tone</div>
+            <div class="tool-detail-value">Confident, direct, sometimes over-enthusiastic</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Free tier</div>
+            <div class="tool-detail-value">Yes — solid free version, limited image gen</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Unique strength</div>
+            <div class="tool-detail-value">Huge plugin ecosystem, memory between chats (paid), image creation with DALL-E</div>
+          </div>
+        </div>
+        <div class="tool-best-for">
+          <div class="tool-best-for-label">Perfect for</div>
+          <div class="best-for-chips">
+            <span class="best-for-chip">💻 Coding help</span>
+            <span class="best-for-chip">🎨 Image generation</span>
+            <span class="best-for-chip">🔌 Plugin integrations</span>
+            <span class="best-for-chip">🧪 Trying AI for the first time</span>
+          </div>
+        </div>
+        <a href="https://chatgpt.com" target="_blank" class="tool-link">Try ChatGPT free →</a>
+      </div>
+    </div>
+
+    <!-- GEMINI -->
+    <div class="tool-card" onclick="toggleTool(this)">
+      <div class="tool-card-header">
+        <div class="tool-logo gemini-logo">🔵</div>
+        <div class="tool-header-text">
+          <div class="tool-name">Gemini</div>
+          <div class="tool-maker">by Google · gemini.google.com</div>
+        </div>
+        <span class="tool-badge badge-free">Free</span>
+        <span class="tool-expand-hint">▾</span>
+      </div>
+      <div class="tool-card-body">
+        <div class="tool-tagline">"The Google one. Best if you live in Google's world — Gmail, Docs, Drive. Deeply integrated with tools you already use."</div>
+        <div class="tool-detail-grid">
+          <div class="tool-detail">
+            <div class="tool-detail-label">Best for</div>
+            <div class="tool-detail-value">Google Workspace users, real-time web search, research</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Tone</div>
+            <div class="tool-detail-value">Helpful, Google-polished, good at citing sources</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Free tier</div>
+            <div class="tool-detail-value">Yes — very generous, especially with Google account</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Unique strength</div>
+            <div class="tool-detail-value">Live web access, built into Gmail & Google Docs for paid users</div>
+          </div>
+        </div>
+        <div class="tool-best-for">
+          <div class="tool-best-for-label">Perfect for</div>
+          <div class="best-for-chips">
+            <span class="best-for-chip">📧 Gmail drafting</span>
+            <span class="best-for-chip">🔍 Research with sources</span>
+            <span class="best-for-chip">📊 Google Docs integration</span>
+            <span class="best-for-chip">🌐 Current events</span>
+          </div>
+        </div>
+        <a href="https://gemini.google.com" target="_blank" class="tool-link">Try Gemini free →</a>
+      </div>
+    </div>
+
+    <!-- PERPLEXITY -->
+    <div class="tool-card" onclick="toggleTool(this)">
+      <div class="tool-card-header">
+        <div class="tool-logo perplexity-logo">🔵</div>
+        <div class="tool-header-text">
+          <div class="tool-name">Perplexity</div>
+          <div class="tool-maker">by Perplexity AI · perplexity.ai</div>
+        </div>
+        <span class="tool-badge badge-free">Free</span>
+        <span class="tool-expand-hint">▾</span>
+      </div>
+      <div class="tool-card-body">
+        <div class="tool-tagline">"The researcher. If you need answers with sources you can actually verify, Perplexity beats Google Search for many questions."</div>
+        <div class="tool-detail-grid">
+          <div class="tool-detail">
+            <div class="tool-detail-label">Best for</div>
+            <div class="tool-detail-value">Research, fact-checking, current events, cited answers</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Tone</div>
+            <div class="tool-detail-value">Precise, factual, shows its sources clearly</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Free tier</div>
+            <div class="tool-detail-value">Yes — most features free, daily limit on Pro searches</div>
+          </div>
+          <div class="tool-detail">
+            <div class="tool-detail-label">Unique strength</div>
+            <div class="tool-detail-value">Every answer cites real sources — you can verify everything it says</div>
+          </div>
+        </div>
+        <div class="tool-best-for">
+          <div class="tool-best-for-label">Perfect for</div>
+          <div class="best-for-chips">
+            <span class="best-for-chip">🔎 Replacing Google Search</span>
+            <span class="best-for-chip">📰 Checking recent news</span>
+            <span class="best-for-chip">✅ Fact-checking claims</span>
+            <span class="best-for-chip">📚 Academic research</span>
+          </div>
+        </div>
+        <a href="https://perplexity.ai" target="_blank" class="tool-link">Try Perplexity free →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- WHICH TOOL QUIZ -->
+  <div class="quiz-block reveal">
+    <div class="demo-label">
+      <span class="demo-label-dot"></span>
+      Find your match — Quick quiz
+    </div>
+    <h3>Which tool is right for you?</h3>
+    <p>Three quick questions. We'll tell you exactly which tool to start with — and why.</p>
+
+    <div class="quiz-progress" id="quizProgress">
+      <div class="quiz-prog-dot"></div>
+      <div class="quiz-prog-dot"></div>
+      <div class="quiz-prog-dot"></div>
+    </div>
+
+    <div id="quizQuestions">
+      <div class="quiz-question" id="q1">
+        <span class="quiz-q-num">Question 1 of 3</span>
+        <div class="quiz-q-text">What do you most want to use AI for right now?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(1, 'writing')">✍️ Writing — emails, messages, documents</button>
+          <button class="quiz-option" onclick="answer(1, 'research')">🔍 Research — finding information, fact-checking</button>
+          <button class="quiz-option" onclick="answer(1, 'google')">📧 Google stuff — Gmail, Docs, Drive</button>
+          <button class="quiz-option" onclick="answer(1, 'general')">🤷 Not sure yet — just exploring</button>
+        </div>
+      </div>
+      <div class="quiz-question" id="q2" style="display:none">
+        <span class="quiz-q-num">Question 2 of 3</span>
+        <div class="quiz-q-text">How important is it that AI shows you where it got its information?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(2, 'sources-yes')">Very important — I need to verify things</button>
+          <button class="quiz-option" onclick="answer(2, 'sources-no')">Not that important — I just want good answers</button>
+          <button class="quiz-option" onclick="answer(2, 'sources-sometimes')">Sometimes — depends on what I'm asking</button>
+        </div>
+      </div>
+      <div class="quiz-question" id="q3" style="display:none">
+        <span class="quiz-q-num">Question 3 of 3</span>
+        <div class="quiz-q-text">Are you willing to pay for AI tools if they save you real time?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(3, 'pay-yes')">Yes, absolutely — if it's worth it</button>
+          <button class="quiz-option" onclick="answer(3, 'pay-maybe')">Maybe later — want to try free first</button>
+          <button class="quiz-option" onclick="answer(3, 'pay-no')">Prefer free tools for now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-result" id="quizResult">
+      <div class="quiz-result-label">Your best match</div>
+      <div class="quiz-result-tool" id="resultTool"></div>
+      <div class="quiz-result-reason" id="resultReason"></div>
+      <button class="quiz-restart" onclick="restartQuiz()">↺ Retake the quiz</button>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- CHEAT SHEET -->
+  <div class="content-block reveal">
+    <h2>The quick<br><em>cheat sheet</em></h2>
+    <p>Save this. Bookmark this page. When you're not sure which tool to reach for — come back here.</p>
+  </div>
+
+  <div class="cheat-sheet reveal">
+    <div class="cheat-title">Which tool, which task?</div>
+    <div class="cheat-sub">A quick reference you'll actually use.</div>
+    <div class="cheat-rows">
+      <div class="cheat-row">
+        <div class="cheat-task">Write or improve an email, letter, or document</div>
+        <div class="cheat-tool">Claude or ChatGPT</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-task">Research a topic and need sources to verify</div>
+        <div class="cheat-tool">Perplexity</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-task">Help with Gmail, Google Docs, or Sheets</div>
+        <div class="cheat-tool">Gemini</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-task">Think through a complex decision or problem</div>
+        <div class="cheat-tool">Claude</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-task">Generate an image from a description</div>
+        <div class="cheat-tool">ChatGPT (DALL-E)</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-task">Get current news or recent events</div>
+        <div class="cheat-tool">Perplexity or Gemini</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-task">Help with coding or technical problems</div>
+        <div class="cheat-tool">ChatGPT or Claude</div>
+      </div>
+      <div class="cheat-row">
+        <div class="cheat-task">Just try AI for the very first time</div>
+        <div class="cheat-tool">ChatGPT or Claude</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">💡 The honest truth</div>
+    <p>Most people end up using 2 tools regularly — one for writing and thinking, one for research. Don't overthink it. Pick one, use it for a week, then decide. You can always switch.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>You don't need to know every AI tool. <em>Pick one, start today, and you'll figure out the rest as you go.</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="/learn/lesson-3.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span>
+        <span class="nav-btn-label">Previous</span>
+        <span class="nav-btn-title">What AI can & can't do</span>
+      </span>
+    </a>
+    <a href="/learn/lesson-5.html" class="lesson-nav-btn next">
+      <span>
+        <span class="nav-btn-label">Final lesson →</span>
+        <span class="nav-btn-title">Your first real AI win</span>
+      </span>
+      <span>🏆</span>
+    </a>
+  </div>
+
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  document.getElementById('progressBar').style.width =
+    (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+});
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 50);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ── TOOL CARDS ──
+function toggleTool(card) {
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) card.classList.add('open');
+}
+
+// ── QUIZ ──
+const quizAnswers = {};
+
+function answer(q, val) {
+  quizAnswers[q] = val;
+
+  // Update progress dots
+  const dots = document.querySelectorAll('.quiz-prog-dot');
+  dots[q - 1].classList.add('done');
+
+  if (q < 3) {
+    document.getElementById('q' + q).style.display = 'none';
+    const next = document.getElementById('q' + (q + 1));
+    next.style.display = 'block';
+    next.style.animation = 'fadeUp 0.35s ease both';
+  } else {
+    document.getElementById('quizQuestions').style.display = 'none';
+    showResult();
+  }
+}
+
+function showResult() {
+  const a1 = quizAnswers[1];
+  const a2 = quizAnswers[2];
+  const a3 = quizAnswers[3];
+
+  let tool, reason;
+
+  if (a1 === 'research' || a2 === 'sources-yes') {
+    tool = '🔍 Perplexity';
+    reason = "Since getting accurate, verifiable information matters to you, Perplexity is your best starting point. Every answer comes with clickable sources — you'll never have to just trust it blindly.";
+  } else if (a1 === 'google') {
+    tool = '🔵 Gemini';
+    reason = "You're already in Google's world, so Gemini is a natural fit. It works directly inside Gmail and Google Docs — you don't have to switch between apps to get AI help.";
+  } else if (a1 === 'writing' && a3 !== 'pay-no') {
+    tool = '🟠 Claude';
+    reason = "For writing tasks — emails, documents, thinking through decisions — Claude is consistently excellent. It's thoughtful, careful with nuance, and handles long documents better than most.";
+  } else {
+    tool = '🟢 ChatGPT';
+    reason = "As the most widely used AI tool in the world, ChatGPT is a great starting point for exploring. The free version is solid, the interface is intuitive, and there's a massive community if you ever get stuck.";
+  }
+
+  document.getElementById('resultTool').textContent = tool;
+  document.getElementById('resultReason').textContent = reason;
+  document.getElementById('quizResult').className = 'quiz-result show';
+}
+
+function restartQuiz() {
+  quizAnswers[1] = quizAnswers[2] = quizAnswers[3] = null;
+  document.querySelectorAll('.quiz-prog-dot').forEach(d => d.classList.remove('done'));
+  document.getElementById('quizResult').className = 'quiz-result';
+  document.getElementById('quizQuestions').style.display = 'block';
+  ['q1','q2','q3'].forEach((id, i) => {
+    document.getElementById(id).style.display = i === 0 ? 'block' : 'none';
+  });
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+}
+
+// ── COMPLETION ──
+function toggleComplete() {
+  const el = document.getElementById('completionCheck');
+  el.classList.toggle('checked');
+  const isChecked = el.classList.contains('checked');
+  el.querySelector('.check-text').textContent = isChecked ? '✓ Lesson complete! One more to go.' : 'Mark lesson as complete';
+  localStorage.setItem('lesson-4-complete', isChecked);
+}
+if (localStorage.getItem('lesson-4-complete') === 'true') {
+  const el = document.getElementById('completionCheck');
+  el.classList.add('checked');
+  el.querySelector('.check-text').textContent = '✓ Lesson complete! One more to go.';
+}
+</script>
+
+</body>
+</html>

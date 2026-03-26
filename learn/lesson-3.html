@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3: What Can AI Do (and What Can't It)? — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800;
+    color: var(--rust); letter-spacing: -0.5px; text-decoration: none;
+  }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta {
+    background: var(--rust); color: #fff;
+    padding: 10px 22px; border-radius: 100px;
+    font-weight: 500; font-size: 14px;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+  .progress-bar-wrap {
+    position: fixed; top: 73px; left: 0; right: 0; z-index: 99;
+    height: 3px; background: var(--border);
+  }
+  .progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--rust), var(--rust-light));
+    transition: width 0.1s linear;
+  }
+
+  /* ── HERO ── */
+  .lesson-hero {
+    padding: 140px 24px 80px;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .lesson-hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(200,82,26,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(74,124,89,0.06) 0%, transparent 70%);
+  }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted); margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .track-breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number {
+    display: inline-block; font-size: 12px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--rust);
+    margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both;
+  }
+  .lesson-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -1.5px; color: var(--ink);
+    margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .lesson-meta {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    font-size: 14px; color: var(--muted);
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── BODY ── */
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .lesson-body h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700; line-height: 1.2;
+    letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink);
+  }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .lesson-body p {
+    font-size: 17px; line-height: 1.75;
+    color: #3D3A36; font-weight: 300; margin-bottom: 20px;
+  }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  .content-block { margin-bottom: 48px; }
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ══════════════════════════════
+     STORY CARDS — persona switcher
+  ══════════════════════════════ */
+  .persona-switcher { margin: 48px 0; }
+  .persona-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 0;
+  }
+  .persona-tab {
+    padding: 10px 18px; border-radius: 100px;
+    border: 1.5px solid var(--border);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    background: var(--warm-white); color: var(--muted);
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .persona-tab:hover { border-color: var(--rust); color: var(--rust); }
+  .persona-tab.active {
+    background: var(--rust); color: #fff; border-color: var(--rust);
+  }
+  .persona-stories { margin-top: 0; }
+  .persona-story {
+    display: none;
+    background: var(--warm-white); border: 1px solid var(--border);
+    border-radius: 24px; overflow: hidden;
+    animation: storyIn 0.4s ease both;
+  }
+  .persona-story.active { display: block; }
+  @keyframes storyIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+  .story-header {
+    padding: 28px 32px 0;
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+  .story-avatar {
+    width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .story-avatar.rust { background: linear-gradient(135deg, rgba(200,82,26,0.15), rgba(240,120,74,0.1)); }
+  .story-avatar.gold { background: linear-gradient(135deg, rgba(232,162,48,0.15), rgba(245,200,66,0.1)); }
+  .story-avatar.sage { background: linear-gradient(135deg, rgba(74,124,89,0.15), rgba(106,173,128,0.1)); }
+  .story-avatar.blue { background: linear-gradient(135deg, rgba(74,111,165,0.15), rgba(107,143,199,0.1)); }
+
+  .story-person { }
+  .story-name { font-weight: 600; font-size: 16px; color: var(--ink); }
+  .story-role { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .story-body { padding: 20px 32px 28px; }
+  .story-quote {
+    font-family: 'Fraunces', serif; font-size: 18px;
+    font-style: italic; font-weight: 300; color: var(--ink);
+    line-height: 1.6; margin-bottom: 20px;
+    padding-left: 20px; border-left: 3px solid var(--rust);
+  }
+  .story-scenarios { display: flex; flex-direction: column; gap: 10px; }
+  .scenario-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px; border-radius: 12px;
+    font-size: 15px; line-height: 1.5;
+  }
+  .scenario-row.can { background: var(--sage-light); color: var(--ink); }
+  .scenario-row.cannot { background: rgba(200,82,26,0.06); color: var(--ink); }
+  .scenario-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+  .scenario-text { flex: 1; }
+  .scenario-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; display: block; margin-bottom: 2px;
+  }
+  .scenario-row.can .scenario-label { color: var(--sage); }
+  .scenario-row.cannot .scenario-label { color: var(--rust); }
+
+  /* ══════════════════════════════
+     INTERACTIVE — THE TASK SORTER
+  ══════════════════════════════ */
+  .sorter-block {
+    background: var(--ink); border-radius: 28px;
+    padding: 40px 36px; margin: 48px 0;
+    position: relative; overflow: hidden;
+  }
+  .sorter-block::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 85% 15%, rgba(232,162,48,0.06), transparent);
+    pointer-events: none;
+  }
+  .demo-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+  }
+  .demo-label-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.5;transform:scale(0.8);} }
+  .sorter-block h3 {
+    font-family: 'Fraunces', serif; font-size: 24px;
+    font-weight: 700; color: var(--cream); margin-bottom: 10px;
+  }
+  .sorter-block > p {
+    color: rgba(250,247,242,0.65); font-size: 15px;
+    line-height: 1.6; margin-bottom: 28px;
+  }
+
+  .sorter-columns {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 24px;
+  }
+  .sorter-col {
+    border-radius: 18px; min-height: 140px;
+    padding: 16px;
+    border: 2px dashed rgba(255,255,255,0.1);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .sorter-col.can-do { border-color: rgba(74,124,89,0.4); }
+  .sorter-col.cant-do { border-color: rgba(200,82,26,0.4); }
+  .sorter-col.drag-over { border-color: var(--gold); background: rgba(232,162,48,0.05); }
+
+  .sorter-col-header {
+    font-size: 12px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sorter-col.can-do .sorter-col-header { color: #6AAD80; }
+  .sorter-col.cant-do .sorter-col-header { color: var(--rust-light); }
+
+  .sorted-items { display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
+  .sorted-item {
+    padding: 10px 14px; border-radius: 10px;
+    font-size: 14px; font-weight: 400; line-height: 1.4;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .sorted-item.can { background: rgba(74,124,89,0.2); color: var(--cream); border: 1px solid rgba(74,124,89,0.3); }
+  .sorted-item.cant { background: rgba(200,82,26,0.2); color: var(--cream); border: 1px solid rgba(200,82,26,0.3); }
+  @keyframes popIn { from{transform:scale(0.85);opacity:0;} to{transform:scale(1);opacity:1;} }
+
+  .task-deck {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .task-card {
+    padding: 10px 18px; border-radius: 100px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--cream); font-size: 14px;
+    cursor: pointer; transition: all 0.2s; user-select: none;
+  }
+  .task-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+  .task-card.placed { opacity: 0.3; pointer-events: none; }
+
+  .sorter-score {
+    text-align: center; padding: 16px;
+    font-size: 15px; color: rgba(250,247,242,0.5);
+    min-height: 28px;
+  }
+  .sorter-score.reveal-score { color: var(--gold); font-weight: 500; }
+
+  .sorter-feedback {
+    display: none; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 20px 22px;
+    margin-top: 16px;
+  }
+  .sorter-feedback.show { display: block; }
+  .sorter-feedback p {
+    font-size: 15px; color: rgba(250,247,242,0.75);
+    line-height: 1.65; margin-bottom: 0;
+  }
+  .sorter-feedback p strong { color: var(--cream); }
+
+  /* ══════════════════════════════
+     THE HONEST MOMENT — limits section
+  ══════════════════════════════ */
+  .honest-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin: 32px 0;
+  }
+  .honest-card {
+    background: var(--warm-white); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px 24px;
+    position: relative; overflow: hidden;
+  }
+  .honest-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .honest-card.limit::before { background: linear-gradient(90deg, var(--rust), var(--rust-light)); }
+  .honest-card.strength::before { background: linear-gradient(90deg, var(--sage), #6AAD80); }
+  .honest-card-icon { font-size: 28px; margin-bottom: 12px; }
+  .honest-card-title {
+    font-family: 'Fraunces', serif; font-size: 18px;
+    font-weight: 700; color: var(--ink); margin-bottom: 8px;
+  }
+  .honest-card-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-radius: 20px; padding: 28px 32px;
+    margin-bottom: 32px; border: 1px solid var(--border);
+  }
+  .callout-plain { background: var(--warm-white); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-rust { background: rgba(200,82,26,0.06); border-color: rgba(200,82,26,0.2); }
+  .callout-gold { background: rgba(232,162,48,0.08); border-color: rgba(232,162,48,0.3); }
+  .callout-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 10px; color: var(--rust);
+  }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout-gold .callout-label { color: #B87D1A; }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+
+  /* ── KEY TAKEAWAY ── */
+  .key-takeaway {
+    background: linear-gradient(135deg, var(--rust), var(--rust-light));
+    border-radius: 24px; padding: 36px; margin: 48px 0; text-align: center;
+  }
+  .key-takeaway .kt-label {
+    font-size: 11px; letter-spacing: 2px; font-weight: 600;
+    text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 12px;
+  }
+  .key-takeaway p {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 600; line-height: 1.45;
+    color: #fff !important; margin-bottom: 0 !important;
+  }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  /* ── LESSON NAV ── */
+  .lesson-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 32px 0; border-top: 1px solid var(--border);
+    margin-top: 64px; gap: 16px;
+  }
+  .lesson-nav-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 22px; border-radius: 14px;
+    text-decoration: none; font-size: 14px; font-weight: 500;
+    border: 1.5px solid var(--border);
+    color: var(--ink); background: var(--warm-white); transition: all 0.2s;
+  }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next {
+    background: var(--rust); color: #fff; border-color: var(--rust); font-weight: 600;
+  }
+  .lesson-nav-btn.next:hover { background: var(--rust-light); border-color: var(--rust-light); color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  .completion-check {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 24px; border-radius: 14px;
+    background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25);
+    cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 32px;
+  }
+  .completion-check:hover { border-color: var(--sage); }
+  .check-box {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .completion-check.checked .check-box { background: var(--sage); border-color: var(--sage); }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 120px 24px 60px; }
+    .sorter-columns { grid-template-columns: 1fr; }
+    .honest-grid { grid-template-columns: 1fr; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+    .sorter-block, .demo-block { padding: 28px 22px; }
+    .story-header { padding: 22px 22px 0; }
+    .story-body { padding: 16px 22px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🧠 Understanding AI</strong></span>
+    <a href="/#waitlist" class="nav-cta">Join the waitlist</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- HERO -->
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>🧠 Understanding AI</span>
+      <span class="breadcrumb-sep">›</span>
+      <span>Lesson 3</span>
+    </div>
+    <div class="lesson-number">Lesson 3 of 5</div>
+    <h1 class="lesson-title">What AI can do —<br><em>and what it can't</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 10 min</span>
+      <span class="meta-dot"></span>
+      <span>🧩 Interactive sorter</span>
+      <span class="meta-dot"></span>
+      <span>👥 Real stories</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <!-- INTRO -->
+  <div class="content-block reveal">
+    <p>Most people either expect too much from AI or too little. They either think it can do everything — or they've tried it once, it got something wrong, and they wrote it off completely.</p>
+    <p>The truth is much more useful: <strong>AI is incredible at certain things and genuinely bad at others.</strong> Once you know which is which, you stop wasting time and start getting real results.</p>
+    <p>Let's start with people just like you.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- PERSONA SWITCHER -->
+  <div class="content-block reveal">
+    <h2>Pick someone who<br><em>sounds like you</em></h2>
+    <p>Each person below uses AI differently — for their own life, their own job, their own frustrations. Tap the one that feels closest to you.</p>
+  </div>
+
+  <div class="persona-switcher reveal">
+    <div class="persona-tabs">
+      <button class="persona-tab active" onclick="switchPersona('margaret')">👴 Margaret, 67</button>
+      <button class="persona-tab" onclick="switchPersona('sofia')">🏪 Sofia, bakery owner</button>
+      <button class="persona-tab" onclick="switchPersona('raj')">💼 Raj, manager</button>
+      <button class="persona-tab" onclick="switchPersona('priya')">🎓 Priya, student</button>
+    </div>
+
+    <div class="persona-stories">
+
+      <!-- MARGARET -->
+      <div class="persona-story active" id="story-margaret">
+        <div class="story-header">
+          <div class="story-avatar rust">👵</div>
+          <div class="story-person">
+            <div class="story-name">Margaret, 67</div>
+            <div class="story-role">Retired teacher · Ontario</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <div class="story-quote">"I needed to write a letter to my insurance company and I had no idea where to start. I'd been putting it off for two weeks."</div>
+          <div class="story-scenarios">
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Draft a clear, professional letter in her own voice — in under 2 minutes
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Explain confusing insurance terms in plain English
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Suggest what details to include to make her case stronger
+              </div>
+            </div>
+            <div class="scenario-row cannot">
+              <span class="scenario-icon">❌</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI cannot do this</span>
+                Guarantee the insurance company will respond favourably — or know the specific policy details
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOFIA -->
+      <div class="persona-story" id="story-sofia">
+        <div class="story-header">
+          <div class="story-avatar gold">👩‍🍳</div>
+          <div class="story-person">
+            <div class="story-name">Sofia, 34</div>
+            <div class="story-role">Bakery owner · Montréal</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <div class="story-quote">"I'm baking from 5am and by the time I need to post on Instagram I have zero creative energy left."</div>
+          <div class="story-scenarios">
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Write 10 caption ideas for her croissant photo in 30 seconds
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Draft friendly replies to customer reviews, in French or English
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Create a weekly social media content calendar in minutes
+              </div>
+            </div>
+            <div class="scenario-row cannot">
+              <span class="scenario-icon">❌</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI cannot do this</span>
+                Post to Instagram for her, taste the croissants, or know what's currently trending locally
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RAJ -->
+      <div class="persona-story" id="story-raj">
+        <div class="story-header">
+          <div class="story-avatar blue">👨‍💼</div>
+          <div class="story-person">
+            <div class="story-name">Raj, 41</div>
+            <div class="story-role">Operations manager · Toronto</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <div class="story-quote">"I spend half my week writing the same types of emails and reports over and over. I keep thinking there has to be a better way."</div>
+          <div class="story-scenarios">
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Turn bullet-point notes into a polished report in minutes
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Summarise a long meeting transcript into clear action items
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Rewrite a tense email to sound calm and professional
+              </div>
+            </div>
+            <div class="scenario-row cannot">
+              <span class="scenario-icon">❌</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI cannot do this</span>
+                Attend the meeting, know the internal politics, or make the final call
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRIYA -->
+      <div class="persona-story" id="story-priya">
+        <div class="story-header">
+          <div class="story-avatar sage">👩‍🎓</div>
+          <div class="story-person">
+            <div class="story-name">Priya, 21</div>
+            <div class="story-role">University student · Vancouver</div>
+          </div>
+        </div>
+        <div class="story-body">
+          <div class="story-quote">"I know I'm not supposed to just copy AI answers for essays. But I genuinely don't know where the line is."</div>
+          <div class="story-scenarios">
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Help brainstorm essay angles and find the gaps in her argument
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Explain a complex concept from her textbook in plain language
+              </div>
+            </div>
+            <div class="scenario-row can">
+              <span class="scenario-icon">✅</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI can do this</span>
+                Give feedback on her draft — like a tutor who's always available
+              </div>
+            </div>
+            <div class="scenario-row cannot">
+              <span class="scenario-icon">❌</span>
+              <div class="scenario-text">
+                <span class="scenario-label">AI cannot do this</span>
+                Replace her own thinking — and submitting AI writing as hers is academic dishonesty
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- TASK SORTER DEMO -->
+  <div class="content-block reveal">
+    <h2>Now sort these<br><em>yourself</em></h2>
+    <p>Below are 8 real tasks people try to use AI for. Tap each one and sort it — do you think AI can handle it well, or not? You might be surprised by some of the answers.</p>
+  </div>
+
+  <div class="sorter-block reveal">
+    <div class="demo-label">
+      <span class="demo-label-dot"></span>
+      Interactive — The Task Sorter
+    </div>
+    <h3>Can AI handle this?</h3>
+    <p>Tap a task, then tap the column where you think it belongs. Sort all 8 to see how you did.</p>
+
+    <div class="task-deck" id="taskDeck"></div>
+
+    <div class="sorter-columns">
+      <div class="sorter-col can-do" id="colCan" onclick="dropToColumn('can')">
+        <div class="sorter-col-header">✅ AI handles this well</div>
+        <div class="sorted-items" id="sortedCan"></div>
+      </div>
+      <div class="sorter-col cant-do" id="colCant" onclick="dropToColumn('cant')">
+        <div class="sorter-col-header">❌ AI struggles here</div>
+        <div class="sorted-items" id="sortedCant"></div>
+      </div>
+    </div>
+
+    <div class="sorter-score" id="sorterScore">Tap a task to select it, then tap a column to sort it.</div>
+    <div class="sorter-feedback" id="sorterFeedback">
+      <p id="sorterFeedbackText"></p>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- HONEST LIMITS -->
+  <div class="content-block reveal">
+    <h2>The honest truth<br><em>about AI limits</em></h2>
+    <p>Even people who use AI every day get burned sometimes. Here's what AI genuinely struggles with — not to scare you, but so you know when to double-check.</p>
+  </div>
+
+  <div class="honest-grid reveal">
+    <div class="honest-card limit">
+      <div class="honest-card-icon">🕐</div>
+      <div class="honest-card-title">It's frozen in time</div>
+      <div class="honest-card-desc">AI's knowledge has a cutoff date. It doesn't know what happened last week, last month, or even last year. Always verify current facts.</div>
+    </div>
+    <div class="honest-card limit">
+      <div class="honest-card-icon">🎭</div>
+      <div class="honest-card-title">It sounds confident when it's wrong</div>
+      <div class="honest-card-desc">AI doesn't say "I'm not sure" the way a human would. It can state incorrect information in a completely convincing tone.</div>
+    </div>
+    <div class="honest-card limit">
+      <div class="honest-card-icon">🫀</div>
+      <div class="honest-card-title">It doesn't know you</div>
+      <div class="honest-card-desc">AI has no memory between conversations. It doesn't know your history, your relationships, your tone — unless you tell it.</div>
+    </div>
+    <div class="honest-card limit">
+      <div class="honest-card-icon">🔢</div>
+      <div class="honest-card-title">It's not a calculator</div>
+      <div class="honest-card-desc">AI can make basic math errors. For important numbers — finances, dosages, measurements — always verify independently.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">💡 The rule that saves you every time</div>
+    <p>Use AI to do the work, use your brain to check the work. You're the editor — AI is the very fast first drafter.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Where AI<br><em>genuinely shines</em></h2>
+    <p>To balance the picture — here's what AI does that nothing else does as well.</p>
+  </div>
+
+  <div class="honest-grid reveal">
+    <div class="honest-card strength">
+      <div class="honest-card-icon">⚡</div>
+      <div class="honest-card-title">Instant first drafts</div>
+      <div class="honest-card-desc">Emails, reports, messages, proposals — AI gets you 80% of the way there in seconds. You just refine and personalise.</div>
+    </div>
+    <div class="honest-card strength">
+      <div class="honest-card-icon">🔍</div>
+      <div class="honest-card-title">Explaining anything, simply</div>
+      <div class="honest-card-desc">Ask it to explain a legal document, a medical term, a tax form — and ask it to simplify until it clicks. Infinitely patient.</div>
+    </div>
+    <div class="honest-card strength">
+      <div class="honest-card-icon">🧠</div>
+      <div class="honest-card-title">Thinking partner at 2am</div>
+      <div class="honest-card-desc">Brainstorming, stress-testing ideas, playing devil's advocate — AI never gets tired, never judges, always engages.</div>
+    </div>
+    <div class="honest-card strength">
+      <div class="honest-card-icon">🌍</div>
+      <div class="honest-card-title">Language and translation</div>
+      <div class="honest-card-desc">Write in any language, translate naturally, adjust tone from casual to formal. Language tasks are where AI consistently excels.</div>
+    </div>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>AI is a powerful tool with real limits. <em>Know both, and you'll use it better than 95% of people who try it.</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="/learn/lesson-2.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span>
+        <span class="nav-btn-label">Previous</span>
+        <span class="nav-btn-title">How does AI think?</span>
+      </span>
+    </a>
+    <a href="/learn/lesson-4.html" class="lesson-nav-btn next">
+      <span>
+        <span class="nav-btn-label">Next up</span>
+        <span class="nav-btn-title">The tools you need to know</span>
+      </span>
+      <span>→</span>
+    </a>
+  </div>
+
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  document.getElementById('progressBar').style.width =
+    (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+});
+
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 50);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ══════════════════════════════
+// PERSONA SWITCHER
+// ══════════════════════════════
+function switchPersona(id) {
+  document.querySelectorAll('.persona-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.persona-story').forEach(s => s.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('story-' + id).classList.add('active');
+}
+
+// ══════════════════════════════
+// TASK SORTER
+// ══════════════════════════════
+const tasks = [
+  { text: "Write a birthday message for my colleague", answer: "can", explanation: "Writing warm, personalised text is one of AI's strongest skills." },
+  { text: "Tell me today's stock price for Apple", answer: "cant", explanation: "AI doesn't have live internet access — it can't fetch real-time data like stock prices." },
+  { text: "Summarise a long document", answer: "can", explanation: "Summarising and extracting key points from text is something AI does exceptionally well." },
+  { text: "Diagnose my medical symptoms", answer: "cant", explanation: "AI can share general information but it's not a doctor. Always see a professional for medical advice." },
+  { text: "Brainstorm names for my new business", answer: "can", explanation: "Generating creative ideas and options quickly is a core AI strength — give it constraints and it thrives." },
+  { text: "Remember what we talked about last week", answer: "cant", explanation: "AI has no memory between conversations. Each chat starts completely fresh unless you provide context." },
+  { text: "Rewrite this email in a friendlier tone", answer: "can", explanation: "Adjusting tone, style, and voice in text is exactly what language AI was built for." },
+  { text: "Tell me if this investment is a good idea", answer: "cant", explanation: "AI can help you think through factors, but predicting financial outcomes reliably is beyond what AI can do." },
+];
+
+let selectedTask = null;
+let sortedCount = 0;
+const results = [];
+
+function initSorter() {
+  const deck = document.getElementById('taskDeck');
+  deck.innerHTML = '';
+  const shuffled = [...tasks].sort(() => Math.random() - 0.5);
+  shuffled.forEach((task, i) => {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+    card.textContent = task.text;
+    card.dataset.index = tasks.indexOf(task);
+    card.onclick = () => selectTask(card, tasks.indexOf(task));
+    deck.appendChild(card);
+  });
+}
+
+function selectTask(el, index) {
+  if (el.classList.contains('placed')) return;
+  document.querySelectorAll('.task-card').forEach(c => c.style.outline = 'none');
+  selectedTask = index;
+  el.style.outline = '2px solid var(--gold)';
+  el.style.outlineOffset = '2px';
+  document.getElementById('sorterScore').textContent = 'Now tap a column — AI can do this, or AI struggles here?';
+  document.getElementById('sorterScore').className = 'sorter-score';
+}
+
+function dropToColumn(col) {
+  if (selectedTask === null) return;
+  const task = tasks[selectedTask];
+  const correct = task.answer === col;
+  results.push({ task, correct, userAnswer: col });
+
+  // Add to column
+  const item = document.createElement('div');
+  item.className = 'sorted-item ' + (correct ? task.answer : (col === 'can' ? 'can' : 'cant'));
+  item.textContent = (correct ? '✓ ' : '✗ ') + task.text;
+  document.getElementById(col === 'can' ? 'sortedCan' : 'sortedCant').appendChild(item);
+
+  // Mark card as placed
+  document.querySelectorAll('.task-card').forEach(c => {
+    if (parseInt(c.dataset.index) === selectedTask) {
+      c.classList.add('placed');
+      c.style.outline = 'none';
+    }
+  });
+
+  selectedTask = null;
+  sortedCount++;
+
+  // Show inline feedback
+  const feedback = document.getElementById('sorterFeedback');
+  const feedbackText = document.getElementById('sorterFeedbackText');
+  feedbackText.innerHTML = correct
+    ? `<strong>✓ Correct!</strong> ${task.explanation}`
+    : `<strong>✗ Actually — ${task.answer === 'can' ? 'AI handles this well.' : 'AI struggles here.'}</strong> ${task.explanation}`;
+  feedback.className = 'sorter-feedback show';
+
+  if (sortedCount === tasks.length) {
+    showFinalScore();
+  } else {
+    const score = document.getElementById('sorterScore');
+    score.className = 'sorter-score';
+    score.textContent = `${sortedCount} of ${tasks.length} sorted — keep going`;
+  }
+}
+
+function showFinalScore() {
+  const correct = results.filter(r => r.correct).length;
+  const score = document.getElementById('sorterScore');
+  score.className = 'sorter-score reveal-score';
+  if (correct >= 7) {
+    score.textContent = `🎉 ${correct}/8 — You've got great instincts about AI!`;
+  } else if (correct >= 5) {
+    score.textContent = `👍 ${correct}/8 — Solid! A few surprises in there, right?`;
+  } else {
+    score.textContent = `${correct}/8 — That's okay — this is exactly why you're here!`;
+  }
+  document.getElementById('sorterFeedback').className = 'sorter-feedback show';
+  document.getElementById('sorterFeedbackText').innerHTML =
+    '<strong>Review the results above</strong> — the ones you got wrong are the most valuable. Those are the moments where most people either over-trust or under-trust AI.';
+}
+
+initSorter();
+
+// ── COMPLETION ──
+function toggleComplete() {
+  const el = document.getElementById('completionCheck');
+  el.classList.toggle('checked');
+  const isChecked = el.classList.contains('checked');
+  el.querySelector('.check-text').textContent = isChecked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+  localStorage.setItem('lesson-3-complete', isChecked);
+}
+if (localStorage.getItem('lesson-3-complete') === 'true') {
+  const el = document.getElementById('completionCheck');
+  el.classList.add('checked');
+  el.querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+}
+</script>
+
+</body>
+</html>

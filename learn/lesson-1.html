@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1: What Is AI, Actually? — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250, 247, 242, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 26px; font-weight: 800;
+    color: var(--rust); letter-spacing: -0.5px;
+    text-decoration: none;
+  }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label {
+    font-size: 13px; color: var(--muted); font-weight: 400;
+  }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta {
+    background: var(--rust); color: #fff;
+    padding: 10px 22px; border-radius: 100px;
+    font-weight: 500; font-size: 14px;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    position: fixed; top: 73px; left: 0; right: 0; z-index: 99;
+    height: 3px; background: var(--border);
+  }
+  .progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--rust), var(--rust-light));
+    transition: width 0.1s linear;
+  }
+
+  /* ── LESSON HERO ── */
+  .lesson-hero {
+    padding: 140px 24px 80px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .lesson-hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(200,82,26,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(74,124,89,0.06) 0%, transparent 70%);
+  }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+
+  .track-breadcrumb {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted); margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .track-breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--border); }
+
+  .lesson-number {
+    display: inline-block;
+    font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--rust);
+    margin-bottom: 16px;
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+
+  .lesson-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -1.5px; color: var(--ink);
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+
+  .lesson-meta {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    font-size: 14px; color: var(--muted);
+    margin-bottom: 0;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LESSON BODY LAYOUT ── */
+  .lesson-body {
+    max-width: 720px; margin: 0 auto;
+    padding: 0 24px 120px;
+  }
+
+  /* ── CONTENT BLOCKS ── */
+  .content-block {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .lesson-body h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700; line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px; color: var(--ink);
+  }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--rust); }
+
+  .lesson-body p {
+    font-size: 17px; line-height: 1.75;
+    color: #3D3A36; font-weight: 300;
+    margin-bottom: 20px;
+  }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+
+  /* ── DIVIDER ── */
+  .lesson-divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 20px; padding: 28px 32px;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+  }
+  .callout-plain { background: var(--warm-white); }
+  .callout-rust {
+    background: rgba(200,82,26,0.06);
+    border-color: rgba(200,82,26,0.2);
+  }
+  .callout-sage {
+    background: var(--sage-light);
+    border-color: rgba(74,124,89,0.25);
+  }
+  .callout-ink {
+    background: var(--ink); color: var(--cream);
+    border-color: var(--ink);
+  }
+  .callout-gold {
+    background: rgba(232,162,48,0.08);
+    border-color: rgba(232,162,48,0.3);
+  }
+  .callout-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 10px;
+    color: var(--rust);
+  }
+  .callout-ink .callout-label { color: var(--gold); }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout-gold .callout-label { color: #B87D1A; }
+
+  .callout p {
+    font-size: 16px; line-height: 1.7;
+    margin-bottom: 0 !important;
+  }
+  .callout-ink p { color: rgba(250,247,242,0.8); }
+
+  /* ── ANALOGY CARD ── */
+  .analogy-card {
+    background: var(--ink); border-radius: 24px;
+    padding: 40px 36px; margin-bottom: 32px;
+    position: relative; overflow: hidden;
+  }
+  .analogy-card::before {
+    content: '"';
+    position: absolute; top: -10px; right: 24px;
+    font-family: 'Fraunces', serif;
+    font-size: 120px; font-weight: 800;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+  }
+  .analogy-label {
+    font-size: 11px; letter-spacing: 2px; font-weight: 600;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .analogy-text {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 300; font-style: italic;
+    color: var(--cream); line-height: 1.5;
+    margin-bottom: 0 !important;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 32px;
+  }
+  .compare-col {
+    border-radius: 20px; padding: 28px 24px;
+    border: 1px solid var(--border);
+  }
+  .compare-col.wrong { background: rgba(200,82,26,0.05); border-color: rgba(200,82,26,0.2); }
+  .compare-col.right { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .compare-header {
+    font-size: 12px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .compare-col.wrong .compare-header { color: var(--rust); }
+  .compare-col.right .compare-header { color: var(--sage); }
+  .compare-item {
+    font-size: 15px; color: var(--muted); line-height: 1.5;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .compare-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .compare-icon { flex-shrink: 0; font-size: 14px; }
+
+  /* ── EXERCISE BLOCK ── */
+  .exercise-block {
+    background: var(--ink);
+    border-radius: 24px; padding: 40px 36px;
+    margin: 48px 0;
+    position: relative; overflow: hidden;
+  }
+  .exercise-block::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 90% 10%, rgba(232,162,48,0.08), transparent);
+    pointer-events: none;
+  }
+  .exercise-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .exercise-label-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  .exercise-block h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px; font-weight: 700;
+    color: var(--cream); margin-bottom: 12px;
+  }
+  .exercise-block p {
+    color: rgba(250,247,242,0.7) !important;
+    font-size: 16px !important;
+  }
+  .exercise-steps {
+    list-style: none; margin: 20px 0 28px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .exercise-steps li {
+    display: flex; align-items: flex-start; gap: 14px;
+    font-size: 16px; color: rgba(250,247,242,0.85);
+    line-height: 1.5;
+  }
+  .step-badge {
+    flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    font-size: 12px; font-weight: 600; color: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .exercise-prompt {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px; padding: 20px 22px;
+    font-family: 'DM Sans', monospace; font-size: 15px;
+    color: var(--cream); line-height: 1.6;
+    margin-bottom: 20px; font-style: italic;
+  }
+  .exercise-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--rust); color: #fff;
+    padding: 14px 26px; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .exercise-btn:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  /* ── KEY TAKEAWAY ── */
+  .key-takeaway {
+    background: linear-gradient(135deg, var(--rust), var(--rust-light));
+    border-radius: 24px; padding: 36px 36px;
+    margin: 48px 0; text-align: center;
+  }
+  .key-takeaway .kt-label {
+    font-size: 11px; letter-spacing: 2px; font-weight: 600;
+    text-transform: uppercase; color: rgba(255,255,255,0.7);
+    margin-bottom: 12px;
+  }
+  .key-takeaway p {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 600; line-height: 1.45;
+    color: #fff !important;
+    margin-bottom: 0 !important;
+  }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  /* ── LESSON NAV ── */
+  .lesson-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 32px 0; border-top: 1px solid var(--border);
+    margin-top: 64px; gap: 16px;
+  }
+  .lesson-nav-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 22px; border-radius: 14px;
+    text-decoration: none; font-size: 14px; font-weight: 500;
+    border: 1.5px solid var(--border);
+    color: var(--ink); background: var(--warm-white);
+    transition: all 0.2s;
+  }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next {
+    background: var(--rust); color: #fff;
+    border-color: var(--rust);
+    font-weight: 600;
+  }
+  .lesson-nav-btn.next:hover { background: var(--rust-light); border-color: var(--rust-light); color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  /* ── LESSON COMPLETION ── */
+  .completion-check {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 24px; border-radius: 14px;
+    background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25);
+    cursor: pointer; transition: all 0.2s; user-select: none;
+    margin-bottom: 32px;
+  }
+  .completion-check:hover { border-color: var(--sage); }
+  .completion-check input[type="checkbox"] { display: none; }
+  .check-box {
+    width: 22px; height: 22px; border-radius: 6px;
+    border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .completion-check.checked .check-box {
+    background: var(--sage); border-color: var(--sage);
+  }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  /* ── SCROLL ANIM ── */
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 120px 24px 60px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🧠 Understanding AI</strong></span>
+    <a href="/#waitlist" class="nav-cta">Join the waitlist</a>
+  </div>
+</nav>
+
+<!-- READING PROGRESS BAR -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<!-- LESSON HERO -->
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>🧠 Understanding AI</span>
+      <span class="breadcrumb-sep">›</span>
+      <span>Lesson 1</span>
+    </div>
+    <div class="lesson-number">Lesson 1 of 5</div>
+    <h1 class="lesson-title">What is AI,<br><em>actually?</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 8 min read</span>
+      <span class="meta-dot"></span>
+      <span>🎯 Beginner</span>
+      <span class="meta-dot"></span>
+      <span>✍️ Includes exercise</span>
+    </div>
+  </div>
+</section>
+
+<!-- LESSON BODY -->
+<div class="lesson-body">
+
+  <!-- INTRO -->
+  <div class="content-block reveal">
+    <p>You've heard the word a thousand times. AI this, AI that. It's everywhere — the news, your phone, your workplace. But if someone asked you to explain what AI actually <em>is</em>, you might find yourself fumbling for the right words.</p>
+    <p>That's completely normal. And by the end of this lesson, you'll be able to explain it clearly — to yourself, and to anyone else who asks.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- SECTION 1 -->
+  <div class="content-block reveal">
+    <h2>Let's start with<br><em>what it's not</em></h2>
+    <p>Pop culture has given us a very specific image of AI: a robot with glowing eyes, a supercomputer plotting world domination, or a jarring sci-fi voice saying <em>"I cannot allow that, Dave."</em></p>
+    <p>That's fiction. The AI you're hearing about today — the kind you can already use for free on your phone — is something much more practical. And much less dramatic.</p>
+  </div>
+
+  <div class="compare-grid reveal">
+    <div class="compare-col wrong">
+      <div class="compare-header">❌ The Myth</div>
+      <div class="compare-item"><span class="compare-icon">🤖</span> A conscious robot with feelings</div>
+      <div class="compare-item"><span class="compare-icon">🧠</span> A brain that "thinks" like humans</div>
+      <div class="compare-item"><span class="compare-icon">⚠️</span> Something that wants to take over</div>
+      <div class="compare-item"><span class="compare-icon">🔮</span> All-knowing and always right</div>
+    </div>
+    <div class="compare-col right">
+      <div class="compare-header">✅ The Reality</div>
+      <div class="compare-item"><span class="compare-icon">📖</span> A very well-read pattern matcher</div>
+      <div class="compare-item"><span class="compare-icon">💬</span> A tool that processes and generates text</div>
+      <div class="compare-item"><span class="compare-icon">🛠️</span> Software — useful, not sentient</div>
+      <div class="compare-item"><span class="compare-icon">🎲</span> Helpful but can still be wrong</div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- SECTION 2 -->
+  <div class="content-block reveal">
+    <h2>So what <em>is</em> it?</h2>
+    <p>Here's the simplest, most honest explanation: <strong>AI is software that learned to recognize patterns by reading a massive amount of human-created text.</strong></p>
+    <p>Think of every book, article, website, forum post, and conversation ever written. AI tools like ChatGPT or Claude were trained on enormous amounts of that text. Through that process, they learned how language works — how ideas connect, how questions get answered, how problems get solved.</p>
+    <p>When you type a question, the AI isn't "thinking." It's using those patterns to predict the most useful, relevant response.</p>
+  </div>
+
+  <div class="analogy-card reveal">
+    <div class="analogy-label">💡 The best analogy we've found</div>
+    <p class="analogy-text">"Imagine someone who has read almost everything ever written, and is very good at finding the right words for any situation. That's AI — without the consciousness, without the feelings, and without the coffee breaks."</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- SECTION 3 -->
+  <div class="content-block reveal">
+    <h2>Why does this matter<br><em>for you?</em></h2>
+    <p>Understanding what AI is — and isn't — changes how you use it.</p>
+    <p>If you think it's magic, you'll either be afraid of it or blindly trust everything it says. Both are mistakes.</p>
+    <p>If you understand it's a <strong>very capable but imperfect tool</strong>, you'll use it with confidence — and healthy skepticism. You'll know when to rely on it and when to double-check it.</p>
+  </div>
+
+  <div class="callout callout-rust reveal">
+    <div class="callout-label">⚠️ Important</div>
+    <p>AI can be wrong. It can sound confident while being completely incorrect. It doesn't "know" things the way you do — it predicts what a good answer looks like based on patterns. Always think critically, especially for important decisions.</p>
+  </div>
+
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">✅ The good news</div>
+    <p>For everyday tasks — writing, summarizing, brainstorming, answering questions, drafting messages — it's remarkably good. And the more you understand it, the better you'll get at using it.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- SECTION 4 -->
+  <div class="content-block reveal">
+    <h2>The three things<br><em>AI is actually good at</em></h2>
+    <p>People get frustrated with AI when they expect it to do things it's not designed for. Here's where it genuinely shines:</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📝 1. Working with language</div>
+    <p>Writing emails, summarizing documents, translating, editing, brainstorming. Anything where the input and output is text — AI is fast and useful here.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🔍 2. Explaining things</div>
+    <p>Need a concept explained simply? Ask AI. It can break down complex topics in plain language — and adjust the explanation if you ask it to simplify further.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">⚡ 3. First drafts and starting points</div>
+    <p>Staring at a blank page is hard. AI can give you something to react to, edit, and improve — which is almost always faster than starting from scratch.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- KEY TAKEAWAY -->
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>AI is a powerful language tool — not magic, not a robot, not a threat. <em>It learned from human writing, and it's very good at working with words.</em> That's it.</p>
+  </div>
+
+  <!-- EXERCISE -->
+  <div class="exercise-block reveal">
+    <div class="exercise-label">
+      <span class="exercise-label-dot"></span>
+      Your turn — Exercise 1
+    </div>
+    <h3>Have your first real AI conversation</h3>
+    <p>The best way to understand AI is to talk to it. Here's a simple exercise you can do right now — no account required to start.</p>
+
+    <ol class="exercise-steps">
+      <li>
+        <span class="step-badge">1</span>
+        Open <a href="https://claude.ai" target="_blank" style="color:var(--gold)">claude.ai</a> or <a href="https://chat.openai.com" target="_blank" style="color:var(--gold)">chat.openai.com</a> in a new tab (free to use)
+      </li>
+      <li>
+        <span class="step-badge">2</span>
+        Type exactly this prompt in the chat box:
+      </li>
+    </ol>
+
+    <div class="exercise-prompt">
+      "Explain what you are in simple terms, like I'm explaining it to a friend who has never heard of AI. Keep it under 100 words."
+    </div>
+
+    <ol class="exercise-steps" start="3">
+      <li>
+        <span class="step-badge">3</span>
+        Read the response. Then ask a follow-up: <em>"Can you make it even simpler?"</em>
+      </li>
+      <li>
+        <span class="step-badge">4</span>
+        Notice how it adjusts. That's the key skill — you're in control of the conversation.
+      </li>
+    </ol>
+
+    <a href="https://claude.ai" target="_blank" class="exercise-btn">
+      Try it now on Claude →
+    </a>
+  </div>
+
+  <!-- COMPLETION CHECK -->
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box">
+      <span class="check-inner">✓</span>
+    </div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <!-- LESSON NAV -->
+  <div class="lesson-nav">
+    <a href="/" class="lesson-nav-btn">
+      <span>←</span>
+      <span>
+        <span class="nav-btn-label">Back to</span>
+        <span class="nav-btn-title">Track overview</span>
+      </span>
+    </a>
+    <a href="/learn/lesson-2.html" class="lesson-nav-btn next">
+      <span>
+        <span class="nav-btn-label">Next up</span>
+        <span class="nav-btn-title">How does AI think?</span>
+      </span>
+      <span>→</span>
+    </a>
+  </div>
+
+</div><!-- end lesson-body -->
+
+<!-- FOOTER -->
+<footer style="background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; font-family: 'DM Sans', sans-serif;">
+  <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:800; color:var(--rust); margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 50);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Completion toggle
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const isChecked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = isChecked
+      ? '✓ Lesson complete! Great work.'
+      : 'Mark lesson as complete';
+    // Save to localStorage
+    localStorage.setItem('lesson-1-complete', isChecked);
+  }
+
+  // Restore state
+  if (localStorage.getItem('lesson-1-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+
+</body>
+</html>

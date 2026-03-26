@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding AI — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800;
+    color: var(--rust); letter-spacing: -0.5px; text-decoration: none;
+  }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-link { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-link:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--rust); color: #fff;
+    padding: 10px 22px; border-radius: 100px;
+    font-weight: 500; font-size: 14px;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .track-hero {
+    padding: 140px 24px 80px;
+    position: relative; overflow: hidden;
+  }
+  .track-hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 5% 20%, rgba(200,82,26,0.09) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 60% at 95% 80%, rgba(232,162,48,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(74,124,89,0.04) 0%, transparent 60%);
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 380px;
+    gap: 64px; align-items: center;
+  }
+  .hero-left { }
+  .track-breadcrumb {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted); margin-bottom: 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .track-breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--border); }
+
+  .track-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,82,26,0.08); border: 1px solid rgba(200,82,26,0.2);
+    color: var(--rust); font-size: 12px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 100px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s 0.05s ease both;
+  }
+
+  .track-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -2px; color: var(--ink);
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .track-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+
+  .track-desc {
+    font-size: 18px; color: var(--muted); line-height: 1.7;
+    font-weight: 300; max-width: 520px; margin-bottom: 32px;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+
+  .hero-stats {
+    display: flex; gap: 28px; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-stat { }
+  .hero-stat-num {
+    font-family: 'Fraunces', serif; font-size: 28px;
+    font-weight: 800; color: var(--ink); line-height: 1;
+  }
+  .hero-stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* ── PROGRESS CARD ── */
+  .progress-card {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 28px; padding: 32px;
+    animation: fadeUp 0.6s 0.25s ease both;
+    position: sticky; top: 100px;
+  }
+  .progress-card-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--rust); margin-bottom: 16px;
+  }
+  .progress-ring-wrap {
+    display: flex; align-items: center; gap: 20px; margin-bottom: 24px;
+  }
+  .ring-svg { width: 72px; height: 72px; flex-shrink: 0; }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+  .ring-fill {
+    fill: none; stroke: var(--rust); stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 188.5;
+    stroke-dashoffset: 188.5;
+    transform: rotate(-90deg); transform-origin: center;
+    transition: stroke-dashoffset 1s ease;
+  }
+  .ring-text { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 800; fill: var(--ink); }
+  .progress-text-wrap { }
+  .progress-big { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 800; color: var(--ink); }
+  .progress-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .progress-lessons { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .progress-lesson-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 12px;
+    transition: background 0.15s;
+  }
+  .progress-lesson-row.done { background: var(--sage-light); }
+  .progress-lesson-row.current { background: rgba(200,82,26,0.06); border: 1px solid rgba(200,82,26,0.15); }
+  .lesson-check {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .lesson-check.done { background: var(--sage); color: #fff; }
+  .lesson-check.current { background: var(--rust); color: #fff; }
+  .lesson-check.locked {
+    background: var(--border); color: var(--muted); font-size: 10px;
+  }
+  .lesson-row-text { flex: 1; font-size: 14px; font-weight: 400; color: var(--ink); line-height: 1.3; }
+  .lesson-row-text.muted { color: var(--muted); }
+  .lesson-row-time { font-size: 12px; color: var(--muted); flex-shrink: 0; }
+
+  .start-btn {
+    display: block; width: 100%;
+    padding: 16px; border-radius: 14px;
+    background: var(--rust); color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600; text-align: center;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .start-btn:hover { background: var(--rust-light); transform: translateY(-1px); }
+  .start-btn.sage { background: var(--sage); }
+  .start-btn.sage:hover { background: #3d6b4a; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MAIN CONTENT ── */
+  .track-body { max-width: 1100px; margin: 0 auto; padding: 0 24px 120px; }
+
+  .section-label {
+    font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--rust); margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 700; line-height: 1.1;
+    letter-spacing: -0.5px; color: var(--ink); margin-bottom: 16px;
+  }
+  .section-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .section-sub {
+    font-size: 17px; color: var(--muted);
+    line-height: 1.65; font-weight: 300; max-width: 540px;
+    margin-bottom: 48px;
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── LESSON CARDS ── */
+  .lessons-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 80px; }
+
+  .lesson-card {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 24px; overflow: hidden;
+    display: grid; grid-template-columns: 80px 1fr auto;
+    align-items: stretch;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    text-decoration: none; color: inherit;
+    position: relative;
+  }
+  .lesson-card.unlocked:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(26,23,20,0.08);
+    border-color: var(--rust);
+  }
+  .lesson-card.locked { opacity: 0.55; cursor: not-allowed; }
+  .lesson-card.completed { border-color: rgba(74,124,89,0.3); }
+  .lesson-card.completed:hover { border-color: var(--sage); }
+
+  /* colour strip on left */
+  .lesson-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  }
+  .lesson-card.completed::before { background: var(--sage); }
+  .lesson-card.current::before { background: var(--rust); }
+  .lesson-card.locked::before { background: var(--border); }
+
+  .lesson-num-col {
+    display: flex; align-items: center; justify-content: center;
+    padding: 28px 0;
+    border-right: 1px solid var(--border);
+  }
+  .lesson-num-badge {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700;
+  }
+  .lesson-num-badge.done { background: var(--sage); color: #fff; font-size: 16px; }
+  .lesson-num-badge.active { background: var(--rust); color: #fff; }
+  .lesson-num-badge.locked-num {
+    background: var(--cream); color: var(--muted);
+    border: 1.5px solid var(--border); font-size: 13px;
+  }
+
+  .lesson-content { padding: 24px 28px; }
+  .lesson-card-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+  }
+  .lesson-card-title {
+    font-family: 'Fraunces', serif; font-size: 20px;
+    font-weight: 700; color: var(--ink); margin-bottom: 6px; line-height: 1.2;
+  }
+  .lesson-card-desc { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+  .lesson-card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lesson-tag {
+    font-size: 12px; padding: 4px 11px; border-radius: 100px;
+    background: var(--cream); border: 1px solid var(--border); color: var(--muted);
+  }
+  .lesson-tag.highlight { background: rgba(200,82,26,0.08); border-color: rgba(200,82,26,0.2); color: var(--rust); }
+
+  .lesson-action-col {
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 28px 24px 0;
+  }
+  .lesson-action-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 20px; border-radius: 100px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; white-space: nowrap;
+    transition: all 0.18s;
+  }
+  .lesson-action-btn.start { background: var(--rust); color: #fff; }
+  .lesson-action-btn.start:hover { background: var(--rust-light); }
+  .lesson-action-btn.resume { background: rgba(200,82,26,0.1); color: var(--rust); border: 1px solid rgba(200,82,26,0.25); }
+  .lesson-action-btn.resume:hover { background: rgba(200,82,26,0.18); }
+  .lesson-action-btn.review { background: var(--sage-light); color: var(--sage); border: 1px solid rgba(74,124,89,0.25); }
+  .lesson-action-btn.review:hover { background: rgba(74,124,89,0.18); }
+  .lesson-action-btn.locked-btn { background: var(--cream); color: var(--muted); border: 1px solid var(--border); cursor: not-allowed; }
+
+  /* ── WHAT YOU'LL LEARN ── */
+  .learn-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px; margin-bottom: 80px;
+  }
+  .learn-card {
+    background: var(--warm-white); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px 26px;
+  }
+  .learn-card-icon { font-size: 28px; margin-bottom: 14px; }
+  .learn-card-title {
+    font-family: 'Fraunces', serif; font-size: 18px;
+    font-weight: 700; color: var(--ink); margin-bottom: 8px;
+  }
+  .learn-card-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── TRACK COMPLETE BANNER ── */
+  .track-complete-banner {
+    display: none;
+    background: linear-gradient(135deg, var(--sage), #3d6b4a);
+    border-radius: 24px; padding: 36px 36px;
+    margin-bottom: 48px; text-align: center;
+    animation: fadeUp 0.5s ease both;
+  }
+  .track-complete-banner.show { display: block; }
+  .track-complete-banner h3 {
+    font-family: 'Fraunces', serif; font-size: 28px;
+    font-weight: 800; color: #fff; margin-bottom: 8px;
+  }
+  .track-complete-banner p {
+    font-size: 16px; color: rgba(255,255,255,0.75);
+    margin-bottom: 20px; line-height: 1.6;
+  }
+  .banner-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px; padding: 10px 22px;
+    font-size: 15px; font-weight: 600; color: #fff;
+  }
+
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .progress-card { position: static; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-link { display: none; }
+    .track-hero { padding: 120px 24px 60px; }
+    .lesson-card { grid-template-columns: 64px 1fr; }
+    .lesson-action-col { display: none; }
+    .lesson-card.unlocked::after {
+      content: '→'; position: absolute; right: 20px; top: 50%;
+      transform: translateY(-50%); color: var(--rust); font-size: 18px;
+    }
+    .hero-stats { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/#tracks" class="nav-link">All tracks</a>
+    <a href="/#waitlist" class="nav-cta">Join the waitlist</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="track-hero">
+  <div class="track-hero-bg"></div>
+  <div class="hero-inner">
+
+    <div class="hero-left">
+      <div class="track-breadcrumb">
+        <a href="/">AskIt</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="/#tracks">All tracks</a>
+        <span class="breadcrumb-sep">›</span>
+        <span>Understanding AI</span>
+      </div>
+
+      <div class="track-eyebrow">🧠 Foundation Track · Free</div>
+
+      <h1 class="track-title">Understanding<br><em>AI</em></h1>
+
+      <p class="track-desc">What is AI, how does it actually work, and why should you care? No hype, no fear, no technical background needed — just clear, honest answers.</p>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">5</div>
+          <div class="hero-stat-label">lessons</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">~45</div>
+          <div class="hero-stat-label">minutes total</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">Free</div>
+          <div class="hero-stat-label">no account needed</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">All</div>
+          <div class="hero-stat-label">skill levels</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS CARD -->
+    <div class="progress-card" id="progressCard">
+      <div class="progress-card-label">Your progress</div>
+
+      <div class="progress-ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 72 72">
+          <circle class="ring-bg" cx="36" cy="36" r="30"/>
+          <circle class="ring-fill" id="ringFill" cx="36" cy="36" r="30"/>
+          <text class="ring-text" x="36" y="41" text-anchor="middle" id="ringText">0%</text>
+        </svg>
+        <div class="progress-text-wrap">
+          <div class="progress-big" id="progressBig">Not started</div>
+          <div class="progress-sub" id="progressSub">0 of 5 lessons complete</div>
+        </div>
+      </div>
+
+      <div class="progress-lessons" id="progressLessons">
+        <!-- populated by JS -->
+      </div>
+
+      <a href="#lessons" class="start-btn" id="mainCta">Start track →</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="track-body">
+
+  <!-- TRACK COMPLETE BANNER -->
+  <div class="track-complete-banner" id="completeBanner">
+    <h3>🏆 Track complete!</h3>
+    <p>You've finished all 5 lessons and completed a real AI task. You've earned your badge.</p>
+    <div class="banner-badge">🧠 AI Foundation · Completed</div>
+  </div>
+
+  <!-- WHAT YOU'LL LEARN -->
+  <div class="reveal">
+    <p class="section-label">What's inside</p>
+    <h2 class="section-title">Five lessons.<br><em>Real understanding.</em></h2>
+    <p class="section-sub">Each lesson builds on the last. By the end you'll know exactly what AI is, how to use it, and which tools fit your life.</p>
+  </div>
+
+  <div class="learn-grid reveal">
+    <div class="learn-card">
+      <div class="learn-card-icon">🤔</div>
+      <div class="learn-card-title">What AI actually is</div>
+      <div class="learn-card-desc">Not the sci-fi version. The real one — explained clearly, without jargon or hype.</div>
+    </div>
+    <div class="learn-card">
+      <div class="learn-card-icon">⚙️</div>
+      <div class="learn-card-title">How it thinks</div>
+      <div class="learn-card-desc">Interactive demos that let you feel how AI works — not just read about it.</div>
+    </div>
+    <div class="learn-card">
+      <div class="learn-card-icon">🎯</div>
+      <div class="learn-card-title">What it's good at (and not)</div>
+      <div class="learn-card-desc">Real scenarios from real people's lives — so you know exactly when AI helps and when it doesn't.</div>
+    </div>
+    <div class="learn-card">
+      <div class="learn-card-icon">🛠️</div>
+      <div class="learn-card-title">The tools you need</div>
+      <div class="learn-card-desc">Claude, ChatGPT, Gemini, Perplexity — compared clearly so you know which to use when.</div>
+    </div>
+    <div class="learn-card">
+      <div class="learn-card-icon">🏆</div>
+      <div class="learn-card-title">A real win</div>
+      <div class="learn-card-desc">You'll finish the track with something actually done — an email sent, a plan made, a problem solved.</div>
+    </div>
+    <div class="learn-card">
+      <div class="learn-card-icon">✅</div>
+      <div class="learn-card-title">Confidence, not anxiety</div>
+      <div class="learn-card-desc">You'll finish knowing how to think about AI — not just afraid of it or blindly trusting it.</div>
+    </div>
+  </div>
+
+  <!-- LESSON LIST -->
+  <div id="lessons">
+    <div class="reveal">
+      <p class="section-label">The lessons</p>
+      <h2 class="section-title">Five steps from<br><em>confused to confident</em></h2>
+    </div>
+
+    <div class="lessons-list reveal" id="lessonsList">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+// ── SCROLL REVEAL ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ── LESSON DATA ──
+const lessons = [
+  {
+    num: 1,
+    title: 'What is AI, actually?',
+    desc: 'Cut through the hype and fear. A plain-English explanation of what AI is, what it isn\'t, and why it matters for your everyday life.',
+    tags: ['8 min', 'Beginner', 'Includes exercise'],
+    href: '/learn/lesson-1.html',
+    storageKey: 'lesson-1-complete'
+  },
+  {
+    num: 2,
+    title: 'How does AI think?',
+    desc: 'Three interactive demos let you feel how AI works from the inside — including a live chat with a real AI, right on the page.',
+    tags: ['10 min', '3 demos', 'Live AI chat'],
+    highlight: 'Live AI chat',
+    href: '/learn/lesson-2.html',
+    storageKey: 'lesson-2-complete'
+  },
+  {
+    num: 3,
+    title: 'What AI can do (and what it can\'t)',
+    desc: 'Real stories from people like you, plus an interactive task sorter that tests your instincts. No more guessing when AI will actually help.',
+    tags: ['10 min', 'Real stories', 'Interactive sorter'],
+    href: '/learn/lesson-3.html',
+    storageKey: 'lesson-3-complete'
+  },
+  {
+    num: 4,
+    title: 'The tools you need to know',
+    desc: 'Claude, ChatGPT, Gemini, Perplexity — compared side by side. A quick quiz finds your best match. A cheat sheet you\'ll actually use.',
+    tags: ['10 min', '4 tools compared', 'Find your match'],
+    href: '/learn/lesson-4.html',
+    storageKey: 'lesson-4-complete'
+  },
+  {
+    num: 5,
+    title: 'Your first real AI win',
+    desc: 'The finale. Pick a real challenge, work through it step by step, and walk away with something actually done. Earn your badge.',
+    tags: ['10–15 min', 'Real challenge', '🏆 Badge'],
+    highlight: '🏆 Badge',
+    href: '/learn/lesson-5.html',
+    storageKey: 'lesson-5-complete'
+  }
+];
+
+// ── READ COMPLETION STATE ──
+function getLessonState(lesson) {
+  return localStorage.getItem(lesson.storageKey) === 'true';
+}
+
+function getCompletedCount() {
+  return lessons.filter(l => getLessonState(l)).length;
+}
+
+function getNextLesson() {
+  const first = lessons.find(l => !getLessonState(l));
+  return first || lessons[lessons.length - 1];
+}
+
+// ── RENDER PROGRESS CARD ──
+function renderProgress() {
+  const completed = getCompletedCount();
+  const total = lessons.length;
+  const pct = Math.round((completed / total) * 100);
+  const isTrackComplete = localStorage.getItem('track-understanding-ai-complete') === 'true';
+
+  // Ring
+  const circumference = 188.5;
+  const offset = circumference - (pct / 100) * circumference;
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringText').textContent = pct + '%';
+
+  // Text
+  document.getElementById('progressBig').textContent =
+    completed === 0 ? 'Not started' :
+    isTrackComplete ? '🏆 Complete!' :
+    `${completed} of ${total} done`;
+  document.getElementById('progressSub').textContent =
+    `${completed} of ${total} lessons complete`;
+
+  // CTA button
+  const cta = document.getElementById('mainCta');
+  const next = getNextLesson();
+  if (isTrackComplete) {
+    cta.textContent = '🏆 Track complete — review lessons';
+    cta.className = 'start-btn sage';
+    cta.href = '#lessons';
+  } else if (completed === 0) {
+    cta.textContent = 'Start Lesson 1 →';
+    cta.href = lessons[0].href;
+    cta.className = 'start-btn';
+  } else {
+    cta.textContent = `Continue: Lesson ${next.num} →`;
+    cta.href = next.href;
+    cta.className = 'start-btn';
+  }
+
+  // Mini lesson rows in card
+  const container = document.getElementById('progressLessons');
+  container.innerHTML = '';
+  lessons.forEach(l => {
+    const done = getLessonState(l);
+    const isCurrent = !done && l === getNextLesson() && !isTrackComplete;
+    const row = document.createElement('div');
+    row.className = `progress-lesson-row ${done ? 'done' : isCurrent ? 'current' : ''}`;
+    row.innerHTML = `
+      <div class="lesson-check ${done ? 'done' : isCurrent ? 'current' : 'locked'}">
+        ${done ? '✓' : isCurrent ? '→' : l.num}
+      </div>
+      <div class="lesson-row-text ${done || isCurrent ? '' : 'muted'}">Lesson ${l.num}: ${l.title}</div>
+      <div class="lesson-row-time">${l.tags[0]}</div>
+    `;
+    container.appendChild(row);
+  });
+
+  // Track complete banner
+  if (isTrackComplete) {
+    document.getElementById('completeBanner').classList.add('show');
+  }
+}
+
+// ── RENDER LESSON CARDS ──
+function renderLessons() {
+  const container = document.getElementById('lessonsList');
+  container.innerHTML = '';
+  const isTrackComplete = localStorage.getItem('track-understanding-ai-complete') === 'true';
+  const next = getNextLesson();
+
+  lessons.forEach((l, i) => {
+    const done = getLessonState(l);
+    const isCurrent = !done && l === next && !isTrackComplete;
+    const isLocked = false; // all lessons free in this track
+
+    const card = document.createElement('a');
+    card.href = l.href;
+    card.className = `lesson-card ${done ? 'completed' : isCurrent ? 'current' : 'unlocked'}`;
+
+    // Badge state
+    const badgeClass = done ? 'done' : isCurrent ? 'active' : 'locked-num';
+    const badgeContent = done ? '✓' : l.num;
+
+    // Action button
+    let actionClass, actionText;
+    if (done) { actionClass = 'review'; actionText = 'Review →'; }
+    else if (isCurrent) { actionClass = 'start'; actionText = 'Start lesson →'; }
+    else { actionClass = 'start'; actionText = 'Start lesson →'; }
+
+    // Tags
+    const tagsHtml = l.tags.map(t =>
+      `<span class="lesson-tag ${t === l.highlight ? 'highlight' : ''}">${t}</span>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="lesson-num-col">
+        <div class="lesson-num-badge ${badgeClass}">${badgeContent}</div>
+      </div>
+      <div class="lesson-content">
+        <div class="lesson-card-label">Lesson ${l.num} of ${lessons.length}</div>
+        <div class="lesson-card-title">${l.title}</div>
+        <div class="lesson-card-desc">${l.desc}</div>
+        <div class="lesson-card-tags">${tagsHtml}</div>
+      </div>
+      <div class="lesson-action-col">
+        <span class="lesson-action-btn ${actionClass}">${actionText}</span>
+      </div>
+    `;
+
+    // Staggered animation
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = `opacity 0.5s ease ${i * 80}ms, transform 0.5s ease ${i * 80}ms`;
+
+    container.appendChild(card);
+
+    // Trigger animation after paint
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 100 + i * 80);
+    });
+  });
+}
+
+// ── INIT ──
+renderProgress();
+renderLessons();
+
+// Trigger ring animation after a tick
+setTimeout(() => {
+  const completed = getCompletedCount();
+  const pct = Math.round((completed / lessons.length) * 100);
+  const circumference = 188.5;
+  document.getElementById('ringFill').style.strokeDashoffset =
+    circumference - (pct / 100) * circumference;
+}, 300);
+</script>
+
+</body>
+</html>
