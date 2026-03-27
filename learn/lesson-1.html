@@ -103,7 +103,7 @@
 
   .lesson-title {
     font-family: 'Fraunces', serif;
-    font-size: clamp(36px, 5vw, 64px);
+    font-size: clamp(26px, 5vw, 64px);
     font-weight: 800; line-height: 1.08;
     letter-spacing: -1.5px; color: var(--ink);
     margin-bottom: 20px;
@@ -395,8 +395,13 @@
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
     .nav-right .nav-track-label { display: none; }
-    .lesson-hero { padding: 120px 24px 60px; }
+    .lesson-hero { padding: 110px 20px 56px; }
+    .lesson-meta { flex-wrap: wrap; gap: 10px; }
     .compare-grid { grid-template-columns: 1fr; }
+    .callout { padding: 20px 22px; }
+    .analogy-card { padding: 28px 24px; }
+    .exercise-block { padding: 28px 22px; }
+    .key-takeaway { padding: 28px 22px; }
     .lesson-nav { flex-direction: column; }
     .lesson-nav-btn { width: 100%; justify-content: center; }
   }

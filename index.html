@@ -111,7 +111,7 @@
 
   h1 {
     font-family: 'Fraunces', serif;
-    font-size: clamp(48px, 7vw, 88px);
+    font-size: clamp(36px, 7vw, 88px);
     font-weight: 800; line-height: 1.05;
     letter-spacing: -2px;
     color: var(--ink);
@@ -159,6 +159,49 @@
   .form-note {
     margin-top: 14px; font-size: 13px;
     color: var(--muted); animation: fadeUp 0.7s 0.4s ease both;
+  }
+
+  /* ── QUIZ CTA ── */
+  .quiz-cta-wrap {
+    margin-top: 20px;
+    animation: fadeUp 0.7s 0.45s ease both;
+  }
+  .quiz-cta-divider {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 16px; max-width: 480px; margin-inline: auto;
+  }
+  .quiz-cta-divider::before,
+  .quiz-cta-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .quiz-cta-divider span {
+    font-size: 12px; color: var(--muted); font-weight: 500;
+    white-space: nowrap; letter-spacing: 0.5px;
+  }
+  .quiz-cta-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 28px; border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--warm-white);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(26,23,20,0.07);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+  .quiz-cta-btn:hover {
+    border-color: var(--rust);
+    box-shadow: 0 6px 24px rgba(200,82,26,0.12);
+    transform: translateY(-2px);
+  }
+  .quiz-cta-btn .quiz-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(200,82,26,0.1); font-size: 15px;
+  }
+  .quiz-cta-note {
+    margin-top: 10px; font-size: 12px; color: var(--muted);
   }
 
   /* Success state */
@@ -435,12 +478,17 @@
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
     .nav-links { display: none; }
+    .hero { padding: 100px 20px 64px; }
+    .hero-sub { font-size: 16px; }
     .waitlist-form { flex-direction: column; border-radius: 16px; }
     .waitlist-form input { border-radius: 12px 12px 0 0; }
     .waitlist-form button { border-radius: 0 0 12px 12px; text-align: center; }
     .pricing-grid { grid-template-columns: 1fr; }
     .step { grid-template-columns: 48px 1fr; gap: 16px; }
     .step-num { font-size: 36px; }
+    .audiences-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    section { padding: 72px 20px; }
   }
 </style>
 </head>
@@ -486,10 +534,14 @@
       <p class="form-note">Free to join · No spam · Unsubscribe anytime</p>
     </div>
 
-    <div style="margin-top:16px;animation:fadeUp 0.7s 0.45s ease both">
-      <a href="/quiz.html" style="display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--muted)'">
-        <span style="font-size:18px">🎯</span> Not sure where to start? Take the 60-second quiz →
+    <div class="quiz-cta-wrap">
+      <div class="quiz-cta-divider"><span>or</span></div>
+      <a href="/quiz.html" class="quiz-cta-btn">
+        <span class="quiz-badge">🎯</span>
+        Not sure where to start? Find your track
+        <span>→</span>
       </a>
+      <p class="quiz-cta-note">60-second quiz · free · no account needed</p>
     </div>
 
     <div class="social-proof">
