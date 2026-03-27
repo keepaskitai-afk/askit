@@ -755,19 +755,37 @@
   reveals.forEach(el => observer.observe(el));
 
   // Form submission
-  function handleSubmit(e, formId) {
+  async function handleSubmit(e, formId) {
     e.preventDefault();
     const emailEl = document.getElementById(formId === 'hero' ? 'hero-email' : 'cta-email');
     const form = emailEl.closest('form');
     const success = document.getElementById(formId === 'hero' ? 'hero-success' : 'cta-success');
+    const btn = form.querySelector('button');
+    const email = emailEl.value;
 
-    // Here you'd normally send to your email service (Mailchimp, ConvertKit, etc.)
-    // For now we'll just show the success state
-    form.style.display = 'none';
-    success.style.display = 'block';
+    btn.disabled = true;
+    btn.textContent = 'Joining…';
 
-    // Also trigger the other form if both visible
-    console.log('Waitlist signup:', emailEl.value);
+    try {
+      const res = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Join Waitlist';
+        alert(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'Join Waitlist';
+      alert('Something went wrong. Please try again.');
+    }
   }
 
   // Smooth scroll for nav links
