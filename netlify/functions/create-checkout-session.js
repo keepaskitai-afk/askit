@@ -27,12 +27,7 @@ exports.handler = async (event) => {
       mode: 'subscription',
       line_items: [
         {
-          price_data: {
-            currency: 'usd',
-            product_data: { name: 'AskIt Premium' },
-            recurring: { interval: 'month' },
-            unit_amount: 1500, // $15.00 in cents
-          },
+          price: 'price_1TFey2DfTFCtuexdGcfTOA20',
           quantity: 1,
         },
       ],
