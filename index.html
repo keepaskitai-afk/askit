@@ -724,7 +724,7 @@
           <li><span class="check">✅</span> Completion certificates</li>
           <li><span class="check">✅</span> New content every month</li>
         </ul>
-        <a href="#waitlist" class="plan-btn">Get early access pricing</a>
+        <button class="plan-btn" id="checkout-btn" onclick="startCheckout(this)">Subscribe now — $15/mo</button>
       </div>
     </div>
   </div>
@@ -853,6 +853,47 @@
       document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
     });
   });
+</script>
+
+<script>
+  async function startCheckout(btn) {
+    btn.disabled = true;
+    btn.textContent = 'Redirecting…';
+    try {
+      const res = await fetch('/.netlify/functions/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Subscribe now — $15/mo';
+      }
+    } catch {
+      alert('Network error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Subscribe now — $15/mo';
+    }
+  }
+
+  // Show a banner if Stripe redirected back after checkout
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('checkout') === 'success') {
+      const banner = document.createElement('div');
+      banner.style.cssText =
+        'position:fixed;top:72px;left:50%;transform:translateX(-50%);' +
+        'background:#4A7C59;color:#fff;padding:14px 28px;border-radius:100px;' +
+        'font-size:15px;font-weight:500;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.15)';
+      banner.textContent = '🎉 Welcome to AskIt Premium! Check your email to get started.';
+      document.body.appendChild(banner);
+      setTimeout(() => banner.remove(), 6000);
+      history.replaceState({}, '', window.location.pathname);
+    }
+  })();
 </script>
 
 </body>

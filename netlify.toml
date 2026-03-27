@@ -7,3 +7,9 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "POST, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type"
+
+# Stripe sends webhooks directly — no CORS headers needed
+[[headers]]
+  for = "/.netlify/functions/stripe-webhook"
+  [headers.values]
+    Access-Control-Allow-Origin = ""
