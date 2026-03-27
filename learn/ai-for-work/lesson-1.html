@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1: Writing Emails with AI — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--sage),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(74,124,89,0.08) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 70%,rgba(232,162,48,0.06) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-sage{background:var(--sage-light);border-color:rgba(74,124,89,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-ink{background:var(--ink);border-color:var(--ink);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-sage .callout-label{color:var(--sage);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout-ink .callout-label{color:var(--gold);}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .callout-ink p{color:rgba(250,247,242,0.8);}
+  .key-takeaway{background:linear-gradient(135deg,var(--sage),#3d6b4a);border-radius:24px;padding:36px;margin:48px 0;text-align:center;}
+  .kt-label{font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+  .key-takeaway p{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,26px);font-weight:600;line-height:1.45;color:#fff!important;margin-bottom:0!important;}
+  .key-takeaway p em{font-style:italic;font-weight:300;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--sage-light);border:1px solid rgba(74,124,89,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--sage);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(74,124,89,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--sage);border-color:var(--sage);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--sage);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--rust);color:#fff;border-color:var(--rust);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:var(--rust-light);border-color:var(--rust-light);color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── EMAIL BUILDER ── */
+  .email-builder{background:var(--ink);border-radius:28px;overflow:hidden;margin:32px 0;}
+  .builder-top{padding:28px 32px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .builder-badge{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--sage);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .builder-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--cream);}
+  .builder-sub{font-size:14px;color:rgba(250,247,242,0.5);margin-top:4px;}
+
+  .email-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:24px 32px;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .email-type-btn{padding:12px 10px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(250,247,242,0.6);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center;line-height:1.3;}
+  .email-type-btn:hover{border-color:rgba(74,124,89,0.5);color:var(--cream);}
+  .email-type-btn.active{border-color:var(--sage);background:rgba(74,124,89,0.15);color:var(--cream);}
+
+  .builder-fields{padding:24px 32px;display:flex;flex-direction:column;gap:16px;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .field-group{display:flex;flex-direction:column;gap:6px;}
+  .field-group.full{grid-column:1/-1;}
+  .field-lbl{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);}
+  .field-inp{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--cream);outline:none;transition:border-color 0.2s;width:100%;}
+  .field-inp::placeholder{color:rgba(250,247,242,0.25);}
+  .field-inp:focus{border-color:rgba(74,124,89,0.5);}
+  textarea.field-inp{resize:vertical;min-height:80px;line-height:1.55;}
+
+  .tone-row{padding:0 32px 20px;}
+  .tone-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:12px;}
+  .tone-pills{display:flex;gap:8px;flex-wrap:wrap;}
+  .tone-pill{padding:7px 16px;border-radius:100px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(250,247,242,0.55);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .tone-pill:hover{border-color:rgba(255,255,255,0.25);color:var(--cream);}
+  .tone-pill.active{border-color:var(--gold);background:rgba(232,162,48,0.12);color:var(--cream);}
+
+  .builder-run{padding:0 32px 32px;display:flex;gap:10px;flex-wrap:wrap;}
+  .run-btn{padding:14px 28px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;transition:all 0.2s;}
+  .run-btn-primary{background:var(--sage);color:#fff;}
+  .run-btn-primary:hover{background:#3d6b4a;}
+  .run-btn-primary:disabled{background:rgba(74,124,89,0.3);cursor:default;}
+  .run-btn-secondary{background:rgba(255,255,255,0.08);color:var(--cream);font-size:14px;padding:12px 20px;}
+  .run-btn-secondary:hover{background:rgba(255,255,255,0.14);}
+  .run-btn-secondary:disabled{opacity:0.4;cursor:default;}
+
+  .email-output{display:none;border-top:1px solid rgba(255,255,255,0.08);}
+  .email-output.visible{display:block;}
+  .output-header{padding:20px 32px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .output-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(250,247,242,0.4);}
+  .output-actions{display:flex;gap:8px;}
+  .out-btn{padding:8px 16px;border-radius:100px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(250,247,242,0.7);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .out-btn:hover{background:rgba(255,255,255,0.12);color:var(--cream);}
+  .email-text{padding:20px 32px 28px;font-size:15px;line-height:1.75;color:rgba(250,247,242,0.85);white-space:pre-wrap;}
+
+  .refine-row{padding:0 32px 24px;border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;}
+  .refine-label{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.35);margin-bottom:10px;}
+  .refine-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .refine-btn{padding:8px 16px;border-radius:100px;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(250,247,242,0.55);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+  .refine-btn:hover{border-color:rgba(255,255,255,0.3);color:var(--cream);}
+  .refine-btn:disabled{opacity:0.3;cursor:default;}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .email-type-grid{grid-template-columns:repeat(2,1fr);}
+    .field-row{grid-template-columns:1fr;}
+    .builder-fields,.builder-top,.builder-run,.refine-row,.output-header,.email-text,.tone-row{padding-left:20px;padding-right:20px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>💼 AI for Work</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-for-work/">💼 AI for Work</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 1</span>
+    </div>
+    <div class="lesson-number">Lesson 1 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Writing emails<br>and messages<br><em>with AI</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 25 min</span><span class="meta-dot"></span>
+      <span>🤖 Live Claude</span><span class="meta-dot"></span>
+      <span>✉️ Real email builder</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>The average professional spends 28% of their working week on email. That's over 11 hours. Most of that time isn't thinking — it's the mechanical labour of translating a clear idea in your head into polished, professional words on a screen.</p>
+    <p>That's exactly what AI is extraordinarily good at. In this lesson, you'll learn <strong>how to brief the AI on any email</strong> so it produces a draft that actually sounds like you — and use the refinement tools to tighten it until it's exactly right.</p>
+  </div>
+
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">✅ What makes email prompting different</div>
+    <p>Email is personal. The AI needs to know the <em>relationship</em> (who is this person to you?), the <em>outcome you want</em> (what should the reader do or feel?), and the <em>tone</em> (is this a client, a colleague, a stranger?). Give it those three things and you'll get something usable in seconds.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The email you actually<br><em>need to send</em></h2>
+    <p>This isn't a generic exercise. Pick a real email you have to write — something sitting in your drafts, something you've been putting off, or something you need to send today. Fill in the details below and let the AI write it for you. Then we'll refine it together.</p>
+  </div>
+
+  <!-- INTERACTIVE EMAIL BUILDER -->
+  <div class="email-builder reveal">
+    <div class="builder-top">
+      <div class="builder-badge"><span class="live-dot"></span> Live Email Builder</div>
+      <div class="builder-title">What email do you need to write?</div>
+      <div class="builder-sub">Select a type, fill in the details, and get a first draft in seconds</div>
+    </div>
+
+    <div class="email-type-grid">
+      <button class="email-type-btn active" onclick="selectType(this,'follow-up')">📬 Follow-up</button>
+      <button class="email-type-btn" onclick="selectType(this,'pitch')">💼 Pitch / proposal</button>
+      <button class="email-type-btn" onclick="selectType(this,'complaint')">⚠️ Complaint</button>
+      <button class="email-type-btn" onclick="selectType(this,'apology')">🙏 Apology</button>
+      <button class="email-type-btn" onclick="selectType(this,'announcement')">📣 Announcement</button>
+      <button class="email-type-btn" onclick="selectType(this,'negotiation')">🤝 Negotiation</button>
+      <button class="email-type-btn" onclick="selectType(this,'decline')">🚫 Saying no</button>
+      <button class="email-type-btn" onclick="selectType(this,'request')">🙋 Request / ask</button>
+      <button class="email-type-btn" onclick="selectType(this,'thank-you')">💛 Thank you</button>
+    </div>
+
+    <div class="builder-fields">
+      <div class="field-row">
+        <div class="field-group">
+          <div class="field-lbl">To (who is this person?)</div>
+          <input class="field-inp" id="f-recipient" type="text" placeholder="e.g. My client Sarah, the hiring manager, my landlord…">
+        </div>
+        <div class="field-group">
+          <div class="field-lbl">Your relationship</div>
+          <input class="field-inp" id="f-relationship" type="text" placeholder="e.g. client of 2 years, stranger, colleague">
+        </div>
+      </div>
+      <div class="field-group full">
+        <div class="field-lbl">What's the situation? (more detail = better email)</div>
+        <textarea class="field-inp" id="f-situation" rows="3" placeholder="e.g. I invoiced them 6 weeks ago for £3,400. They haven't paid and this is the second time I've had to chase. I don't want to damage the relationship but I need the money."></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <div class="field-lbl">What do you want to happen?</div>
+          <input class="field-inp" id="f-outcome" type="text" placeholder="e.g. They pay within 5 days">
+        </div>
+        <div class="field-group">
+          <div class="field-lbl">Word limit (optional)</div>
+          <input class="field-inp" id="f-length" type="text" placeholder="e.g. Under 150 words">
+        </div>
+      </div>
+    </div>
+
+    <div class="tone-row">
+      <div class="tone-label">Tone</div>
+      <div class="tone-pills">
+        <button class="tone-pill active" onclick="selectTone(this,'professional')">Professional</button>
+        <button class="tone-pill" onclick="selectTone(this,'warm & professional')">Warm</button>
+        <button class="tone-pill" onclick="selectTone(this,'direct and firm')">Direct & firm</button>
+        <button class="tone-pill" onclick="selectTone(this,'casual and friendly')">Casual</button>
+        <button class="tone-pill" onclick="selectTone(this,'empathetic')">Empathetic</button>
+        <button class="tone-pill" onclick="selectTone(this,'urgent')">Urgent</button>
+      </div>
+    </div>
+
+    <div class="builder-run">
+      <button class="run-btn run-btn-primary" id="generateBtn" onclick="generateEmail()">▶ Write this email</button>
+    </div>
+
+    <div class="email-output" id="emailOutput">
+      <div class="output-header">
+        <div class="output-label">✨ Your email draft</div>
+        <div class="output-actions">
+          <button class="out-btn" onclick="copyEmail()">📋 Copy</button>
+          <button class="out-btn" onclick="generateEmail()">↻ Regenerate</button>
+        </div>
+      </div>
+      <div class="email-text" id="emailText"></div>
+      <div class="refine-row">
+        <div class="refine-label">Refine it</div>
+        <div class="refine-btns">
+          <button class="refine-btn" onclick="refine('Make it shorter — under 100 words')">Shorter</button>
+          <button class="refine-btn" onclick="refine('Make it longer with more context and detail')">Longer</button>
+          <button class="refine-btn" onclick="refine('Make it more assertive and direct')">More assertive</button>
+          <button class="refine-btn" onclick="refine('Make it warmer and more personal')">Warmer</button>
+          <button class="refine-btn" onclick="refine('Remove all corporate jargon and make it sound more human')">More human</button>
+          <button class="refine-btn" onclick="refine('Add a clear, specific call to action at the end')">Add CTA</button>
+          <button class="refine-btn" onclick="refine('Make the subject line more compelling and curiosity-driven')">Better subject line</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The pattern that works<br><em>every time</em></h2>
+    <p>Once you understand what the AI needs to write a great email, you can apply it to any situation. The pattern is always the same:</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📐 The email briefing formula</div>
+    <p><strong>Recipient + relationship</strong> → who is this person to you?<br><br>
+    <strong>Situation</strong> → what's the context and history?<br><br>
+    <strong>Outcome</strong> → what do you want the reader to do or feel after reading?<br><br>
+    <strong>Tone</strong> → how should it sound?<br><br>
+    <strong>Constraints</strong> → length, what to include, what to avoid</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ The refinement loop</div>
+    <p>Don't expect the first draft to be perfect — expect it to be 80% there. The remaining 20% is one or two targeted refinements: "make it shorter", "make the ask clearer", "remove the apology at the start". That loop usually takes 90 seconds and produces something you're genuinely happy to send.</p>
+  </div>
+
+  <div class="content-block reveal">
+    <h2>Emails AI is<br><em>surprisingly good at</em></h2>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">💰 Chasing invoices</div>
+    <p>Awkward but necessary. Give AI the amount owed, how many days overdue, whether it's first or second chase, and the relationship — it will hit exactly the right tone of firm but not aggressive.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🚫 Saying no</div>
+    <p>Declining requests gracefully is hard. Tell the AI what you're saying no to, why, and what (if anything) you can offer instead. It handles the delicate balance of being clear without being cold.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🎯 Cold outreach</div>
+    <p>Give AI the person you're reaching out to, what you want, and any genuine connection you have to their work. Ask it to write something that doesn't sound like a template — and specifically to avoid any opener that starts with "I hope this finds you well".</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">😬 Difficult conversations</div>
+    <p>Feedback, corrections, conflict. These are the emails that sit in drafts for days. Tell the AI the situation, what outcome you want, and the relationship dynamic — it will find language you wouldn't have thought of yourself.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Brief the AI like you'd brief a skilled assistant. <em>Recipient, situation, outcome, tone.</em> That's all it needs. The time you save is immediate and compounding.</p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="/learn/ai-for-work/" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Back to</span><span class="nav-btn-title">Track overview</span></span>
+    </a>
+    <a href="lesson-2.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Research & summarising</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  let emailType = 'follow-up';
+  let emailTone = 'professional';
+  let lastEmailContext = '';
+
+  function selectType(btn, type) {
+    document.querySelectorAll('.email-type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    emailType = type;
+  }
+
+  function selectTone(btn, tone) {
+    document.querySelectorAll('.tone-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    emailTone = tone;
+  }
+
+  async function callClaude(prompt) {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    throw new Error(data.error?.message || 'API error');
+  }
+
+  async function generateEmail() {
+    const recipient = document.getElementById('f-recipient').value.trim();
+    const relationship = document.getElementById('f-relationship').value.trim();
+    const situation = document.getElementById('f-situation').value.trim();
+    const outcome = document.getElementById('f-outcome').value.trim();
+    const length = document.getElementById('f-length').value.trim();
+
+    if (!situation) { alert('Please describe the situation first.'); return; }
+
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Writing…';
+
+    const prompt = `Write a ${emailType} email.
+${recipient ? 'To: ' + recipient : ''}
+${relationship ? 'Relationship: ' + relationship : ''}
+Situation: ${situation}
+${outcome ? 'Desired outcome: ' + outcome : ''}
+Tone: ${emailTone}
+${length ? 'Length: ' + length : 'Keep it concise and easy to read.'}
+
+Include a subject line at the top. Write only the email — no preamble or explanation.`;
+
+    lastEmailContext = prompt;
+    setOutput('Writing your email…');
+    document.getElementById('emailOutput').classList.add('visible');
+
+    try {
+      const text = await callClaude(prompt);
+      setOutput(text);
+      enableRefine(true);
+    } catch (e) {
+      setOutput('Error: ' + e.message + '. Make sure ANTHROPIC_API_KEY is set in Netlify.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '▶ Write this email';
+    }
+  }
+
+  async function refine(instruction) {
+    const current = document.getElementById('emailText').textContent;
+    if (!current || current.startsWith('Error') || current === 'Writing your email…') return;
+
+    enableRefine(false);
+    setOutput('Refining…');
+
+    try {
+      const text = await callClaude(`Here is an email draft:\n\n${current}\n\nInstruction: ${instruction}\n\nRewrite the email following that instruction. Output only the improved email, no explanation.`);
+      setOutput(text);
+    } catch (e) {
+      setOutput('Error: ' + e.message);
+    } finally {
+      enableRefine(true);
+    }
+  }
+
+  function setOutput(text) {
+    document.getElementById('emailText').textContent = text;
+  }
+
+  function enableRefine(on) {
+    document.querySelectorAll('.refine-btn').forEach(b => b.disabled = !on);
+  }
+
+  function copyEmail() {
+    const text = document.getElementById('emailText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.out-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('afw-1-complete', checked);
+  }
+  if (localStorage.getItem('afw-1-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

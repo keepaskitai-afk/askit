@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3: AI for Meetings — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--sage),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 55% 50% at 20% 30%,rgba(74,124,89,0.08) 0%,transparent 70%),radial-gradient(ellipse 50% 55% at 80% 65%,rgba(232,162,48,0.07) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-sage{background:var(--sage-light);border-color:rgba(74,124,89,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-sage .callout-label{color:var(--sage);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .key-takeaway{background:linear-gradient(135deg,var(--sage),#3d6b4a);border-radius:24px;padding:36px;margin:48px 0;text-align:center;}
+  .kt-label{font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+  .key-takeaway p{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,26px);font-weight:600;line-height:1.45;color:#fff!important;margin-bottom:0!important;}
+  .key-takeaway p em{font-style:italic;font-weight:300;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--sage-light);border:1px solid rgba(74,124,89,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--sage);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(74,124,89,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--sage);border-color:var(--sage);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--sage);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--rust);color:#fff;border-color:var(--rust);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:var(--rust-light);border-color:var(--rust-light);color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── MEETING TOOL SHARED ── */
+  .meeting-tool{background:var(--ink);border-radius:28px;overflow:hidden;margin:32px 0 20px;}
+  .mtool-header{padding:24px 32px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .mtool-badge{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--sage);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .mtool-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--cream);}
+  .mtool-sub{font-size:13px;color:rgba(250,247,242,0.45);margin-top:3px;}
+  .mtool-body{padding:24px 32px;}
+  .mt-lbl{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:8px;}
+  .mt-inp{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--cream);outline:none;transition:border-color 0.2s;width:100%;}
+  .mt-inp::placeholder{color:rgba(250,247,242,0.2);}
+  .mt-inp:focus{border-color:rgba(74,124,89,0.45);}
+  textarea.mt-inp{resize:vertical;min-height:120px;line-height:1.6;}
+  .mt-field{margin-bottom:16px;}
+  .mt-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .sample-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .sample-pill{padding:7px 14px;border-radius:100px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(250,247,242,0.55);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .sample-pill:hover{border-color:rgba(74,124,89,0.5);color:var(--cream);}
+  .mt-run{display:flex;gap:10px;margin-top:4px;}
+  .mt-btn{padding:13px 26px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;transition:all 0.2s;}
+  .mt-btn-primary{background:var(--sage);color:#fff;}
+  .mt-btn-primary:hover{background:#3d6b4a;}
+  .mt-btn-primary:disabled{background:rgba(74,124,89,0.3);cursor:default;}
+  .mt-output{display:none;border-top:1px solid rgba(255,255,255,0.08);padding:20px 32px 28px;}
+  .mt-output.visible{display:block;}
+  .mt-output-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(250,247,242,0.35);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+  .mt-copy{padding:6px 14px;border-radius:100px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(250,247,242,0.7);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;}
+  .mt-copy:hover{background:rgba(255,255,255,0.12);color:var(--cream);}
+  .mt-result{font-size:15px;line-height:1.75;color:rgba(250,247,242,0.85);white-space:pre-wrap;}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .mtool-header,.mtool-body,.mt-output{padding-left:20px;padding-right:20px;}
+    .mt-row{grid-template-columns:1fr;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>💼 AI for Work</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-for-work/">💼 AI for Work</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 3</span>
+    </div>
+    <div class="lesson-number">Lesson 3 of 5 · Premium Track</div>
+    <h1 class="lesson-title">AI for meetings —<br>prep, notes<br><em>&amp; action items</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 28 min</span><span class="meta-dot"></span>
+      <span>🤖 Live Claude</span><span class="meta-dot"></span>
+      <span>📋 3 meeting tools</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>The average professional attends 23 hours of meetings per week. A significant chunk of that time is wasted on meetings that were poorly prepared, generated unclear outcomes, or produced notes no one ever read.</p>
+    <p>AI can transform all three phases: the preparation before, the capture during, and the cleanup after. This lesson gives you practical tools for each — and you'll use them on real meeting scenarios right now.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Phase 1: Meeting<br><em>preparation</em></h2>
+    <p>Walking into a meeting unprepared is one of the most avoidable productivity failures. AI can prepare you for almost any meeting in under two minutes. Give it the meeting type, who's attending, and your goal — it will generate the questions you should ask, the points you need to raise, and the outcomes you should push for.</p>
+  </div>
+
+  <!-- PREP TOOL -->
+  <div class="meeting-tool reveal">
+    <div class="mtool-header">
+      <div class="mtool-badge"><span class="live-dot"></span> Meeting Prep Tool</div>
+      <div class="mtool-title">Prepare for any meeting in 2 minutes</div>
+      <div class="mtool-sub">Give the AI context about your meeting and get a full prep brief</div>
+    </div>
+    <div class="mtool-body">
+      <div class="sample-row">
+        <button class="sample-pill" onclick="loadPrepSample('client')">📞 Client call</button>
+        <button class="sample-pill" onclick="loadPrepSample('performance')">👤 Performance review</button>
+        <button class="sample-pill" onclick="loadPrepSample('negotiation')">🤝 Negotiation</button>
+        <button class="sample-pill" onclick="loadPrepSample('board')">📊 Board update</button>
+      </div>
+      <div class="mt-row">
+        <div class="mt-field">
+          <div class="mt-lbl">Meeting type</div>
+          <input class="mt-inp" id="prep-type" type="text" placeholder="e.g. Client check-in call">
+        </div>
+        <div class="mt-field">
+          <div class="mt-lbl">Who's attending?</div>
+          <input class="mt-inp" id="prep-who" type="text" placeholder="e.g. Sarah (client CEO), me, my account manager">
+        </div>
+      </div>
+      <div class="mt-field">
+        <div class="mt-lbl">What's the context / background?</div>
+        <textarea class="mt-inp" id="prep-context" rows="3" placeholder="e.g. Sarah's company has been our client for 18 months. We just delivered a project 2 weeks late. She's asked for this call. I don't know if she's happy or about to cancel."></textarea>
+      </div>
+      <div class="mt-field">
+        <div class="mt-lbl">My goal for this meeting</div>
+        <input class="mt-inp" id="prep-goal" type="text" placeholder="e.g. Keep her as a client and agree the next project">
+      </div>
+      <div class="mt-run">
+        <button class="mt-btn mt-btn-primary" id="prepBtn" onclick="runPrep()">▶ Generate prep brief</button>
+      </div>
+    </div>
+    <div class="mt-output" id="prepOutput">
+      <div class="mt-output-label">
+        <span>✨ YOUR MEETING PREP BRIEF</span>
+        <button class="mt-copy" onclick="copyResult('prepResult')">📋 Copy</button>
+      </div>
+      <div class="mt-result" id="prepResult"></div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Phase 2: Capturing<br><em>notes that work</em></h2>
+    <p>Most meeting notes are a liability, not an asset. They're either so sparse they're useless, or so long no one reads them. The trick is capturing the messy reality of what happened and then letting AI shape it into something clean and actionable.</p>
+    <p><strong>During the meeting</strong>, just type rough notes — fragments, names, half-sentences. Don't try to make it neat. Capture who said what, any decisions made, anything that came up. Then bring it here after the meeting and turn that mess into a clean summary in seconds.</p>
+  </div>
+
+  <!-- NOTES CLEANUP TOOL -->
+  <div class="meeting-tool reveal">
+    <div class="mtool-header">
+      <div class="mtool-badge"><span class="live-dot"></span> Notes Cleanup Tool</div>
+      <div class="mtool-title">Turn messy notes into clean outcomes</div>
+      <div class="mtool-sub">Paste rough meeting notes — get a professional summary with clear action items</div>
+    </div>
+    <div class="mtool-body">
+      <div class="sample-row">
+        <button class="sample-pill" onclick="loadNotesSample('team')">👥 Team standup</button>
+        <button class="sample-pill" onclick="loadNotesSample('client')">💼 Client meeting</button>
+        <button class="sample-pill" onclick="loadNotesSample('strategy')">🎯 Strategy session</button>
+      </div>
+      <div class="mt-field">
+        <div class="mt-lbl">Paste your rough notes here</div>
+        <textarea class="mt-inp" id="notes-raw" rows="8" placeholder="Paste your messy, unedited notes here. Don't clean them up — that's what the AI is for. Fragments, shorthand, and half-sentences are fine."></textarea>
+      </div>
+      <div class="mt-row">
+        <div class="mt-field">
+          <div class="mt-lbl">Meeting type (optional)</div>
+          <input class="mt-inp" id="notes-type" type="text" placeholder="e.g. Weekly team standup">
+        </div>
+        <div class="mt-field">
+          <div class="mt-lbl">Send summary to (optional)</div>
+          <input class="mt-inp" id="notes-audience" type="text" placeholder="e.g. The whole team / my manager">
+        </div>
+      </div>
+      <div class="mt-run">
+        <button class="mt-btn mt-btn-primary" id="notesBtn" onclick="runNotes()">▶ Clean up notes</button>
+      </div>
+    </div>
+    <div class="mt-output" id="notesOutput">
+      <div class="mt-output-label">
+        <span>✨ CLEAN MEETING SUMMARY</span>
+        <button class="mt-copy" onclick="copyResult('notesResult')">📋 Copy</button>
+      </div>
+      <div class="mt-result" id="notesResult"></div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Phase 3: Following<br><em>up after meetings</em></h2>
+    <p>The gap between a good meeting and an impactful one is always in the follow-up. Most meetings produce implied commitments that evaporate because no one sends a clear summary. AI makes this effortless.</p>
+  </div>
+
+  <!-- FOLLOW-UP EMAIL TOOL -->
+  <div class="meeting-tool reveal">
+    <div class="mtool-header">
+      <div class="mtool-badge"><span class="live-dot"></span> Follow-up Email Generator</div>
+      <div class="mtool-title">Write a post-meeting follow-up</div>
+      <div class="mtool-sub">Paste your summary or action items — get a polished follow-up email in seconds</div>
+    </div>
+    <div class="mtool-body">
+      <div class="mt-field">
+        <div class="mt-lbl">What was discussed / decided? (paste notes or summary)</div>
+        <textarea class="mt-inp" id="followup-content" rows="5" placeholder="e.g. Agreed to extend project deadline to Nov 15. Sarah to provide revised brief by Monday. We will send updated timeline by Wednesday. Budget increase of £5k approved subject to written sign-off."></textarea>
+      </div>
+      <div class="mt-row">
+        <div class="mt-field">
+          <div class="mt-lbl">Who is this email to?</div>
+          <input class="mt-inp" id="followup-to" type="text" placeholder="e.g. Sarah (our main client contact)">
+        </div>
+        <div class="mt-field">
+          <div class="mt-lbl">Tone</div>
+          <input class="mt-inp" id="followup-tone" type="text" placeholder="e.g. Professional and warm">
+        </div>
+      </div>
+      <div class="mt-run">
+        <button class="mt-btn mt-btn-primary" id="followupBtn" onclick="runFollowup()">▶ Write follow-up email</button>
+      </div>
+    </div>
+    <div class="mt-output" id="followupOutput">
+      <div class="mt-output-label">
+        <span>✨ FOLLOW-UP EMAIL</span>
+        <button class="mt-copy" onclick="copyResult('followupResult')">📋 Copy</button>
+      </div>
+      <div class="mt-result" id="followupResult"></div>
+    </div>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Three tools, three phases. Prepare in 2 minutes. Capture messy, clean it up in 60 seconds. Follow up automatically. <em>The whole meeting workflow costs you less time than the meeting used to start.</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-2.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Research & summarising</span></span>
+    </a>
+    <a href="lesson-4.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Marketing & social media</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const prepSamples = {
+    client: { type: 'Client retention call', who: 'Sarah (client CEO), me', context: 'Sarah is CEO of a 50-person marketing agency — our client for 18 months. We delivered our last project 2 weeks late due to a developer illness. She has requested this call. I don\'t know her current satisfaction level.', goal: 'Keep her as a client, address the delay proactively, and ideally agree the next project' },
+    performance: { type: 'Annual performance review', who: 'My manager David, me', context: 'I\'ve had a strong year — led two major projects successfully, exceeded sales targets by 15%, but had some friction with the design team on collaboration. I\'m hoping to discuss a promotion to senior level.', goal: 'Make the case for a promotion and agree a clear path to senior level' },
+    negotiation: { type: 'Contract negotiation', who: 'Supplier account manager, me, our procurement lead', context: 'We\'ve used this supplier for 3 years. Current annual spend is £120k. Prices have increased 18% since our last contract. We have two alternative suppliers we\'ve approached — both 12-15% cheaper but less established.', goal: 'Negotiate a price reduction of at least 10% or gain additional services within the same budget' },
+    board: { type: 'Quarterly board update presentation', who: '7 board members including 3 external NEDs, me (CEO)', context: 'Q3 was mixed — revenue was £847k, 8% below target but up 12% YoY. Client retention improved to 91%. Two large enterprise deals pushed to Q4. Team morale is strong but we have a burnout risk in one department.', goal: 'Give a clear honest account of Q3, explain the miss without making excuses, and build confidence in Q4 plan' }
+  };
+
+  const notesSamples = {
+    team: `mon standup - 15 min
+mark - finished homepage redesign, starting checkout tomorrow, blocker is needs sign off from james on nav colours
+lucy - still on the API integration, might be thurs not wed, said she found a bug in the cart code she's gonna fix too
+priya - done with user testing report, sent to sarah, 3 main issues flagged: search is confusing, mobile checkout broken on android, people don't see the discount code field
+general - james reminded everyone deadline is nov 15 not dec, team asked about sprint review - james said friday 3pm
+action: james to approve nav colours today, priya to present user testing findings friday, mark to check with priya about android bug before starting checkout`,
+    client: `call w/ david trident - 45 min
+- happy with the new designs overall, esp the homepage hero
+- wants changes: logo bigger, cta button colour should be their brand green not the rust, footer needs more spacing
+- deadline: confirmed they need it live by nov 15 latest, board presentation nov 20
+- budget: mentioned budget is tight, no room for extras, keep scope tight
+- next steps: he wants to see revised homepage by end of week
+- sarah on our team to send revised designs by thurs EOD
+- he'll get us the brand guide with exact green hex code by tomorrow
+- discussed potential follow-on work: they're thinking about a mobile app in 2024, wants to stay in touch about that
+Q: did we agree on the domain migration? not sure - need to follow up separately`,
+    strategy: `strategy session - 2.5 hours - full leadership team
+big theme: we're growing but not profitably - margins down from 22% to 17% this Q
+discussed 3 options:
+1. raise prices 15-20% - risky but could protect margins, james thinks we can do it for new clients at least, concern about existing client reaction
+2. cut headcount - nobody wants this, probably not the right answer, growth plans need the people
+3. move upmarket - focus on bigger clients, higher ACV, fewer relationships to manage. sarah strongly in favour. mark said this is already happening naturally (deal size up 23%)
+Decision: go with option 3, move upmarket strategy. target ACV of £50k+ from jan. james to draft ICP update. sarah to review current pipeline and identify upsell opportunities. mark to update website messaging by end of month.
+also discussed: Q4 pipeline at £2.3m, need to close £1.2m to hit year target. two key deals at risk (haven't replied in 2 weeks). james to personally reach out to both tomorrow.
+next strategy session: first week of january`
+  };
+
+  function loadPrepSample(name) {
+    const s = prepSamples[name];
+    document.getElementById('prep-type').value = s.type;
+    document.getElementById('prep-who').value = s.who;
+    document.getElementById('prep-context').value = s.context;
+    document.getElementById('prep-goal').value = s.goal;
+  }
+
+  function loadNotesSample(name) {
+    document.getElementById('notes-raw').value = notesSamples[name];
+    const types = { team: 'Monday team standup', client: 'Client call', strategy: 'Leadership strategy session' };
+    document.getElementById('notes-type').value = types[name] || '';
+  }
+
+  async function callClaude(prompt) {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    if (data.content?.[0]) return data.content[0].text;
+    throw new Error(data.error?.message || 'API error');
+  }
+
+  async function runPrep() {
+    const type = document.getElementById('prep-type').value.trim();
+    const who = document.getElementById('prep-who').value.trim();
+    const context = document.getElementById('prep-context').value.trim();
+    const goal = document.getElementById('prep-goal').value.trim();
+    if (!context) { alert('Please describe the meeting context.'); return; }
+
+    const btn = document.getElementById('prepBtn');
+    btn.disabled = true; btn.textContent = '⏳ Preparing…';
+    document.getElementById('prepOutput').classList.add('visible');
+    document.getElementById('prepResult').textContent = 'Generating your prep brief…';
+
+    try {
+      const prompt = `You are an expert executive coach. Prepare me for this meeting.
+
+Meeting type: ${type || 'Not specified'}
+Attendees: ${who || 'Not specified'}
+Context: ${context}
+My goal: ${goal || 'Not specified'}
+
+Give me:
+1. The 3-4 most important things I need to know or remember going in
+2. The 4-5 best questions I should ask to achieve my goal
+3. The 2-3 key points I must make clearly
+4. One potential objection or difficult moment — and how to handle it
+5. How to open and how to close the meeting
+
+Be specific to this situation. No generic meeting advice.`;
+
+      const text = await callClaude(prompt);
+      document.getElementById('prepResult').textContent = text;
+    } catch (e) {
+      document.getElementById('prepResult').textContent = 'Error: ' + e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = '▶ Generate prep brief';
+    }
+  }
+
+  async function runNotes() {
+    const notes = document.getElementById('notes-raw').value.trim();
+    const type = document.getElementById('notes-type').value.trim();
+    const audience = document.getElementById('notes-audience').value.trim();
+    if (!notes) { alert('Paste your meeting notes first.'); return; }
+
+    const btn = document.getElementById('notesBtn');
+    btn.disabled = true; btn.textContent = '⏳ Cleaning up…';
+    document.getElementById('notesOutput').classList.add('visible');
+    document.getElementById('notesResult').textContent = 'Processing your notes…';
+
+    try {
+      const prompt = `Clean up these raw meeting notes into a professional summary.
+
+Meeting type: ${type || 'Unknown'}
+${audience ? 'This summary will be sent to: ' + audience : ''}
+
+Raw notes:
+${notes}
+
+Produce:
+1. SUMMARY (2-3 sentences of what was discussed and decided)
+2. KEY DECISIONS (bullet points, only actual decisions — not discussion)
+3. ACTION ITEMS (format: [action] — [owner, if mentioned] — [deadline, if mentioned])
+4. OPEN QUESTIONS (anything unresolved that needs follow-up)
+
+Be concise. Only include what's in the notes. Don't add information that wasn't there.`;
+
+      const text = await callClaude(prompt);
+      document.getElementById('notesResult').textContent = text;
+    } catch (e) {
+      document.getElementById('notesResult').textContent = 'Error: ' + e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = '▶ Clean up notes';
+    }
+  }
+
+  async function runFollowup() {
+    const content = document.getElementById('followup-content').value.trim();
+    const to = document.getElementById('followup-to').value.trim();
+    const tone = document.getElementById('followup-tone').value.trim() || 'professional and warm';
+    if (!content) { alert('Paste the meeting summary or action items first.'); return; }
+
+    const btn = document.getElementById('followupBtn');
+    btn.disabled = true; btn.textContent = '⏳ Writing…';
+    document.getElementById('followupOutput').classList.add('visible');
+    document.getElementById('followupResult').textContent = 'Writing follow-up email…';
+
+    try {
+      const prompt = `Write a post-meeting follow-up email.
+${to ? 'To: ' + to : ''}
+Tone: ${tone}
+
+What was discussed / agreed:
+${content}
+
+The email should:
+- Open by thanking them for the meeting (one brief sentence)
+- Recap the key decisions made
+- List all action items with owners and deadlines as a numbered list
+- Close with a clear next step
+
+Include a subject line. Keep it concise and easy to scan. No filler.`;
+
+      const text = await callClaude(prompt);
+      document.getElementById('followupResult').textContent = text;
+    } catch (e) {
+      document.getElementById('followupResult').textContent = 'Error: ' + e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = '▶ Write follow-up email';
+    }
+  }
+
+  function copyResult(id) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btns = document.querySelectorAll('.mt-copy');
+      btns.forEach(b => { if (b.closest('.mt-output').querySelector('#' + id)) { b.textContent = '✓ Copied!'; setTimeout(() => b.textContent = '📋 Copy', 2000); } });
+    });
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('afw-3-complete', checked);
+  }
+  if (localStorage.getItem('afw-3-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

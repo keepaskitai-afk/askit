@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2: Research & Summarising with AI — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--sage),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 55% 50% at 25% 35%,rgba(74,124,89,0.07) 0%,transparent 70%),radial-gradient(ellipse 50% 55% at 75% 65%,rgba(200,82,26,0.06) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-sage{background:var(--sage-light);border-color:rgba(74,124,89,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-sage .callout-label{color:var(--sage);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .key-takeaway{background:linear-gradient(135deg,var(--sage),#3d6b4a);border-radius:24px;padding:36px;margin:48px 0;text-align:center;}
+  .kt-label{font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+  .key-takeaway p{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,26px);font-weight:600;line-height:1.45;color:#fff!important;margin-bottom:0!important;}
+  .key-takeaway p em{font-style:italic;font-weight:300;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--sage-light);border:1px solid rgba(74,124,89,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--sage);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(74,124,89,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--sage);border-color:var(--sage);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--sage);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--rust);color:#fff;border-color:var(--rust);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:var(--rust-light);border-color:var(--rust-light);color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── RESEARCH TOOL ── */
+  .research-tool{background:var(--ink);border-radius:28px;overflow:hidden;margin:32px 0;}
+  .tool-header{padding:28px 32px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .tool-badge{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--sage);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .tool-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--cream);}
+  .tool-sub{font-size:14px;color:rgba(250,247,242,0.5);margin-top:4px;}
+
+  .sample-texts{padding:20px 32px;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .sample-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.35);margin-bottom:10px;}
+  .sample-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .sample-btn{padding:7px 16px;border-radius:100px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(250,247,242,0.55);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .sample-btn:hover{border-color:rgba(74,124,89,0.5);color:var(--cream);}
+
+  .text-input-area{padding:20px 32px;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .text-lbl{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:10px;}
+  .text-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px 20px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--cream);resize:vertical;min-height:160px;outline:none;transition:border-color 0.2s;line-height:1.6;}
+  .text-input::placeholder{color:rgba(250,247,242,0.2);}
+  .text-input:focus{border-color:rgba(74,124,89,0.5);}
+  .char-count{font-size:12px;color:rgba(250,247,242,0.3);margin-top:6px;text-align:right;}
+
+  .mode-row{padding:20px 32px;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .mode-lbl{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:12px;}
+  .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .mode-btn{padding:12px 16px;border-radius:12px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:rgba(250,247,242,0.6);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:left;line-height:1.35;}
+  .mode-btn:hover{border-color:rgba(74,124,89,0.4);color:var(--cream);}
+  .mode-btn.active{border-color:var(--sage);background:rgba(74,124,89,0.12);color:var(--cream);}
+  .mode-btn-title{font-weight:600;font-size:14px;}
+  .mode-btn-desc{font-size:12px;color:rgba(250,247,242,0.45);margin-top:2px;}
+  .mode-btn.active .mode-btn-desc{color:rgba(250,247,242,0.6);}
+
+  .question-row{padding:0 32px 20px;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .question-inp{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;transition:border-color 0.2s;}
+  .question-inp::placeholder{color:rgba(250,247,242,0.2);}
+  .question-inp:focus{border-color:rgba(74,124,89,0.4);}
+
+  .tool-run{padding:20px 32px 28px;display:flex;gap:10px;}
+  .run-btn{padding:14px 28px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;transition:all 0.2s;}
+  .run-primary{background:var(--sage);color:#fff;}
+  .run-primary:hover{background:#3d6b4a;}
+  .run-primary:disabled{background:rgba(74,124,89,0.3);cursor:default;}
+
+  .tool-output{display:none;border-top:1px solid rgba(255,255,255,0.08);}
+  .tool-output.visible{display:block;}
+  .output-header{padding:20px 32px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .output-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(250,247,242,0.4);}
+  .copy-btn{padding:8px 16px;border-radius:100px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(250,247,242,0.7);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .copy-btn:hover{background:rgba(255,255,255,0.12);color:var(--cream);}
+  .output-text{padding:20px 32px 32px;font-size:15px;line-height:1.75;color:rgba(250,247,242,0.85);white-space:pre-wrap;}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .mode-grid{grid-template-columns:1fr;}
+    .tool-header,.text-input-area,.mode-row,.tool-run,.sample-texts,.question-row,.output-header,.output-text{padding-left:20px;padding-right:20px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>💼 AI for Work</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-for-work/">💼 AI for Work</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 2</span>
+    </div>
+    <div class="lesson-number">Lesson 2 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Research and<br>summarising<br><em>with AI</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 22 min</span><span class="meta-dot"></span>
+      <span>🤖 Live Claude</span><span class="meta-dot"></span>
+      <span>📄 Paste your own text</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>Every week, professionals are drowning in text. Reports. Contracts. Articles. Research papers. Slack threads. Meeting notes. The bottleneck isn't access to information — it's the time it takes to process it.</p>
+    <p>This lesson shows you how to turn any wall of text into exactly what you need in under 60 seconds. An executive summary, a list of action items, answers to specific questions, or a plain-English explanation — all from a single paste.</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ What this lesson covers</div>
+    <p>Paste any document below and choose how you want it processed. We'll cover four modes: executive brief, bullet takeaways, action items, and ask-a-question. By the end, you'll never read a long document the same way again.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Paste anything.<br><em>Get exactly what you need.</em></h2>
+    <p>Load one of the sample texts to see how it works, or paste something you're actually dealing with right now — a contract, an article, a report, a long email chain, anything.</p>
+  </div>
+
+  <!-- RESEARCH TOOL -->
+  <div class="research-tool reveal">
+    <div class="tool-header">
+      <div class="tool-badge"><span class="live-dot"></span> Document Processor</div>
+      <div class="tool-title">Paste any text. Get what you need.</div>
+      <div class="tool-sub">Works with articles, reports, contracts, emails, meeting notes — anything</div>
+    </div>
+
+    <div class="sample-texts">
+      <div class="sample-label">Load a sample to try it:</div>
+      <div class="sample-btns">
+        <button class="sample-btn" onclick="loadSample('contract')">📄 Employment contract clause</button>
+        <button class="sample-btn" onclick="loadSample('report')">📊 Quarterly business report</button>
+        <button class="sample-btn" onclick="loadSample('article')">📰 Industry news article</button>
+        <button class="sample-btn" onclick="loadSample('email')">📧 Long email thread</button>
+      </div>
+    </div>
+
+    <div class="text-input-area">
+      <div class="text-lbl">Your text</div>
+      <textarea class="text-input" id="docText" placeholder="Paste any document, article, report, contract, or long email here…" oninput="updateCharCount()"></textarea>
+      <div class="char-count" id="charCount">0 characters</div>
+    </div>
+
+    <div class="mode-row">
+      <div class="mode-lbl">What do you want?</div>
+      <div class="mode-grid">
+        <button class="mode-btn active" onclick="selectMode(this,'executive')">
+          <div class="mode-btn-title">📋 Executive brief</div>
+          <div class="mode-btn-desc">3-sentence summary a busy executive would appreciate</div>
+        </button>
+        <button class="mode-btn" onclick="selectMode(this,'bullets')">
+          <div class="mode-btn-title">📌 Key takeaways</div>
+          <div class="mode-btn-desc">5 bullet points of the most important information</div>
+        </button>
+        <button class="mode-btn" onclick="selectMode(this,'actions')">
+          <div class="mode-btn-title">✅ Action items</div>
+          <div class="mode-btn-desc">What needs to happen? Who needs to do what?</div>
+        </button>
+        <button class="mode-btn" onclick="selectMode(this,'eli5')">
+          <div class="mode-btn-title">💡 Plain English</div>
+          <div class="mode-btn-desc">Explain this like I've never seen the topic before</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="question-row">
+      <div class="text-lbl" style="margin-bottom:8px;">Or ask a specific question about the text (optional)</div>
+      <input type="text" class="question-inp" id="specificQ" placeholder="e.g. What are my obligations if I leave before 6 months? / What does this mean for our Q3 budget?">
+    </div>
+
+    <div class="tool-run">
+      <button class="run-btn run-primary" id="processBtn" onclick="processDocument()">▶ Process document</button>
+    </div>
+
+    <div class="tool-output" id="toolOutput">
+      <div class="output-header">
+        <div class="output-label" id="outputLabel">✨ Result</div>
+        <button class="copy-btn" onclick="copyOutput()">📋 Copy</button>
+      </div>
+      <div class="output-text" id="outputText"></div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The four modes —<br><em>when to use each</em></h2>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📋 Executive brief</div>
+    <p>Use this when you need to quickly understand what a document says without reading all of it. Perfect for reports, articles, and research papers. 3 sentences forces the AI to cut to the core.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📌 Key takeaways</div>
+    <p>Use this when you need to share highlights with someone else, prepare talking points, or quickly scan what's relevant in a long document. Bullet format is easy to skim and forward.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">✅ Action items</div>
+    <p>Use this on meeting notes, project briefs, or any document that implies something needs to happen. The AI is surprisingly good at extracting implied tasks — things that aren't explicitly listed as actions but clearly need follow-up.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">❓ Ask a question</div>
+    <p>The most powerful mode. Instead of reading a 40-page contract to find one clause, you paste it and ask your specific question. "What are the penalty clauses?" "Does this cover remote work?" "What are my exit options?" You get a direct answer in seconds.</p>
+  </div>
+
+  <div class="content-block reveal">
+    <h2>Advanced techniques<br><em>for research</em></h2>
+    <p>Beyond summarising, AI can help you do research in ways that save hours. Here are three techniques worth knowing:</p>
+  </div>
+
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">🔍 Technique 1: Comparative analysis</div>
+    <p>Paste two documents and ask AI to compare them: "What are the key differences between these two proposals?" or "Which contract terms are more favourable and why?" Comparing two 10-page documents manually takes an hour. With AI: 2 minutes.</p>
+  </div>
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">🧩 Technique 2: Gap analysis</div>
+    <p>Ask AI what's missing: "What questions does this report not answer?", "What information would you need before making this decision?", "What are the weaknesses in this argument?" AI is good at seeing what isn't there.</p>
+  </div>
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">📊 Technique 3: Synthesise multiple sources</div>
+    <p>Paste several articles or documents and ask: "Across all of this, what is the consensus view? Where do these sources disagree? What is the most important takeaway?" You get synthesis that would take a researcher an afternoon.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Long documents are no longer a time burden. <em>Paste, choose your mode, get exactly what you need.</em> The question is never "what does this say?" — it's "what do I need from this?"</p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-1.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Writing emails with AI</span></span>
+    </a>
+    <a href="lesson-3.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">AI for meetings</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const samples = {
+    contract: `NON-COMPETE AND CONFIDENTIALITY CLAUSE
+
+During the term of your employment and for a period of twelve (12) months following the termination of your employment for any reason, you agree that you will not, directly or indirectly: (a) engage in, own, manage, operate, control, be employed by, provide services to, participate in, or be connected with any business or enterprise that competes with the Company within the Restricted Territory; (b) solicit, induce, or attempt to solicit or induce any employee, consultant, or contractor of the Company to terminate their relationship with the Company; (c) solicit, divert, or attempt to solicit or divert any client, customer, or prospective customer with whom you had material contact during the last twelve months of your employment. The Restricted Territory means any country, state, county, city, or territory in which the Company has conducted business or has active sales opportunities during the twenty-four (24) months preceding your termination. You acknowledge that the Company has invested substantial resources in developing its client relationships, proprietary information, and workforce, and that the above restrictions are reasonable and necessary to protect these legitimate business interests. Any breach of this clause shall entitle the Company to seek injunctive relief without the need to post bond, in addition to any other remedies available at law or equity.`,
+    report: `Q3 BUSINESS PERFORMANCE REPORT — CONFIDENTIAL
+
+Revenue: Total Q3 revenue came in at £847,000, representing a 12% increase year-over-year but falling 8% short of the £920,000 target set at the start of the quarter. The shortfall was primarily attributable to three enterprise deals that pushed to Q4. Client retention: Overall client retention rate for Q3 was 91%, up from 87% in Q2. Two clients (Marchetti Group and Thornfield Partners) did not renew, citing budget constraints. New client acquisition: We onboarded 14 new clients in Q3 versus a target of 20. Average deal size increased 23% compared to Q2, suggesting our move upmarket is gaining traction even if volume is below target. Operational: Headcount grew by 3 to reach 34 full-time employees. Operating expenses increased 18% due primarily to the new office lease (effective August 1) and two senior hires. EBITDA margin contracted from 22% to 17%. Pipeline: Current pipeline stands at £2.3m qualified opportunities for Q4. Sales team expects to close £1.1-1.4m in Q4, which would represent our strongest quarter to date. Key risks: Enterprise sales cycles are extending (average now 94 days, up from 67 days in Q1). Two key account managers are showing signs of burnout — HR has flagged this as a retention risk. Product roadmap delays have caused friction with 3 enterprise prospects.`,
+    article: `THE RISE OF THE AI-AUGMENTED PROFESSIONAL
+
+Something significant is happening in knowledge work. A quiet productivity revolution is separating professionals into two camps: those who have integrated AI into their daily workflow, and those who haven't — and the gap between them is widening faster than most organisations realise.
+
+A recent McKinsey survey found that workers who regularly use AI tools report completing tasks 37% faster on average, with the greatest gains in writing, research, and data analysis. But the headline number undersells the real shift: it's not just about speed. AI-augmented workers are tackling tasks they would previously have outsourced or avoided entirely.
+
+"I used to spend half my week on things I hated," says one marketing director at a mid-size tech firm. "Writing first drafts, summarising competitor reports, formatting presentations. Now I can focus almost entirely on the thinking and relationships that actually matter." Her team of four now does work that would previously have required a team of seven.
+
+The productivity gains, however, are not evenly distributed. Research from MIT shows that the biggest beneficiaries are mid-level professionals — those with enough domain expertise to verify and direct AI outputs, but who were previously bottlenecked by execution. Senior executives see modest gains; entry-level workers see the least, as the tasks most amenable to AI assistance were disproportionately assigned to them.
+
+There are also concerns. Some economists worry about skill atrophy — if professionals outsource drafting and research to AI, do they lose the ability to do it themselves? Others raise questions about over-reliance on AI outputs that contain errors presented with inappropriate confidence. The consensus view appears to be that AI is most valuable when used as a first-draft tool and a research accelerator, with human judgement remaining firmly in the loop for final decisions.`,
+    email: `FROM: James Whitfield <j.whitfield@novumdesign.co.uk>
+TO: Sarah Chen <s.chen@novumdesign.co.uk>; Mark Oyelaran <m.oyelaran@novumdesign.co.uk>
+SUBJECT: RE: RE: RE: Trident account — urgent update needed
+
+Sarah — see below. I've replied to Mark's concerns but I think we need a call before Friday.
+
+---
+
+FROM: Mark Oyelaran
+TO: James Whitfield; Sarah Chen
+Sent: Tuesday 14:32
+
+James, I understand the pressure we're under but I don't think we can commit to the revised timeline without talking to the dev team first. The scope creep on Trident has been significant since the original brief. We're now essentially doing the work of a full rebrand not just a website refresh. I flagged this three weeks ago and I'm worried we're about to overpromise again. I need someone to actually talk to Priya before we send any confirmation to the client.
+
+Also — can someone clarify the billing situation? We agreed day rates but the hours logged so far are already over the original estimate and we're only 40% through the project. Are we eating this or are we having the difficult conversation with the client about a revised scope?
+
+---
+
+FROM: James Whitfield
+TO: Mark Oyelaran; Sarah Chen
+Sent: Tuesday 09:14
+
+Team — quick update from my call with David at Trident this morning. He's pushing hard for the new deadline of Nov 15 (moved up from Dec 3). I said we'd do our best. He mentioned they have a board presentation on Nov 20 that's driving the urgency. They really need the site live before that. Can we confirm by EOD whether this is achievable? I told him we were 'very confident'.
+
+---
+
+FROM: Sarah Chen
+TO: James Whitfield; Mark Oyelaran
+Sent: Monday 17:45
+
+Just flagging — I spoke to Priya this morning and the dev timeline currently assumes Dec 3. Moving to Nov 15 would require us to either cut scope or bring in a contractor. Neither of those options is simple and I don't think we should commit to anything without a proper conversation. James, did you see my message from last Thursday about the scope changes?`
+  };
+
+  const modeModes = {
+    executive: { label: 'EXECUTIVE BRIEF', prompt: 'Write a 3-sentence executive brief of the following text. Be precise and cut to the core. No filler words.' },
+    bullets: { label: 'KEY TAKEAWAYS', prompt: 'Extract the 5 most important takeaways from the following text as concise bullet points. Each bullet should be one sentence. Focus on what matters most.' },
+    actions: { label: 'ACTION ITEMS', prompt: 'Extract all action items, tasks, and next steps from the following text. Include implied actions — things that clearly need to happen even if not explicitly listed. Format each item as: [ACTION] — [WHO, if mentioned] — [DEADLINE, if mentioned]. If there are no clear actions, say so.' },
+    eli5: { label: 'PLAIN ENGLISH EXPLANATION', prompt: 'Explain the following text in plain English as if the reader has never encountered this topic before. Use simple language, avoid jargon, and use an analogy where helpful. Aim for clarity over completeness.' }
+  };
+
+  let currentMode = 'executive';
+
+  function selectMode(btn, mode) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMode = mode;
+  }
+
+  function loadSample(name) {
+    document.getElementById('docText').value = samples[name];
+    updateCharCount();
+  }
+
+  function updateCharCount() {
+    const len = document.getElementById('docText').value.length;
+    document.getElementById('charCount').textContent = len.toLocaleString() + ' characters';
+  }
+
+  async function processDocument() {
+    const text = document.getElementById('docText').value.trim();
+    const question = document.getElementById('specificQ').value.trim();
+    if (!text) { alert('Paste some text first.'); return; }
+
+    const btn = document.getElementById('processBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Processing…';
+    document.getElementById('toolOutput').classList.add('visible');
+    document.getElementById('outputText').textContent = 'Processing your document…';
+
+    let prompt, label;
+    if (question) {
+      prompt = `Based on the following text, answer this question: "${question}"\n\nBe specific, direct, and quote relevant parts of the text where helpful.\n\n---\n\n${text}`;
+      label = 'ANSWER TO YOUR QUESTION';
+    } else {
+      const m = modeModes[currentMode];
+      prompt = `${m.prompt}\n\n---\n\n${text}`;
+      label = m.label;
+    }
+
+    try {
+      const res = await fetch('/.netlify/functions/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const result = data.content?.[0]?.text || ('Error: ' + (data.error?.message || 'API error'));
+      document.getElementById('outputLabel').textContent = '✨ ' + label;
+      document.getElementById('outputText').textContent = result;
+    } catch (e) {
+      document.getElementById('outputText').textContent = 'Error: ' + e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '▶ Process document';
+    }
+  }
+
+  function copyOutput() {
+    const text = document.getElementById('outputText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('afw-2-complete', checked);
+  }
+  if (localStorage.getItem('afw-2-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

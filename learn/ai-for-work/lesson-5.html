@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5: Build Your AI Workflow — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--sage),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 55% 60% at 15% 25%,rgba(74,124,89,0.09) 0%,transparent 70%),radial-gradient(ellipse 55% 50% at 85% 75%,rgba(232,162,48,0.08) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--sage);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-sage{background:var(--sage-light);border-color:rgba(74,124,89,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-sage .callout-label{color:var(--sage);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--sage-light);border:1px solid rgba(74,124,89,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--sage);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(74,124,89,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--sage);border-color:var(--sage);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--sage);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--sage);color:#fff;border-color:var(--sage);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:#3d6b4a;border-color:#3d6b4a;color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── WORKFLOW PLANNER ── */
+  .workflow-planner{background:var(--ink);border-radius:28px;overflow:hidden;margin:32px 0;}
+  .wp-header{padding:24px 32px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .wp-badge{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--sage);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--sage);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .wp-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--cream);}
+  .wp-sub{font-size:13px;color:rgba(250,247,242,0.45);margin-top:3px;}
+  .wp-body{padding:24px 32px;}
+  .wp-lbl{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:8px;}
+  .wp-inp{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--cream);outline:none;transition:border-color 0.2s;}
+  .wp-inp::placeholder{color:rgba(250,247,242,0.2);}
+  .wp-inp:focus{border-color:rgba(74,124,89,0.45);}
+  textarea.wp-inp{resize:vertical;min-height:80px;line-height:1.6;}
+  .wp-field{margin-bottom:16px;}
+
+  /* Task items */
+  .tasks-section{margin-bottom:20px;}
+  .task-item{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .task-inp{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;transition:border-color 0.2s;}
+  .task-inp::placeholder{color:rgba(250,247,242,0.2);}
+  .task-inp:focus{border-color:rgba(74,124,89,0.4);}
+  .task-remove{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(250,247,242,0.4);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+  .task-remove:hover{background:rgba(200,82,26,0.2);color:var(--rust-light);border-color:rgba(200,82,26,0.3);}
+  .add-task-btn{background:rgba(255,255,255,0.05);border:1.5px dashed rgba(255,255,255,0.15);color:rgba(250,247,242,0.4);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 16px;border-radius:8px;cursor:pointer;width:100%;text-align:left;transition:all 0.2s;}
+  .add-task-btn:hover{border-color:rgba(74,124,89,0.4);color:rgba(250,247,242,0.7);}
+
+  .wp-run{display:flex;gap:10px;margin-top:4px;}
+  .wp-btn{padding:13px 26px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;transition:all 0.2s;}
+  .wp-btn-primary{background:var(--sage);color:#fff;}
+  .wp-btn-primary:hover{background:#3d6b4a;}
+  .wp-btn-primary:disabled{background:rgba(74,124,89,0.3);cursor:default;}
+
+  .wp-output{display:none;border-top:1px solid rgba(255,255,255,0.08);}
+  .wp-output.visible{display:block;}
+  .wp-out-header{padding:20px 32px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .wp-out-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(250,247,242,0.35);}
+  .wp-out-actions{display:flex;gap:8px;}
+  .wp-out-btn{padding:7px 14px;border-radius:100px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(250,247,242,0.7);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .wp-out-btn:hover{background:rgba(255,255,255,0.12);color:var(--cream);}
+  .wp-result{padding:20px 32px 32px;font-size:15px;line-height:1.75;color:rgba(250,247,242,0.85);white-space:pre-wrap;}
+
+  /* Saved plan card */
+  .saved-plan{display:none;background:var(--warm-white);border:1.5px solid rgba(74,124,89,0.3);border-radius:24px;padding:32px;margin-top:32px;}
+  .saved-plan.visible{display:block;}
+  .sp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+  .sp-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--ink);}
+  .sp-actions{display:flex;gap:8px;}
+  .sp-btn{padding:9px 18px;border-radius:100px;border:1.5px solid var(--border);background:var(--cream);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .sp-btn:hover{border-color:var(--ink);color:var(--ink);}
+  .sp-btn.primary{background:var(--sage);color:#fff;border-color:var(--sage);}
+  .sp-btn.primary:hover{background:#3d6b4a;}
+  .sp-content{font-size:15px;line-height:1.75;color:#3D3A36;white-space:pre-wrap;}
+
+  /* Track complete */
+  .track-complete{background:linear-gradient(135deg,var(--sage),#2d5c3d);border-radius:28px;padding:48px;text-align:center;margin:48px 0;display:none;}
+  .track-complete.visible{display:block;}
+  .tc-icon{font-size:56px;margin-bottom:20px;}
+  .tc-title{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,44px);font-weight:800;color:#fff;margin-bottom:12px;}
+  .tc-sub{font-size:18px;color:rgba(255,255,255,0.75);line-height:1.6;margin-bottom:32px;max-width:460px;margin-left:auto;margin-right:auto;}
+  .tc-btn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--sage);padding:16px 32px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;text-decoration:none;transition:all 0.2s;}
+  .tc-btn:hover{background:var(--cream);transform:translateY(-2px);}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .wp-header,.wp-body,.wp-out-header,.wp-result{padding-left:20px;padding-right:20px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>💼 AI for Work</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-for-work/">💼 AI for Work</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 5</span>
+    </div>
+    <div class="lesson-number">Lesson 5 of 5 · Final Lesson</div>
+    <h1 class="lesson-title">Building your<br>personal<br><em>AI workflow</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 25 min</span><span class="meta-dot"></span>
+      <span>🤖 Live Claude</span><span class="meta-dot"></span>
+      <span>🗺️ Your personal plan</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>You've seen what AI can do for emails, research, meetings, and marketing. Now we need to answer the most important question: <strong>where does it fit into your specific work?</strong></p>
+    <p>The professionals who get the most from AI aren't the ones who tried it once and were impressed. They're the ones who <em>deliberately integrated it</em> into their recurring workflow — the tasks they do every week, every day. Those people save 5–10 hours a week. The rest save an occasional hour and move on.</p>
+    <p>This lesson is about building the habit and the plan that makes AI a permanent part of how you work.</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">💡 The two-week rule</div>
+    <p>Research on habit formation in productivity tools shows that if you don't use a new tool in a meaningful way within the first 14 days, you almost certainly won't. This lesson creates your plan for those first 14 days — specific tasks, specific AI applications, specific time to use it.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Step 1: Map your<br><em>recurring work</em></h2>
+    <p>Before we can identify where AI saves you the most time, we need to understand what you actually do. Not your job title — your recurring tasks. The things you do every week that eat time but don't require your unique judgement.</p>
+    <p>Think about the last two weeks. What did you do more than twice? What felt like necessary friction — things that had to get done but didn't feel like your best work? List them below.</p>
+  </div>
+
+  <!-- WORKFLOW PLANNER -->
+  <div class="workflow-planner reveal">
+    <div class="wp-header">
+      <div class="wp-badge"><span class="live-dot"></span> AI Workflow Planner</div>
+      <div class="wp-title">Map your work. Find your wins.</div>
+      <div class="wp-sub">Describe your role and recurring tasks — get a personalised AI integration plan</div>
+    </div>
+    <div class="wp-body">
+      <div class="wp-field">
+        <div class="wp-lbl">Your role (be specific)</div>
+        <input class="wp-inp" id="wp-role" type="text" placeholder="e.g. Freelance web designer / Marketing manager at a 40-person SaaS company / Owner of a catering business with 3 staff">
+      </div>
+      <div class="wp-field">
+        <div class="wp-lbl">Your biggest time drains — what takes most of your week?</div>
+        <textarea class="wp-inp" id="wp-drains" rows="2" placeholder="e.g. Client emails, writing project briefs, chasing invoices, creating social content, admin, meetings that could be emails"></textarea>
+      </div>
+
+      <div class="tasks-section">
+        <div class="wp-lbl">Your top recurring tasks (add up to 8)</div>
+        <div id="task-list">
+          <div class="task-item"><input class="task-inp" placeholder="e.g. Write weekly report for my manager"><button class="task-remove" onclick="removeTask(this)">×</button></div>
+          <div class="task-item"><input class="task-inp" placeholder="e.g. Reply to customer enquiry emails"><button class="task-remove" onclick="removeTask(this)">×</button></div>
+          <div class="task-item"><input class="task-inp" placeholder="e.g. Create content for Instagram 3x per week"><button class="task-remove" onclick="removeTask(this)">×</button></div>
+        </div>
+        <button class="add-task-btn" onclick="addTask()">+ Add another task</button>
+      </div>
+
+      <div class="wp-field">
+        <div class="wp-lbl">What outcome matters most to you? (optional)</div>
+        <input class="wp-inp" id="wp-goal" type="text" placeholder="e.g. Save 5 hours a week / Finally keep up with marketing / Reduce stress around client communication">
+      </div>
+
+      <div class="wp-run">
+        <button class="wp-btn wp-btn-primary" id="wpBtn" onclick="generatePlan()">▶ Generate my AI workflow plan</button>
+      </div>
+    </div>
+    <div class="wp-output" id="wpOutput">
+      <div class="wp-out-header">
+        <div class="wp-out-label">✨ YOUR PERSONALISED AI WORKFLOW PLAN</div>
+        <div class="wp-out-actions">
+          <button class="wp-out-btn" onclick="copyPlan()">📋 Copy</button>
+          <button class="wp-out-btn" onclick="savePlan()">💾 Save plan</button>
+        </div>
+      </div>
+      <div class="wp-result" id="wpResult"></div>
+    </div>
+  </div>
+
+  <!-- SAVED PLAN -->
+  <div class="saved-plan" id="savedPlan">
+    <div class="sp-header">
+      <div class="sp-title">📋 Your AI Workflow Plan</div>
+      <div class="sp-actions">
+        <button class="sp-btn" onclick="exportPlan()">⬇ Export</button>
+        <button class="sp-btn primary" onclick="copySavedPlan()">📋 Copy</button>
+      </div>
+    </div>
+    <div class="sp-content" id="savedPlanContent"></div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The implementation<br><em>principles</em></h2>
+    <p>Your plan is only useful if you act on it. Here are the four principles that separate professionals who actually integrate AI from those who don't:</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">1. Start with the task you hate most</div>
+    <p>Not the most important task — the one you dread. The psychological win of having AI handle something you've been avoiding is a powerful motivator that builds the habit faster than anything else.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">2. Block time, don't rely on habit</div>
+    <p>Don't wait until you "think of it." Put 20 minutes in your calendar every Monday morning as "AI batch work" — run your recurring tasks through AI in one block rather than one at a time. Batching is faster and builds the muscle memory more reliably.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">3. Track your time savings honestly</div>
+    <p>For the first two weeks, write down how long the AI-assisted task took vs. how long it used to take. Seeing the number makes the habit stick. "AI saved me 45 minutes today" is a stronger motivator than a vague sense that things are easier.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">4. Build your prompt library as you go</div>
+    <p>Every time you write a prompt that works well, save it. The most valuable AI workflows are the ones built on a library of tested, refined prompts that reliably produce usable output. You've already started this in the Talking to AI track.</p>
+  </div>
+
+  <div class="content-block reveal">
+    <h2>Where professionals<br><em>find the biggest wins</em></h2>
+    <p>Based on how knowledge workers actually use AI, here's where the time savings tend to be largest:</p>
+  </div>
+
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">🏆 The highest-ROI AI tasks</div>
+    <p>
+      <strong>First-draft writing (emails, reports, proposals):</strong> 60–80% time reduction. Writing from scratch is hard. Editing a draft is fast.<br><br>
+      <strong>Summarising long documents:</strong> What takes 45 minutes to read takes 3 minutes to summarise with AI.<br><br>
+      <strong>Meeting prep:</strong> 2 minutes of AI briefing replaces 20 minutes of scattered reading.<br><br>
+      <strong>Content batching:</strong> Writing 5 LinkedIn posts at once with AI takes 15 minutes. Writing one manually takes 30.<br><br>
+      <strong>Thinking through decisions:</strong> Using AI as a thinking partner to stress-test ideas, surface blind spots, and structure arguments. This is underrated — it's fast and the quality of your thinking improves.
+    </p>
+  </div>
+
+  <!-- TRACK COMPLETION -->
+  <div class="track-complete" id="trackComplete">
+    <div class="tc-icon">🎯</div>
+    <div class="tc-title">Track Complete!</div>
+    <p class="tc-sub">You've finished "AI for Work." You now have real skills, real tools, and a real plan. The only thing left is to use them.</p>
+    <a href="/learn/ai-for-work/" class="tc-btn">← Back to track overview</a>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-4.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Marketing & social media</span></span>
+    </a>
+    <a href="/learn/ai-for-work/" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Back to</span><span class="nav-btn-title">Track overview</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  function addTask() {
+    const list = document.getElementById('task-list');
+    if (list.querySelectorAll('.task-item').length >= 8) { alert('Maximum 8 tasks. Remove one first.'); return; }
+    const item = document.createElement('div');
+    item.className = 'task-item';
+    item.innerHTML = '<input class="task-inp" placeholder="e.g. Another recurring task…"><button class="task-remove" onclick="removeTask(this)">×</button>';
+    list.appendChild(item);
+  }
+
+  function removeTask(btn) {
+    const list = document.getElementById('task-list');
+    if (list.querySelectorAll('.task-item').length <= 1) return;
+    btn.closest('.task-item').remove();
+  }
+
+  function getTasks() {
+    return Array.from(document.querySelectorAll('.task-inp')).map(i => i.value.trim()).filter(Boolean);
+  }
+
+  async function generatePlan() {
+    const role = document.getElementById('wp-role').value.trim();
+    const drains = document.getElementById('wp-drains').value.trim();
+    const tasks = getTasks();
+    const goal = document.getElementById('wp-goal').value.trim();
+
+    if (!role && tasks.length === 0) { alert('Please describe your role and at least one recurring task.'); return; }
+
+    const btn = document.getElementById('wpBtn');
+    btn.disabled = true; btn.textContent = '⏳ Building your plan…';
+    document.getElementById('wpOutput').classList.add('visible');
+    document.getElementById('wpResult').textContent = 'Analysing your workflow and generating your personalised plan…';
+
+    const prompt = `You are a productivity consultant who specialises in AI integration for professionals.
+
+ABOUT THIS PERSON:
+Role: ${role || 'Not specified'}
+${drains ? 'Biggest time drains: ' + drains : ''}
+Recurring tasks: ${tasks.length > 0 ? '\n' + tasks.map((t,i) => `${i+1}. ${t}`).join('\n') : 'Not specified'}
+${goal ? 'Their main goal: ' + goal : ''}
+
+Create a personalised AI Workflow Plan for this person. Structure it as follows:
+
+## YOUR TOP 3 AI QUICK WINS
+The three tasks from their list where AI will save the most time. For each: what the task is, exactly how to use AI for it, and a rough time saving estimate.
+
+## YOUR FIRST WEEK PLAN
+A day-by-day plan for Monday–Friday of week 1. Specific: which AI task to do each day, when (morning/afternoon), and what to use (Claude.ai). Keep it realistic — one AI task per day max.
+
+## YOUR STARTER PROMPTS
+Write 3 ready-to-use prompts tailored to their specific recurring tasks. Label each one clearly.
+
+## THE ONE CHANGE THAT MATTERS MOST
+One specific recommendation for this person that will have the biggest impact on their workflow. Be direct.
+
+Be specific to their actual role and tasks — no generic advice.`;
+
+    try {
+      const res = await fetch('/.netlify/functions/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 900, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text || ('Error: ' + (data.error?.message || 'API error'));
+      document.getElementById('wpResult').textContent = text;
+    } catch (e) {
+      document.getElementById('wpResult').textContent = 'Error: ' + e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = '▶ Generate my AI workflow plan';
+    }
+  }
+
+  function copyPlan() {
+    navigator.clipboard.writeText(document.getElementById('wpResult').textContent).then(() => {
+      const btn = document.querySelector('.wp-out-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+  }
+
+  function savePlan() {
+    const text = document.getElementById('wpResult').textContent;
+    if (!text || text.startsWith('Error') || text.includes('Analysing')) return;
+    localStorage.setItem('afw-workflow-plan', text);
+    const el = document.getElementById('savedPlan');
+    document.getElementById('savedPlanContent').textContent = text;
+    el.classList.add('visible');
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function copySavedPlan() {
+    navigator.clipboard.writeText(document.getElementById('savedPlanContent').textContent).then(() => {
+      const btn = document.querySelector('.sp-btn.primary');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+  }
+
+  function exportPlan() {
+    const text = document.getElementById('savedPlanContent').textContent;
+    if (!text) return;
+    const blob = new Blob(['MY AI WORKFLOW PLAN\n' + '='.repeat(40) + '\n\n' + text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'my-ai-workflow-plan.txt';
+    a.click();
+  }
+
+  // Restore saved plan
+  const savedPlanText = localStorage.getItem('afw-workflow-plan');
+  if (savedPlanText) {
+    document.getElementById('savedPlanContent').textContent = savedPlanText;
+    document.getElementById('savedPlan').classList.add('visible');
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Track complete! Well done.' : 'Mark lesson as complete';
+    localStorage.setItem('afw-5-complete', checked);
+    if (checked) document.getElementById('trackComplete').classList.add('visible');
+  }
+  if (localStorage.getItem('afw-5-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Track complete! Well done.';
+    document.getElementById('trackComplete').classList.add('visible');
+  }
+</script>
+</body>
+</html>
