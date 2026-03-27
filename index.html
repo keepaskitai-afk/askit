@@ -332,7 +332,11 @@
     border: 1px solid var(--border);
     border-radius: 24px; padding: 36px 32px;
     position: relative; overflow: hidden;
+    text-decoration: none; color: inherit;
+    display: block;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   }
+  .track-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(26,23,20,0.1); }
   .track-card::after {
     content: ''; position: absolute;
     top: 0; left: 0; right: 0; height: 4px;
@@ -352,6 +356,22 @@
     border-radius: 100px; border: 1px solid var(--border);
     color: var(--muted); background: var(--cream);
   }
+  /* Premium lock badge on track cards */
+  .track-lock {
+    position: absolute; top: 20px; right: 20px;
+    display: flex; align-items: center; gap: 6px;
+    background: var(--ink); color: var(--cream);
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    padding: 5px 12px; border-radius: 100px;
+    transition: opacity 0.2s;
+  }
+  .track-lock.unlocked { background: var(--sage); }
+  .track-cta-hint {
+    display: block; margin-top: 16px;
+    font-size: 13px; font-weight: 500; color: var(--rust);
+    transition: opacity 0.2s;
+  }
+  .track-cta-hint.hidden { display: none; }
 
   /* ── FREE VS PREMIUM ── */
   .pricing { background: var(--warm-white); border-top: 1px solid var(--border); }
@@ -641,18 +661,19 @@
       <p class="section-sub">Five core areas of AI literacy. Go deep in one, or explore them all — at your own pace.</p>
     </div>
     <div class="tracks-grid">
-      <div class="track-card rust reveal">
+      <a href="/learn/" class="track-card rust reveal">
         <div class="track-emoji">🧠</div>
         <div class="track-for">Foundation</div>
         <div class="track-title">Understanding AI</div>
         <div class="track-desc">What is AI, how does it actually work, and why should you care? No hype, no fear — just clear answers.</div>
         <div class="track-pills">
-          <span class="pill">Free tier</span>
+          <span class="pill">✓ Free</span>
           <span class="pill">All audiences</span>
           <span class="pill">Beginner</span>
         </div>
-      </div>
-      <div class="track-card gold reveal">
+      </a>
+      <a href="/learn/talking-to-ai/" class="track-card gold reveal" id="track-tai">
+        <div class="track-lock" id="lock-tai">🔒 Premium</div>
         <div class="track-emoji">💬</div>
         <div class="track-for">Core Skill</div>
         <div class="track-title">Talking to AI</div>
@@ -662,8 +683,10 @@
           <span class="pill">Interactive</span>
           <span class="pill">Practice exercises</span>
         </div>
-      </div>
-      <div class="track-card sage reveal">
+        <span class="track-cta-hint" id="hint-tai">Subscribe to unlock →</span>
+      </a>
+      <a href="/learn/ai-for-work/" class="track-card sage reveal" id="track-afw">
+        <div class="track-lock" id="lock-afw">🔒 Premium</div>
         <div class="track-emoji">⚡</div>
         <div class="track-for">Professionals & SMBs</div>
         <div class="track-title">AI for Work</div>
@@ -673,8 +696,10 @@
           <span class="pill">Business focus</span>
           <span class="pill">Templates included</span>
         </div>
-      </div>
-      <div class="track-card ink reveal">
+        <span class="track-cta-hint" id="hint-afw">Subscribe to unlock →</span>
+      </a>
+      <a href="/learn/ai-ethics-safety/" class="track-card ink reveal" id="track-aes">
+        <div class="track-lock" id="lock-aes">🔒 Premium</div>
         <div class="track-emoji">🛡️</div>
         <div class="track-for">Everyone</div>
         <div class="track-title">AI Ethics & Safety</div>
@@ -683,7 +708,8 @@
           <span class="pill">Premium</span>
           <span class="pill">Highly recommended</span>
         </div>
-      </div>
+        <span class="track-cta-hint" id="hint-aes">Subscribe to unlock →</span>
+      </a>
     </div>
   </div>
 </section>
@@ -879,19 +905,42 @@
     }
   }
 
+  function updateTrackCards() {
+    const isPremium = localStorage.getItem('askit-premium') === 'true';
+    ['tai', 'afw', 'aes'].forEach(function(id) {
+      var lock = document.getElementById('lock-' + id);
+      var hint = document.getElementById('hint-' + id);
+      if (lock) {
+        if (isPremium) {
+          lock.textContent = '✓ Unlocked';
+          lock.classList.add('unlocked');
+        }
+      }
+      if (hint) {
+        if (isPremium) hint.classList.add('hidden');
+      }
+    });
+  }
+
+  // Apply lock/unlock state on every page load
+  updateTrackCards();
+
   // Show a banner if Stripe redirected back after checkout
   (function () {
     const params = new URLSearchParams(window.location.search);
     if (params.get('checkout') === 'success') {
+      // Grant premium access
+      localStorage.setItem('askit-premium', 'true');
       const banner = document.createElement('div');
       banner.style.cssText =
         'position:fixed;top:72px;left:50%;transform:translateX(-50%);' +
         'background:#4A7C59;color:#fff;padding:14px 28px;border-radius:100px;' +
         'font-size:15px;font-weight:500;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.15)';
-      banner.textContent = '🎉 Welcome to AskIt Premium! Check your email to get started.';
+      banner.textContent = '🎉 Welcome to AskIt Premium! All tracks are now unlocked.';
       document.body.appendChild(banner);
-      setTimeout(() => banner.remove(), 6000);
+      setTimeout(() => banner.remove(), 7000);
       history.replaceState({}, '', window.location.pathname);
+      updateTrackCards();
     }
   })();
 </script>
