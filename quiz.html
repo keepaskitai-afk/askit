@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Track — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250, 247, 242, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 26px; font-weight: 800;
+    color: var(--rust); letter-spacing: -0.5px;
+    text-decoration: none;
+  }
+  .logo span { color: var(--ink); }
+  nav a {
+    font-size: 14px; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--ink); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-cta {
+    background: var(--rust); color: #fff !important;
+    padding: 10px 22px; border-radius: 100px;
+    font-weight: 500; transition: background 0.2s, transform 0.15s !important;
+  }
+  .nav-cta:hover { background: var(--rust-light) !important; transform: translateY(-1px); }
+
+  /* ── BACKGROUND ORBS ── */
+  .page-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    overflow: hidden;
+  }
+  .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(60px); opacity: 0.2;
+    animation: float 10s ease-in-out infinite;
+  }
+  .orb-1 { width: 400px; height: 400px; background: var(--rust); top: -10%; left: -10%; animation-delay: 0s; }
+  .orb-2 { width: 300px; height: 300px; background: var(--gold); bottom: 10%; right: -5%; animation-delay: 4s; }
+  .orb-3 { width: 350px; height: 350px; background: var(--sage); bottom: -10%; left: 30%; animation-delay: 7s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-24px) scale(1.04); }
+  }
+
+  /* ── QUIZ WRAPPER ── */
+  .quiz-page {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 120px 24px 80px;
+  }
+
+  .quiz-shell {
+    width: 100%; max-width: 680px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 48px;
+  }
+  .progress-step {
+    flex: 1; height: 3px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .progress-step.done { background: var(--rust); }
+  .progress-step.active {
+    background: var(--border);
+    position: relative;
+  }
+  .progress-step.active::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--rust);
+    border-radius: 100px;
+    animation: progressFill 0.5s ease forwards;
+  }
+  @keyframes progressFill {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  .progress-label {
+    font-size: 13px; color: var(--muted);
+    font-weight: 500; white-space: nowrap;
+  }
+
+  /* ── QUESTION SCREEN ── */
+  .screen { display: none; }
+  .screen.active {
+    display: block;
+    animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
+  }
+  .screen.leaving {
+    animation: fadeOut 0.25s ease forwards;
+    pointer-events: none;
+  }
+
+  .question-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25);
+    color: var(--sage); font-size: 13px; font-weight: 500;
+    padding: 6px 16px; border-radius: 100px;
+    margin-bottom: 24px;
+  }
+  .eyebrow-dot {
+    width: 6px; height: 6px;
+    background: var(--sage); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+  .question-heading {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1px; color: var(--ink);
+    margin-bottom: 36px;
+  }
+  .question-heading em {
+    font-style: italic; font-weight: 300; color: var(--rust);
+  }
+
+  /* ── OPTION CARDS ── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .option-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 24px 22px;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s, background 0.18s;
+    position: relative; overflow: hidden;
+    text-align: left;
+    user-select: none;
+  }
+  .option-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(200,82,26,0.04), rgba(74,124,89,0.03));
+    opacity: 0; transition: opacity 0.25s;
+    border-radius: inherit;
+  }
+  .option-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 36px rgba(26,23,20,0.1);
+    border-color: rgba(200,82,26,0.3);
+  }
+  .option-card:hover::before { opacity: 1; }
+
+  .option-card.selected {
+    border-color: var(--rust);
+    background: var(--warm-white);
+    box-shadow: 0 0 0 3px rgba(200,82,26,0.12), 0 10px 36px rgba(26,23,20,0.1);
+    transform: translateY(-3px);
+  }
+  .option-card.selected::before { opacity: 1; }
+
+  .option-icon { font-size: 30px; margin-bottom: 12px; line-height: 1; }
+  .option-label {
+    font-family: 'Fraunces', serif;
+    font-size: 17px; font-weight: 600;
+    color: var(--ink); line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .option-sub {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.5; font-weight: 300;
+  }
+
+  .option-check {
+    position: absolute; top: 14px; right: 14px;
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    background: var(--cream);
+  }
+  .option-card.selected .option-check {
+    background: var(--rust); border-color: var(--rust);
+    color: #fff;
+  }
+  .option-check svg {
+    width: 11px; height: 11px;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .option-card.selected .option-check svg { opacity: 1; }
+
+  /* ── RESULT SCREEN ── */
+  .result-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25);
+    color: var(--sage); font-size: 13px; font-weight: 500;
+    padding: 6px 16px; border-radius: 100px;
+    margin-bottom: 24px;
+  }
+
+  .result-heading {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1px; color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .result-heading em { font-style: italic; font-weight: 300; color: var(--rust); }
+
+  .result-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 36px;
+    position: relative; overflow: hidden;
+    margin-bottom: 20px;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .result-card::after {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 5px;
+  }
+  .result-card.rust::after { background: linear-gradient(90deg, var(--rust), var(--rust-light)); }
+  .result-card.gold::after { background: linear-gradient(90deg, var(--gold), #F5C842); }
+  .result-card.sage::after { background: linear-gradient(90deg, var(--sage), #6AAD80); }
+  .result-card.ink::after { background: linear-gradient(90deg, #4A6FA5, #6B8FC7); }
+
+  .result-track-emoji { font-size: 44px; margin-bottom: 20px; }
+  .result-track-tag {
+    font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .result-track-name {
+    font-family: 'Fraunces', serif;
+    font-size: 30px; font-weight: 800;
+    letter-spacing: -0.5px; color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .result-track-desc {
+    font-size: 16px; color: var(--muted);
+    line-height: 1.7; font-weight: 300;
+    margin-bottom: 32px;
+  }
+
+  .result-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+  .result-pill {
+    font-size: 12px; padding: 5px 12px;
+    border-radius: 100px; border: 1px solid var(--border);
+    color: var(--muted); background: var(--cream);
+  }
+
+  .result-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--rust); color: #fff;
+    padding: 16px 32px; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    border: none; cursor: pointer;
+  }
+  .result-cta:hover { background: var(--rust-light); transform: translateY(-2px); }
+
+  .result-secondary {
+    display: block; margin-top: 16px;
+    font-size: 14px; color: var(--muted);
+    text-align: center;
+  }
+  .result-secondary a {
+    color: var(--rust); text-decoration: none; font-weight: 500;
+  }
+  .result-secondary a:hover { text-decoration: underline; }
+
+  .retake-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; border: 1.5px solid var(--border);
+    color: var(--muted); padding: 12px 24px;
+    border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    margin-top: 16px;
+  }
+  .retake-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 540px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .options-grid { grid-template-columns: 1fr; }
+    .result-card { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-links">
+    <a href="/#how">How it works</a>
+    <a href="/#tracks">Tracks</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/#waitlist" class="nav-cta">Join the waitlist</a>
+  </div>
+</nav>
+
+<div class="page-bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="quiz-page">
+  <div class="quiz-shell">
+
+    <!-- PROGRESS -->
+    <div class="progress-bar" id="progress-bar">
+      <div class="progress-step active" id="prog-1"></div>
+      <div class="progress-step" id="prog-2"></div>
+      <div class="progress-step" id="prog-3"></div>
+      <span class="progress-label" id="progress-label">Question 1 of 3</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="screen active" id="screen-1">
+      <div class="question-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Find your track
+      </div>
+      <h1 class="question-heading">What best <em>describes</em> you?</h1>
+      <div class="options-grid">
+        <div class="option-card" data-q="1" data-val="0" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">👴</div>
+          <div class="option-label">Older adult</div>
+          <div class="option-sub">55+ and curious about where to start</div>
+        </div>
+        <div class="option-card" data-q="1" data-val="1" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">💼</div>
+          <div class="option-label">Working professional</div>
+          <div class="option-sub">Employed and looking to work smarter</div>
+        </div>
+        <div class="option-card" data-q="1" data-val="2" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">🎓</div>
+          <div class="option-label">Student</div>
+          <div class="option-sub">In school or recently graduated</div>
+        </div>
+        <div class="option-card" data-q="1" data-val="3" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">🏪</div>
+          <div class="option-label">Small business owner</div>
+          <div class="option-sub">Running your own business or side hustle</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="screen" id="screen-2">
+      <div class="question-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Find your track
+      </div>
+      <h1 class="question-heading">What do you most want to <em>do</em> with AI?</h1>
+      <div class="options-grid">
+        <div class="option-card" data-q="2" data-val="0" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">✍️</div>
+          <div class="option-label">Write and communicate better</div>
+          <div class="option-sub">Emails, messages, reports, content</div>
+        </div>
+        <div class="option-card" data-q="2" data-val="1" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">🔍</div>
+          <div class="option-label">Research and find information</div>
+          <div class="option-sub">Learn things faster and fact-check</div>
+        </div>
+        <div class="option-card" data-q="2" data-val="2" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">⚡</div>
+          <div class="option-label">Save time at work</div>
+          <div class="option-sub">Automate tasks and cut busywork</div>
+        </div>
+        <div class="option-card" data-q="2" data-val="3" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">🧠</div>
+          <div class="option-label">Understand what AI is</div>
+          <div class="option-sub">Get a clear picture before diving in</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="screen" id="screen-3">
+      <div class="question-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Find your track
+      </div>
+      <h1 class="question-heading">How comfortable are you with <em>technology</em>?</h1>
+      <div class="options-grid">
+        <div class="option-card" data-q="3" data-val="0" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">🙈</div>
+          <div class="option-label">Not at all</div>
+          <div class="option-sub">Tech and I don't really get along</div>
+        </div>
+        <div class="option-card" data-q="3" data-val="1" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">🌱</div>
+          <div class="option-label">A little</div>
+          <div class="option-sub">I manage the basics okay</div>
+        </div>
+        <div class="option-card" data-q="3" data-val="2" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">👍</div>
+          <div class="option-label">Somewhat</div>
+          <div class="option-sub">Comfortable with most apps and tools</div>
+        </div>
+        <div class="option-card" data-q="3" data-val="3" onclick="selectOption(this)">
+          <div class="option-check"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="option-icon">🚀</div>
+          <div class="option-label">Very comfortable</div>
+          <div class="option-sub">I pick up new tech quickly</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="screen" id="screen-result">
+      <div class="result-eyebrow">
+        <span class="eyebrow-dot"></span>
+        Your recommended track
+      </div>
+      <h1 class="result-heading">We found your <em>perfect</em> starting point.</h1>
+      <div class="result-card" id="result-card">
+        <div class="result-track-emoji" id="result-emoji"></div>
+        <div class="result-track-tag" id="result-tag"></div>
+        <div class="result-track-name" id="result-name"></div>
+        <div class="result-track-desc" id="result-desc"></div>
+        <div class="result-pills" id="result-pills"></div>
+        <a class="result-cta" id="result-cta" href="#">
+          Start this track →
+        </a>
+      </div>
+      <p class="result-secondary">
+        Not quite right? <a href="/#tracks">See all four tracks</a> and choose your own.
+      </p>
+      <div style="text-align:center">
+        <button class="retake-btn" onclick="retake()">↩ Retake the quiz</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const answers = {};
+
+  const tracks = {
+    foundation: {
+      emoji: '🧠',
+      name: 'Understanding AI',
+      tag: 'Foundation',
+      color: 'rust',
+      desc: 'Start from zero. Learn what AI actually is, how it works, and why it matters — in plain, jargon-free language, at your own pace.',
+      pills: ['What is AI?', 'How chatbots work', 'AI myths debunked', 'Getting started safely'],
+      url: 'learn/index.html?track=foundation',
+    },
+    communication: {
+      emoji: '✍️',
+      name: 'Talking to AI',
+      tag: 'Core Skill',
+      color: 'gold',
+      desc: 'Master the art of prompting. Learn how to write clearly, research smarter, and get consistently better results from any AI tool.',
+      pills: ['Writing prompts', 'Better emails', 'Research faster', 'Summarising anything'],
+      url: 'learn/index.html?track=communication',
+    },
+    work: {
+      emoji: '💼',
+      name: 'AI for Work',
+      tag: 'Professionals & SMBs',
+      color: 'sage',
+      desc: 'Use AI for emails, reports, meetings, and research. Save hours every week — no coding required.',
+      pills: ['Automate tasks', 'Meeting notes', 'Write reports', 'Client communications'],
+      url: 'learn/index.html?track=work',
+    },
+    ethics: {
+      emoji: '🛡️',
+      name: 'AI Ethics & Safety',
+      tag: 'Everyone',
+      color: 'ink',
+      desc: 'Spot AI misinformation, protect your privacy, and use these tools responsibly. A must for anyone online today.',
+      pills: ['Spotting deepfakes', 'Privacy & data', 'Fact-checking AI', 'Using AI responsibly'],
+      url: 'learn/index.html?track=ethics',
+    },
+  };
+
+  function getTrack() {
+    const scores = { foundation: 0, communication: 0, work: 0, ethics: 0 };
+
+    // Q1: who are you
+    const q1Scores = [
+      { foundation: 3, ethics: 1 },          // older adult
+      { work: 3, communication: 1 },          // working professional
+      { communication: 3, foundation: 1 },    // student
+      { work: 3, communication: 1 },          // small business owner
+    ][answers[1]];
+
+    // Q2: what do you want to do
+    const q2Scores = [
+      { communication: 3 },                   // write and communicate better
+      { ethics: 3, communication: 1 },        // research and find information
+      { work: 3 },                            // save time at work
+      { foundation: 3 },                      // understand what AI is
+    ][answers[2]];
+
+    // Q3: comfort with tech
+    const q3Scores = [
+      { foundation: 3 },                      // not at all
+      { foundation: 2, communication: 1 },    // a little
+      { communication: 2, work: 1 },          // somewhat
+      { work: 2, ethics: 2 },                 // very comfortable
+    ][answers[3]];
+
+    [q1Scores, q2Scores, q3Scores].forEach(obj => {
+      Object.entries(obj).forEach(([k, v]) => { scores[k] += v; });
+    });
+
+    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  }
+
+  function selectOption(el) {
+    const q = parseInt(el.dataset.q);
+    const val = parseInt(el.dataset.val);
+
+    // Mark selected
+    el.closest('.options-grid').querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    answers[q] = val;
+
+    // Advance after short delay
+    setTimeout(() => advance(q), 320);
+  }
+
+  function advance(currentQ) {
+    const currentScreen = document.getElementById('screen-' + currentQ);
+
+    if (currentQ < 3) {
+      currentScreen.classList.add('leaving');
+      setTimeout(() => {
+        currentScreen.classList.remove('active', 'leaving');
+        const nextScreen = document.getElementById('screen-' + (currentQ + 1));
+        nextScreen.classList.add('active');
+        updateProgress(currentQ + 1);
+      }, 250);
+    } else {
+      showResult(currentScreen);
+    }
+  }
+
+  function updateProgress(step) {
+    for (let i = 1; i <= 3; i++) {
+      const el = document.getElementById('prog-' + i);
+      el.className = 'progress-step' + (i < step ? ' done' : i === step ? ' active' : '');
+    }
+    document.getElementById('progress-label').textContent =
+      step <= 3 ? `Question ${step} of 3` : 'Your result';
+  }
+
+  function showResult(lastScreen) {
+    lastScreen.classList.add('leaving');
+    setTimeout(() => {
+      lastScreen.classList.remove('active', 'leaving');
+
+      const key = getTrack();
+      const t = tracks[key];
+
+      document.getElementById('result-card').className = 'result-card ' + t.color;
+      document.getElementById('result-emoji').textContent = t.emoji;
+      document.getElementById('result-tag').textContent = t.tag;
+      document.getElementById('result-name').textContent = t.name;
+      document.getElementById('result-desc').textContent = t.desc;
+      document.getElementById('result-cta').href = t.url;
+
+      const pillsEl = document.getElementById('result-pills');
+      pillsEl.innerHTML = t.pills.map(p => `<span class="result-pill">${p}</span>`).join('');
+
+      document.getElementById('progress-bar').style.display = 'none';
+      document.getElementById('screen-result').classList.add('active');
+    }, 250);
+  }
+
+  function retake() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    document.getElementById('screen-result').classList.remove('active');
+    document.getElementById('progress-bar').style.display = 'flex';
+    document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    updateProgress(1);
+    document.getElementById('screen-1').classList.add('active');
+  }
+</script>
+
+</body>
+</html>
