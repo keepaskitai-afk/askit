@@ -494,6 +494,34 @@
   }
   .reveal.visible { opacity: 1; transform: none; }
 
+  /* ── HERO BUTTONS ── */
+  .hero-ctas {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp 0.7s 0.3s ease both;
+    margin-bottom: 0;
+  }
+  .hero-btn-primary {
+    display: inline-flex; align-items: center;
+    padding: 18px 36px; border-radius: 100px;
+    background: var(--rust); color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(200,82,26,0.25);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .hero-btn-primary:hover { background: var(--rust-light); transform: translateY(-2px); }
+  .hero-btn-premium {
+    display: inline-flex; align-items: center;
+    padding: 18px 32px; border-radius: 100px;
+    background: var(--ink); color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .hero-btn-premium:hover { background: #2D2A26; transform: translateY(-2px); }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
@@ -521,7 +549,7 @@
     <a href="#how">How it works</a>
     <a href="#tracks">Tracks</a>
     <a href="#pricing">Pricing</a>
-    <a href="#waitlist" class="nav-cta">Join the waitlist</a>
+    <a href="/learn/" class="nav-cta">Start learning</a>
   </div>
 </nav>
 
@@ -533,41 +561,32 @@
   <div class="orb orb-3"></div>
 
   <div class="hero-inner">
-    <div class="eyebrow">
-      <span class="eyebrow-dot"></span>
-      Launching 2026 — Join the waitlist
-    </div>
-
     <h1>Learn to use AI.<br><em>Actually use it.</em></h1>
 
     <p class="hero-sub">
-      AskIt teaches everyone — from students to retirees, side hustlers to office teams — 
+      AskIt teaches everyone — from students to retirees, side hustlers to office teams —
       how to get real results with AI. No jargon. No tech background needed.
     </p>
 
-    <div id="hero-form-wrap">
-      <form class="waitlist-form" onsubmit="handleSubmit(event, 'hero')">
-        <input type="email" placeholder="Your email address" required id="hero-email">
-        <button type="submit">Get early access →</button>
-      </form>
-      <div class="success-msg" id="hero-success">🎉 You're on the list! We'll be in touch.</div>
-      <p class="form-note">Free to join · No spam · Unsubscribe anytime</p>
+    <div class="hero-ctas">
+      <a href="/learn/" class="hero-btn-primary">Start learning free →</a>
+      <button class="hero-btn-premium" onclick="startCheckout(this)">Go Premium — $15/month</button>
     </div>
 
-    <div class="quiz-cta-wrap">
-      <div class="quiz-cta-divider"><span>or</span></div>
-      <a href="/quiz.html" class="quiz-cta-btn">
-        <span class="quiz-badge">🎯</span>
-        Not sure where to start? Find your track
-        <span>→</span>
-      </a>
-      <p class="quiz-cta-note">60-second quiz · free · no account needed</p>
+    <div id="hero-form-wrap" style="margin-top:32px;">
+      <div class="quiz-cta-divider"><span>or get updates</span></div>
+      <form class="waitlist-form" onsubmit="handleSubmit(event, 'hero')">
+        <input type="email" placeholder="Your email address" required id="hero-email">
+        <button type="submit">Get updates →</button>
+      </form>
+      <div class="success-msg" id="hero-success">🎉 You're on the list! We'll be in touch.</div>
+      <p class="form-note">No spam · Unsubscribe anytime</p>
     </div>
 
     <div class="social-proof">
       <div class="founding-badge">
         <span class="founding-dot"></span>
-        Be one of our founding members — early access open now
+        Now live — free to start today
       </div>
     </div>
   </div>
@@ -735,7 +754,7 @@
           <li style="opacity:0.35"><span class="check">–</span> Live coaching sessions</li>
           <li style="opacity:0.35"><span class="check">–</span> Completion certificates</li>
         </ul>
-        <a href="#waitlist" class="plan-btn">Join waitlist free</a>
+        <a href="/learn/" class="plan-btn">Start free now</a>
       </div>
       <div class="pricing-card featured">
         <div class="featured-badge">MOST POPULAR</div>
@@ -804,17 +823,22 @@
 <!-- FINAL CTA -->
 <section class="final-cta" id="waitlist">
   <div class="container" style="position:relative">
-    <p class="section-label">Don't wait</p>
-    <h2>The AI moment<br><em>is right now</em></h2>
-    <p>Join the waitlist today. Early members get locked-in launch pricing and first access to every new track.</p>
+    <p class="section-label">Start today</p>
+    <h2>Start for free<br><em>today</em></h2>
+    <p>The free track is genuinely useful — not a teaser. Start now, upgrade when you're ready.</p>
+
+    <div style="margin-bottom:32px;position:relative;">
+      <a href="/learn/" style="display:inline-block;background:#fff;color:var(--rust);padding:18px 40px;border-radius:100px;font-size:16px;font-weight:600;text-decoration:none;transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">Start learning free →</a>
+    </div>
 
     <div id="cta-form-wrap" style="max-width:480px;margin:0 auto">
+      <div class="quiz-cta-divider" style="--border-color:rgba(255,255,255,0.25)"><span>or get updates</span></div>
       <form class="waitlist-form" onsubmit="handleSubmit(event, 'cta')">
         <input type="email" placeholder="Your email address" required id="cta-email">
-        <button type="submit">Reserve my spot →</button>
+        <button type="submit">Get updates →</button>
       </form>
-      <div class="success-msg" id="cta-success">🎉 You're in! See you at launch.</div>
-      <p class="form-note">Free to join · No spam · Unsubscribe anytime</p>
+      <div class="success-msg" id="cta-success">🎉 You're on the list!</div>
+      <p class="form-note">No spam · Unsubscribe anytime</p>
     </div>
   </div>
 </section>

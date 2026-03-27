@@ -762,8 +762,11 @@
       <div class="stat-pill">🏆 <strong>1</strong> real-world task done</div>
     </div>
 
+    <div style="margin-bottom:20px;">
+      <button class="next-track-btn" id="unlockBtn" onclick="startCheckout(this)" style="background:var(--gold);color:var(--ink);border:none;cursor:pointer;font-size:17px;padding:20px 40px;">🔓 Unlock all tracks — $15/month</button>
+    </div>
     <div>
-      <a href="/#tracks" class="next-track-btn">Explore next tracks →</a>
+      <a href="/#tracks" class="next-track-btn" style="background:transparent;border:1.5px solid rgba(255,255,255,0.25);font-size:14px;padding:12px 24px;">Explore tracks →</a>
       <button class="share-btn" onclick="shareResult()">↗ Share your win</button>
     </div>
   </div>
@@ -800,6 +803,30 @@
 </footer>
 
 <script>
+// ── STRIPE CHECKOUT ──
+async function startCheckout(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Redirecting…';
+  try {
+    const res = await fetch('/.netlify/functions/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert(data.error || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = '🔓 Unlock all tracks — $15/month';
+    }
+  } catch {
+    alert('Network error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = '🔓 Unlock all tracks — $15/month';
+  }
+}
+
 // ── PROGRESS BAR ──
 window.addEventListener('scroll', () => {
   const d = document.documentElement;
@@ -928,6 +955,12 @@ if (localStorage.getItem('track-understanding-ai-complete') === 'true') {
   document.getElementById('celebration').classList.add('show');
   document.getElementById('whatsNext').style.display = 'block';
   document.getElementById('completeWrap').style.display = 'none';
+}
+
+// Hide upsell if already premium
+if (localStorage.getItem('askit-premium') === 'true') {
+  var unlockBtn = document.getElementById('unlockBtn');
+  if (unlockBtn) unlockBtn.style.display = 'none';
 }
 </script>
 
