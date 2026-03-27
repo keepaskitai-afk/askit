@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5: Build Your Prompt Library — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1714;
+    --rust: #C8521A; --rust-light: #F0784A; --gold: #E8A230;
+    --sage: #4A7C59; --sage-light: #EDF4EF; --muted: #7A7168;
+    --border: #E5DDD0; --card-bg: #FFFFFF;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(250,247,242,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta { background: var(--rust); color: #fff; padding: 10px 22px; border-radius: 100px; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  .progress-bar-wrap { position: fixed; top: 73px; left: 0; right: 0; z-index: 99; height: 3px; background: var(--border); }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--rust-light)); transition: width 0.1s linear; }
+
+  .lesson-hero { padding: 140px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+  .lesson-hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 55% 60% at 15% 25%, rgba(74,124,89,0.09) 0%, transparent 70%), radial-gradient(ellipse 55% 50% at 85% 75%, rgba(232,162,48,0.08) 0%, transparent 70%); }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 28px; animation: fadeUp 0.6s ease both; }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both; }
+  .lesson-title { font-family: 'Fraunces', serif; font-size: clamp(26px, 5vw, 60px); font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; color: var(--ink); margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both; }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-meta { display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 14px; color: var(--muted); animation: fadeUp 0.6s 0.15s ease both; }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .content-block { margin-bottom: 48px; }
+  .lesson-body h2 { font-family: 'Fraunces', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink); }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-body p { font-size: 17px; line-height: 1.75; color: #3D3A36; font-weight: 300; margin-bottom: 20px; }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  .callout { border-radius: 20px; padding: 28px 32px; margin-bottom: 32px; border: 1px solid var(--border); }
+  .callout-plain { background: var(--warm-white); }
+  .callout-gold { background: rgba(232,162,48,0.08); border-color: rgba(232,162,48,0.3); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; color: var(--rust); }
+  .callout-gold .callout-label { color: #B87D1A; }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+
+  .key-takeaway { background: linear-gradient(135deg, var(--sage), #3d6b4a); border-radius: 24px; padding: 36px; margin: 48px 0; text-align: center; }
+  .kt-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+  .key-takeaway p { font-family: 'Fraunces', serif; font-size: clamp(20px, 2.5vw, 26px); font-weight: 600; line-height: 1.45; color: #fff !important; margin-bottom: 0 !important; }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  .completion-check { display: flex; align-items: center; gap: 12px; padding: 20px 24px; border-radius: 14px; background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25); cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 32px; }
+  .completion-check:hover { border-color: var(--sage); }
+  .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .completion-check.checked .check-box { background: var(--sage); border-color: var(--sage); }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  .lesson-nav { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; border-top: 1px solid var(--border); margin-top: 64px; gap: 16px; }
+  .lesson-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 500; border: 1.5px solid var(--border); color: var(--ink); background: var(--warm-white); transition: all 0.2s; }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next { background: var(--sage); color: #fff; border-color: var(--sage); font-weight: 600; }
+  .lesson-nav-btn.next:hover { background: #3d6b4a; border-color: #3d6b4a; color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── PROMPT LIBRARY ── */
+  .library-header {
+    background: var(--ink); border-radius: 24px 24px 0 0; padding: 28px 32px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .library-header-left { }
+  .lib-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+  .lib-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--cream); }
+  .lib-counter { font-size: 14px; color: rgba(250,247,242,0.5); margin-top: 2px; }
+  .lib-actions { display: flex; gap: 8px; }
+  .lib-action-btn {
+    padding: 10px 18px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.07); color: rgba(250,247,242,0.7);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .lib-action-btn:hover { background: rgba(255,255,255,0.14); color: var(--cream); }
+
+  .library-slots { border: 1.5px solid var(--border); border-top: none; border-radius: 0 0 24px 24px; overflow: hidden; margin-bottom: 40px; }
+  .prompt-slot {
+    border-bottom: 1px solid var(--border); background: var(--warm-white);
+    transition: background 0.15s;
+  }
+  .prompt-slot:last-child { border-bottom: none; }
+  .prompt-slot-header {
+    padding: 20px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer;
+  }
+  .slot-num {
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+    background: var(--border); color: var(--muted); transition: all 0.2s;
+  }
+  .prompt-slot.filled .slot-num { background: var(--gold); color: var(--ink); }
+  .slot-summary { flex: 1; }
+  .slot-name { font-size: 15px; font-weight: 500; color: var(--ink); }
+  .slot-name.empty { color: var(--muted); font-style: italic; font-weight: 400; }
+  .slot-category { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .slot-actions { display: flex; gap: 8px; }
+  .slot-btn {
+    padding: 7px 14px; border-radius: 100px; border: 1px solid var(--border);
+    background: var(--cream); color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .slot-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .slot-btn.copy { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .slot-btn.copy:hover { background: #2d2825; }
+  .slot-btn.delete { color: var(--rust); border-color: rgba(200,82,26,0.3); }
+  .slot-btn.delete:hover { background: rgba(200,82,26,0.06); border-color: var(--rust); }
+
+  .slot-editor {
+    padding: 0 24px; max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    background: var(--cream); border-top: 1px solid var(--border);
+  }
+  .slot-editor.open { max-height: 500px; padding: 24px; }
+  .editor-field { margin-bottom: 16px; }
+  .editor-label { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .editor-input {
+    width: 100%; background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--ink); outline: none; transition: border-color 0.2s; line-height: 1.5;
+  }
+  .editor-input:focus { border-color: var(--gold); }
+  textarea.editor-input { resize: vertical; min-height: 100px; }
+  .category-select { appearance: none; cursor: pointer; }
+  .editor-actions { display: flex; gap: 10px; }
+  .save-btn {
+    padding: 12px 24px; border-radius: 100px; background: var(--sage); color: #fff;
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; transition: background 0.2s;
+  }
+  .save-btn:hover { background: #3d6b4a; }
+  .cancel-btn {
+    padding: 12px 20px; border-radius: 100px; background: transparent; color: var(--muted);
+    border: 1px solid var(--border); cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; transition: all 0.2s;
+  }
+  .cancel-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* Inspiration prompts */
+  .inspiration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px; }
+  .inspiration-card {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 18px 20px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .inspiration-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,23,20,0.06); }
+  .insp-category { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .insp-name { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.3; }
+  .insp-preview { font-size: 13px; color: var(--muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .insp-add { font-size: 12px; color: var(--gold); font-weight: 500; margin-top: 8px; }
+
+  /* Completion celebration */
+  .track-complete {
+    background: linear-gradient(135deg, var(--sage), #2d5c3d);
+    border-radius: 28px; padding: 48px; text-align: center; margin: 48px 0;
+    display: none;
+  }
+  .track-complete.visible { display: block; }
+  .tc-icon { font-size: 56px; margin-bottom: 20px; }
+  .tc-title { font-family: 'Fraunces', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 800; color: #fff; margin-bottom: 12px; }
+  .tc-sub { font-size: 18px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 32px; max-width: 460px; margin-left: auto; margin-right: auto; }
+  .tc-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff; color: var(--sage); padding: 16px 32px; border-radius: 100px;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .tc-btn:hover { background: var(--cream); transform: translateY(-2px); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 110px 20px 56px; }
+    .inspiration-grid { grid-template-columns: 1fr; }
+    .library-header { flex-direction: column; align-items: flex-start; }
+    .prompt-slot-header { flex-wrap: wrap; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>✍️ Talking to AI</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/talking-to-ai/">✍️ Talking to AI</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 5</span>
+    </div>
+    <div class="lesson-number">Lesson 5 of 5 · Final Lesson</div>
+    <h1 class="lesson-title">Build your<br>personal<br><em>prompt library</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 25 min</span><span class="meta-dot"></span>
+      <span>📚 Your library</span><span class="meta-dot"></span>
+      <span>💾 Saved locally</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>Everything in this track has been building to this moment. You now know how prompts work, how to structure them, how to adapt them by task type, and how to use advanced techniques. The last piece is turning that knowledge into something you'll actually use every single day.</p>
+    <p>A prompt library is a personal collection of your go-to prompts — refined, named, and ready to copy. The people who get the most out of AI aren't the ones who write a clever prompt once. They're the ones who <strong>save the prompts that work and reuse them</strong>.</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">💡 Why a library matters</div>
+    <p>The first time you write a great prompt it takes 5 minutes. The second time you need it you spend 3 minutes recreating something worse. With a library, every task you've solved once is solved forever. This is how AI users go from "occasionally useful" to "genuinely transformative."</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Your assignment:<br><em>5 prompts you'll actually use</em></h2>
+    <p>Below you'll build 5 prompts for your real life. Not generic examples — prompts tailored to what you actually do. Think about the tasks you repeat every week: emails you send regularly, things you need to research, content you create, decisions you think through. Those are the candidates.</p>
+    <p>Use the inspiration cards below if you're not sure where to start. Click any card to load it into your library, then customise it for your specific situation.</p>
+  </div>
+
+  <!-- INSPIRATION GRID -->
+  <div class="reveal">
+    <p style="font-size:14px; color:var(--muted); margin-bottom:14px; font-weight:500;">Need inspiration? Click any card to add it to an open slot:</p>
+    <div class="inspiration-grid">
+      <div class="inspiration-card" onclick="addInspiration(0)">
+        <div class="insp-category">📧 Email</div>
+        <div class="insp-name">Weekly team update email</div>
+        <div class="insp-preview">Turns bullet points into a clear, professional weekly update for your team or manager</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+      <div class="inspiration-card" onclick="addInspiration(1)">
+        <div class="insp-category">🔍 Research</div>
+        <div class="insp-name">Decision framework</div>
+        <div class="insp-preview">Get a structured pros/cons analysis for any decision you're wrestling with</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+      <div class="inspiration-card" onclick="addInspiration(2)">
+        <div class="insp-category">✍️ Writing</div>
+        <div class="insp-name">LinkedIn post from a story</div>
+        <div class="insp-preview">Turn a thing that happened at work into a compelling LinkedIn post</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+      <div class="inspiration-card" onclick="addInspiration(3)">
+        <div class="insp-category">💬 Communication</div>
+        <div class="insp-name">Difficult conversation script</div>
+        <div class="insp-preview">Plan what to say in a hard conversation — at work or in your personal life</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+      <div class="inspiration-card" onclick="addInspiration(4)">
+        <div class="insp-category">🧠 Thinking</div>
+        <div class="insp-name">Devil's advocate critique</div>
+        <div class="insp-preview">Gets the AI to argue against your idea so you can stress-test it before committing</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+      <div class="inspiration-card" onclick="addInspiration(5)">
+        <div class="insp-category">📋 Planning</div>
+        <div class="insp-name">Project kickoff plan</div>
+        <div class="insp-preview">Give it a goal and deadline, get a realistic step-by-step action plan</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+      <div class="inspiration-card" onclick="addInspiration(6)">
+        <div class="insp-category">🎨 Creative</div>
+        <div class="insp-name">Social media caption batch</div>
+        <div class="insp-preview">Generate a week of social media captions from a brief description of your content</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+      <div class="inspiration-card" onclick="addInspiration(7)">
+        <div class="insp-category">💼 Work</div>
+        <div class="insp-name">Meeting summary & actions</div>
+        <div class="insp-preview">Paste rough meeting notes, get a clean summary with clear action items</div>
+        <div class="insp-add">+ Add to library →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMPT LIBRARY -->
+  <div class="reveal">
+    <div class="library-header">
+      <div class="library-header-left">
+        <div class="lib-label">📚 Your Prompt Library</div>
+        <div class="lib-title">My Prompts</div>
+        <div class="lib-counter" id="libCounter">0 of 5 prompts saved</div>
+      </div>
+      <div class="lib-actions">
+        <button class="lib-action-btn" onclick="exportLibrary()">⬇ Export all</button>
+        <button class="lib-action-btn" onclick="clearAll()">🗑 Clear all</button>
+      </div>
+    </div>
+
+    <div class="library-slots" id="librarySlots">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>How to use your<br><em>library</em></h2>
+    <p>Once you've saved your 5 prompts, here's how to put them to work:</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📋 Step 1: Copy and customise</div>
+    <p>Use the Copy button to grab any prompt. The best prompts have placeholder sections you can swap out — things like [your company name] or [the specific task] that you fill in each time. That's the power of a template.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🔄 Step 2: Refine as you go</div>
+    <p>The first version of a prompt is rarely the best. When you use a prompt and the output isn't quite right, spend 2 minutes improving it and save the better version. Prompts compound — they get more valuable over time.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📤 Step 3: Export and store elsewhere</div>
+    <p>Use "Export all" to download your library as a text file. Paste it into Notion, Apple Notes, your phone's notes app — anywhere you'll have it when you need it. Don't rely solely on this page.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">You've completed the track</div>
+    <p>You started with vague one-liners. Now you have a framework, techniques, and a personal library. <em>This is what £15 a month looks like when it works.</em></p>
+  </div>
+
+  <!-- TRACK COMPLETION CELEBRATION -->
+  <div class="track-complete" id="trackComplete">
+    <div class="tc-icon">🎉</div>
+    <div class="tc-title">Track Complete!</div>
+    <p class="tc-sub">You've finished "Talking to AI" — all 5 lessons. You now know more about prompt writing than 95% of AI users. Go use it.</p>
+    <a href="/learn/talking-to-ai/" class="tc-btn">← Back to track overview</a>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-4.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Advanced techniques</span></span>
+    </a>
+    <a href="/learn/talking-to-ai/" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Back to</span><span class="nav-btn-title">Track overview</span></span>
+      <span>→</span>
+    </a>
+  </div>
+
+</div>
+
+<footer style="background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; font-family: 'DM Sans', sans-serif;">
+  <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:800; color:var(--rust); margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const inspirations = [
+    {
+      name: 'Weekly team update email',
+      category: '📧 Email',
+      prompt: 'Act as a clear, professional communicator. I need to write a weekly update email to my [manager / team]. Here are my bullet points from this week:\n\n[PASTE YOUR BULLET POINTS HERE]\n\nTurn these into a well-structured weekly update email. Format: brief intro sentence, bullet points grouped by theme, one sentence on blockers or risks, one sentence on next week\'s focus. Keep it under 200 words. Professional but not stiff.'
+    },
+    {
+      name: 'Decision framework',
+      category: '🔍 Research',
+      prompt: 'I\'m trying to decide whether to [DESCRIBE YOUR DECISION]. Help me think through it clearly. Give me: (1) The 3 strongest arguments FOR this decision, (2) The 3 strongest arguments AGAINST, (3) The single most important factor I should weight most heavily, (4) What you\'d want to know before making this call. Be honest — don\'t just validate my instincts.'
+    },
+    {
+      name: 'LinkedIn post from a story',
+      category: '✍️ Writing',
+      prompt: 'Turn this work story into a compelling LinkedIn post. The story: [DESCRIBE WHAT HAPPENED — include a specific detail, a result, or a surprising moment].\n\nRequirements: Open with the most interesting or surprising element (not "I\'m excited to share"). Tell the story in 3-4 short paragraphs. End with one clear, practical takeaway. 200 words max. No hashtags. Write in first person, conversational tone — not corporate.'
+    },
+    {
+      name: 'Difficult conversation script',
+      category: '💬 Communication',
+      prompt: 'I need to have a difficult conversation with [RELATIONSHIP: colleague / friend / family member] about [TOPIC]. My goal is [WHAT YOU WANT TO ACHIEVE]. My concern is [WHAT YOU\'RE WORRIED ABOUT].\n\nHelp me plan this conversation: (1) An opening line that doesn\'t put them on the defensive, (2) The 2-3 key points I need to make clearly, (3) How to respond if they react badly, (4) How to close it constructively. Be direct and practical.'
+    },
+    {
+      name: "Devil's advocate critique",
+      category: '🧠 Thinking',
+      prompt: "Act as a brilliant but sceptical critic — your job is to find the weaknesses in my thinking that I\'m too close to see. Here\'s my idea / plan / decision:\n\n[DESCRIBE YOUR IDEA OR PLAN]\n\nGive me: (1) The 3 most likely ways this fails, (2) The assumption I\'m most likely wrong about, (3) What a smart person who disagrees with me would say, (4) One question that, if I can\'t answer well, should make me reconsider. Don\'t validate me — challenge me."
+    },
+    {
+      name: 'Project kickoff plan',
+      category: '📋 Planning',
+      prompt: 'I\'m starting a new project. Here are the details:\n\nGoal: [WHAT DOES SUCCESS LOOK LIKE?]\nDeadline: [DATE]\nResources: [YOUR TIME / BUDGET / PEOPLE AVAILABLE]\nBiggest risk: [WHAT COULD GO WRONG?]\n\nCreate a realistic step-by-step action plan. Include: weekly milestones, the 3 most important first steps, potential blockers to address early, and one thing I should decide before starting that will save time later. Present as a structured plan, not a paragraph.'
+    },
+    {
+      name: 'Social media caption batch',
+      category: '🎨 Creative',
+      prompt: 'Generate 7 social media captions (one per day) for [YOUR PLATFORM: Instagram / LinkedIn / Twitter]. My account is about [YOUR TOPIC / NICHE]. My audience is [WHO FOLLOWS YOU]. Brand voice: [DESCRIBE YOUR TONE — e.g. professional but warm, witty and direct, educational].\n\nTheme for the week: [YOUR WEEKLY THEME OR WHAT YOU\'RE PROMOTING]\n\nRules: vary the formats (some short, some storytelling, some questions, some lists). No generic motivational content. No hashtag spam — max 3 hashtags on posts that need them. Make at least one caption feel unexpected.'
+    },
+    {
+      name: 'Meeting summary & actions',
+      category: '💼 Work',
+      prompt: 'Here are my rough notes from a meeting:\n\n[PASTE YOUR NOTES]\n\nTurn these into a clear meeting summary. Format:\n- Date & attendees (if in notes)\n- Key decisions made (bullet points)\n- Action items (with owner name and deadline if mentioned)\n- Open questions or items to follow up on\n\nKeep it tight — this will be sent to everyone who was in the meeting. No waffle.'
+    }
+  ];
+
+  const STORAGE_KEY = 'tai-prompt-library';
+
+  function loadLibrary() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || Array(5).fill(null); }
+    catch { return Array(5).fill(null); }
+  }
+
+  function saveLibrary(lib) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(lib));
+  }
+
+  let library = loadLibrary();
+  let openSlot = -1;
+
+  function renderLibrary() {
+    const container = document.getElementById('librarySlots');
+    const filled = library.filter(Boolean).length;
+    document.getElementById('libCounter').textContent = filled + ' of 5 prompts saved';
+
+    container.innerHTML = library.map((item, i) => {
+      const isFilled = !!item;
+      const isOpen = openSlot === i;
+      return `
+        <div class="prompt-slot ${isFilled ? 'filled' : ''}" id="slot-${i}">
+          <div class="prompt-slot-header" onclick="toggleSlot(${i})">
+            <div class="slot-num">${isFilled ? '✓' : i + 1}</div>
+            <div class="slot-summary">
+              <div class="slot-name ${isFilled ? '' : 'empty'}">${isFilled ? escHtml(item.name) : 'Empty slot — click to add a prompt'}</div>
+              ${isFilled ? `<div class="slot-category">${escHtml(item.category)}</div>` : ''}
+            </div>
+            ${isFilled ? `
+              <div class="slot-actions" onclick="event.stopPropagation()">
+                <button class="slot-btn copy" onclick="copySlot(${i})">Copy</button>
+                <button class="slot-btn delete" onclick="deleteSlot(${i})">✕</button>
+              </div>
+            ` : ''}
+          </div>
+          <div class="slot-editor ${isOpen ? 'open' : ''}" id="editor-${i}">
+            <div class="editor-field">
+              <div class="editor-label">Prompt name</div>
+              <input type="text" class="editor-input" id="ei-name-${i}" placeholder="e.g. Weekly update email" value="${isFilled ? escAttr(item.name) : ''}">
+            </div>
+            <div class="editor-field">
+              <div class="editor-label">Category</div>
+              <select class="editor-input category-select" id="ei-cat-${i}">
+                ${['📧 Email', '✍️ Writing', '🔍 Research', '📋 Planning', '🎨 Creative', '💬 Communication', '🧠 Thinking', '💼 Work', '📊 Analysis', '🎯 Other'].map(c =>
+                  `<option value="${c}" ${isFilled && item.category === c ? 'selected' : ''}>${c}</option>`
+                ).join('')}
+              </select>
+            </div>
+            <div class="editor-field">
+              <div class="editor-label">Your prompt</div>
+              <textarea class="editor-input" id="ei-prompt-${i}" rows="5" placeholder="Write or paste your prompt here. Use [BRACKETS] for parts you'll fill in each time...">${isFilled ? escHtml(item.prompt) : ''}</textarea>
+            </div>
+            <div class="editor-actions">
+              <button class="save-btn" onclick="saveSlot(${i})">Save prompt</button>
+              <button class="cancel-btn" onclick="cancelSlot(${i})">Cancel</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    // Show celebration if all complete
+    const allDone = library.filter(Boolean).length === 5 && localStorage.getItem('tai-5-complete') === 'true';
+    document.getElementById('trackComplete').classList.toggle('visible', allDone);
+  }
+
+  function toggleSlot(i) {
+    if (openSlot === i) {
+      openSlot = -1;
+    } else {
+      openSlot = i;
+    }
+    renderLibrary();
+  }
+
+  function saveSlot(i) {
+    const name = document.getElementById('ei-name-' + i).value.trim();
+    const cat = document.getElementById('ei-cat-' + i).value;
+    const prompt = document.getElementById('ei-prompt-' + i).value.trim();
+    if (!name || !prompt) { alert('Please add a name and prompt text.'); return; }
+    library[i] = { name, category: cat, prompt };
+    saveLibrary(library);
+    openSlot = -1;
+    renderLibrary();
+  }
+
+  function cancelSlot(i) {
+    openSlot = -1;
+    renderLibrary();
+  }
+
+  function deleteSlot(i) {
+    if (!confirm('Remove this prompt?')) return;
+    library[i] = null;
+    saveLibrary(library);
+    renderLibrary();
+  }
+
+  function copySlot(i) {
+    const item = library[i];
+    if (!item) return;
+    navigator.clipboard.writeText(item.prompt).then(() => {
+      const btn = document.querySelector(`#slot-${i} .slot-btn.copy`);
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+
+  function addInspiration(idx) {
+    const insp = inspirations[idx];
+    const emptySlot = library.findIndex(s => !s);
+    if (emptySlot === -1) { alert('Your library is full! Delete a slot first.'); return; }
+    library[emptySlot] = { name: insp.name, category: insp.category, prompt: insp.prompt };
+    saveLibrary(library);
+    openSlot = emptySlot;
+    renderLibrary();
+    document.getElementById('slot-' + emptySlot).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function exportLibrary() {
+    const filled = library.filter(Boolean);
+    if (!filled.length) { alert('Add some prompts first!'); return; }
+    const text = filled.map((p, i) =>
+      `=== Prompt ${i + 1}: ${p.name} ===\nCategory: ${p.category}\n\n${p.prompt}\n`
+    ).join('\n' + '─'.repeat(60) + '\n\n');
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'my-prompt-library.txt';
+    a.click();
+  }
+
+  function clearAll() {
+    if (!confirm('Clear all saved prompts? This cannot be undone.')) return;
+    library = Array(5).fill(null);
+    saveLibrary(library);
+    openSlot = -1;
+    renderLibrary();
+  }
+
+  function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function escAttr(str) { return String(str).replace(/"/g,'&quot;'); }
+
+  // Init
+  renderLibrary();
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Completion
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Track finished!' : 'Mark lesson as complete';
+    localStorage.setItem('tai-5-complete', checked);
+    if (checked && library.filter(Boolean).length === 5) {
+      document.getElementById('trackComplete').classList.add('visible');
+    }
+  }
+  if (localStorage.getItem('tai-5-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Track finished!';
+  }
+</script>
+</body>
+</html>

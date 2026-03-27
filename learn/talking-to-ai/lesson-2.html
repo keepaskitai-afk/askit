@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2: The Anatomy of a Perfect Prompt — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1714;
+    --rust: #C8521A; --rust-light: #F0784A; --gold: #E8A230;
+    --sage: #4A7C59; --sage-light: #EDF4EF; --muted: #7A7168;
+    --border: #E5DDD0; --card-bg: #FFFFFF;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(250,247,242,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta { background: var(--rust); color: #fff; padding: 10px 22px; border-radius: 100px; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  .progress-bar-wrap { position: fixed; top: 73px; left: 0; right: 0; z-index: 99; height: 3px; background: var(--border); }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--rust-light)); transition: width 0.1s linear; }
+
+  .lesson-hero { padding: 140px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+  .lesson-hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 60% 50% at 30% 40%, rgba(232,162,48,0.08) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 70% 70%, rgba(74,124,89,0.06) 0%, transparent 70%); }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 28px; animation: fadeUp 0.6s ease both; }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both; }
+  .lesson-title { font-family: 'Fraunces', serif; font-size: clamp(26px, 5vw, 60px); font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; color: var(--ink); margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both; }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-meta { display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 14px; color: var(--muted); animation: fadeUp 0.6s 0.15s ease both; }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .content-block { margin-bottom: 48px; }
+  .lesson-body h2 { font-family: 'Fraunces', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink); }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-body p { font-size: 17px; line-height: 1.75; color: #3D3A36; font-weight: 300; margin-bottom: 20px; }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  .callout { border-radius: 20px; padding: 28px 32px; margin-bottom: 32px; border: 1px solid var(--border); }
+  .callout-plain { background: var(--warm-white); }
+  .callout-gold { background: rgba(232,162,48,0.08); border-color: rgba(232,162,48,0.3); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-ink { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .callout-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; color: var(--rust); }
+  .callout-gold .callout-label { color: #B87D1A; }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout-ink .callout-label { color: var(--gold); }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+  .callout-ink p { color: rgba(250,247,242,0.8); }
+
+  .key-takeaway { background: linear-gradient(135deg, var(--gold), #d4911e); border-radius: 24px; padding: 36px; margin: 48px 0; text-align: center; }
+  .kt-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+  .key-takeaway p { font-family: 'Fraunces', serif; font-size: clamp(20px, 2.5vw, 26px); font-weight: 600; line-height: 1.45; color: var(--ink) !important; margin-bottom: 0 !important; }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  .completion-check { display: flex; align-items: center; gap: 12px; padding: 20px 24px; border-radius: 14px; background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25); cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 32px; }
+  .completion-check:hover { border-color: var(--sage); }
+  .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .completion-check.checked .check-box { background: var(--sage); border-color: var(--sage); }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  .lesson-nav { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; border-top: 1px solid var(--border); margin-top: 64px; gap: 16px; }
+  .lesson-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 500; border: 1.5px solid var(--border); color: var(--ink); background: var(--warm-white); transition: all 0.2s; }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next { background: var(--rust); color: #fff; border-color: var(--rust); font-weight: 600; }
+  .lesson-nav-btn.next:hover { background: var(--rust-light); border-color: var(--rust-light); color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── PROMPT ANATOMY CARDS ── */
+  .anatomy-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .anatomy-piece {
+    border: 1.5px solid var(--border); border-radius: 16px;
+    padding: 20px 24px; background: var(--warm-white);
+    display: flex; align-items: flex-start; gap: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .anatomy-piece.active { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(232,162,48,0.1); }
+  .anatomy-num { width: 32px; height: 32px; border-radius: 50%; background: var(--border); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; transition: all 0.2s; }
+  .anatomy-piece.active .anatomy-num { background: var(--gold); color: var(--ink); }
+  .anatomy-piece-body { flex: 1; }
+  .anatomy-piece-title { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+  .anatomy-piece-desc { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+  /* ── INTERACTIVE BUILDER ── */
+  .builder-wrap {
+    background: var(--ink); border-radius: 28px; overflow: hidden;
+    margin: 32px 0 48px; position: relative;
+  }
+  .builder-wrap::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 100% 0%, rgba(232,162,48,0.06), transparent); pointer-events: none; }
+  .builder-header { padding: 28px 32px 0; }
+  .builder-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .builder-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .builder-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--cream); margin-bottom: 4px; }
+  .builder-sub { font-size: 14px; color: rgba(250,247,242,0.5); margin-bottom: 24px; }
+
+  .builder-fields { padding: 0 32px; display: flex; flex-direction: column; gap: 0; }
+  .builder-field { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .builder-field:last-child { border-bottom: none; }
+  .field-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(250,247,242,0.4); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .field-num { width: 18px; height: 18px; border-radius: 50%; background: rgba(232,162,48,0.2); color: var(--gold); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .field-input {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; padding: 12px 16px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--cream); resize: none; outline: none; line-height: 1.5;
+    transition: border-color 0.2s;
+  }
+  .field-input::placeholder { color: rgba(250,247,242,0.25); }
+  .field-input:focus { border-color: rgba(232,162,48,0.4); }
+
+  .builder-preview-wrap { padding: 24px 32px 32px; }
+  .preview-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: rgba(250,247,242,0.4); margin-bottom: 12px; }
+  .builder-preview {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 20px 24px; min-height: 80px;
+    font-size: 15px; color: var(--cream); line-height: 1.65;
+  }
+  .preview-placeholder { color: rgba(250,247,242,0.25); font-style: italic; }
+  .preview-piece { transition: all 0.3s; }
+  .preview-piece.role { color: #ffd166; }
+  .preview-piece.context { color: #a8dadc; }
+  .preview-piece.task { color: #81b29a; }
+  .preview-piece.format { color: #e07a5f; }
+  .preview-piece.constraint { color: #b8b0fc; }
+
+  .builder-actions { padding: 0 32px 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .builder-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px; border-radius: 100px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-copy { background: rgba(255,255,255,0.1); color: var(--cream); }
+  .btn-copy:hover { background: rgba(255,255,255,0.18); }
+  .btn-run { background: var(--gold); color: var(--ink); }
+  .btn-run:hover { background: #d4911e; }
+  .btn-clear { background: rgba(255,255,255,0.06); color: rgba(250,247,242,0.5); font-size: 13px; }
+  .btn-clear:hover { background: rgba(255,255,255,0.1); color: var(--cream); }
+
+  .completeness-bar-wrap { padding: 16px 32px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.06); }
+  .completeness-label { font-size: 12px; color: rgba(250,247,242,0.4); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .completeness-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .completeness-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--rust-light)); border-radius: 2px; transition: width 0.4s ease; }
+
+  /* Template picker */
+  .template-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .template-btn { padding: 7px 14px; border-radius: 100px; font-size: 13px; font-weight: 500; border: 1.5px solid var(--border); background: var(--cream); color: var(--muted); cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .template-btn:hover { border-color: var(--gold); color: var(--ink); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 110px 20px 56px; }
+    .builder-fields, .builder-preview-wrap, .builder-actions, .builder-header, .completeness-bar-wrap { padding-left: 20px; padding-right: 20px; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>✍️ Talking to AI</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/talking-to-ai/">✍️ Talking to AI</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 2</span>
+    </div>
+    <div class="lesson-number">Lesson 2 of 5 · Premium Track</div>
+    <h1 class="lesson-title">The anatomy of<br>a <em>perfect prompt</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 22 min</span><span class="meta-dot"></span>
+      <span>🛠️ Interactive builder</span><span class="meta-dot"></span>
+      <span>5 components</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>Now that you know <em>why</em> most prompts fail, let's build a system for writing prompts that don't. Every great prompt — whether it's a one-liner or a paragraph — contains some combination of five components. Learn these five pieces and you'll be able to construct a powerful prompt for almost any situation.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The five components<br>of a <em>great prompt</em></h2>
+    <p>These aren't rigid rules — they're ingredients. Not every prompt needs all five. But knowing each one lets you choose deliberately which to include.</p>
+  </div>
+
+  <div class="anatomy-grid reveal">
+    <div class="anatomy-piece" id="piece-1">
+      <div class="anatomy-num">1</div>
+      <div class="anatomy-piece-body">
+        <div class="anatomy-piece-title">Role — who should the AI be?</div>
+        <div class="anatomy-piece-desc">Giving the AI a role dramatically shapes the voice, depth, and perspective of its response. "Act as a senior UX designer" vs "Act as a patient teacher for an 8-year-old" will produce completely different outputs for the same question.</div>
+      </div>
+    </div>
+    <div class="anatomy-piece" id="piece-2">
+      <div class="anatomy-num">2</div>
+      <div class="anatomy-piece-body">
+        <div class="anatomy-piece-title">Context — what's the situation?</div>
+        <div class="anatomy-piece-desc">Background information that the AI needs to give you a relevant response. Who are you? What are you working on? What's the goal? What has already happened? The more specific the context, the more tailored the output.</div>
+      </div>
+    </div>
+    <div class="anatomy-piece" id="piece-3">
+      <div class="anatomy-num">3</div>
+      <div class="anatomy-piece-body">
+        <div class="anatomy-piece-title">Task — what exactly do you want?</div>
+        <div class="anatomy-piece-desc">The specific action or deliverable. Use a precise verb: write, analyse, summarise, compare, list, explain, create, critique, rewrite. Vague tasks like "help me with" or "tell me about" lead to vague outputs.</div>
+      </div>
+    </div>
+    <div class="anatomy-piece" id="piece-4">
+      <div class="anatomy-num">4</div>
+      <div class="anatomy-piece-body">
+        <div class="anatomy-piece-title">Format — how should it look?</div>
+        <div class="anatomy-piece-desc">Should it be a bulleted list, a table, a paragraph, 3 options, a numbered step-by-step guide? Specifying format stops the AI from guessing — and the AI's default guess is often not what you need.</div>
+      </div>
+    </div>
+    <div class="anatomy-piece" id="piece-5">
+      <div class="anatomy-num">5</div>
+      <div class="anatomy-piece-body">
+        <div class="anatomy-piece-title">Constraints — what are the boundaries?</div>
+        <div class="anatomy-piece-desc">Word count, tone, what to include or exclude, who the audience is, what style to match. Constraints aren't limitations — they're the guardrails that make outputs immediately usable rather than requiring heavy editing.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Build a prompt<br><em>piece by piece</em></h2>
+    <p>The best way to internalise these five components is to use them. Below is an interactive prompt builder. Fill in each field and watch the assembled prompt update in real time. You can start from scratch or load a template to see how it works.</p>
+  </div>
+
+  <!-- TEMPLATE PICKER -->
+  <div class="reveal">
+    <p style="font-size:14px; color:var(--muted); margin-bottom:12px; font-weight:500;">Load a template to see how the pieces fit together:</p>
+    <div class="template-row">
+      <button class="template-btn" onclick="loadTemplate('email')">📧 Professional email</button>
+      <button class="template-btn" onclick="loadTemplate('explain')">📖 Explain a concept</button>
+      <button class="template-btn" onclick="loadTemplate('plan')">📋 Weekly plan</button>
+      <button class="template-btn" onclick="loadTemplate('feedback')">💬 Get feedback</button>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE BUILDER -->
+  <div class="builder-wrap reveal" id="promptBuilder">
+    <div class="builder-header">
+      <div class="builder-label"><span class="builder-dot"></span> Prompt Builder</div>
+      <div class="builder-title">Assemble your prompt</div>
+      <div class="builder-sub">Each piece you add improves the final result</div>
+    </div>
+
+    <div class="builder-fields">
+      <div class="builder-field">
+        <div class="field-label"><span class="field-num">1</span> Role (optional)</div>
+        <input type="text" class="field-input" id="fieldRole" placeholder="e.g. Act as an experienced copywriter..." oninput="updatePreview()">
+      </div>
+      <div class="builder-field">
+        <div class="field-label"><span class="field-num">2</span> Context</div>
+        <textarea class="field-input" id="fieldContext" rows="2" placeholder="e.g. I run a small online shop selling handmade ceramics. I have 800 email subscribers..." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="builder-field">
+        <div class="field-label"><span class="field-num">3</span> Task</div>
+        <input type="text" class="field-input" id="fieldTask" placeholder="e.g. Write a promotional email announcing a 20% summer sale..." oninput="updatePreview()">
+      </div>
+      <div class="builder-field">
+        <div class="field-label"><span class="field-num">4</span> Format</div>
+        <input type="text" class="field-input" id="fieldFormat" placeholder="e.g. Subject line + 3 short paragraphs + one clear CTA..." oninput="updatePreview()">
+      </div>
+      <div class="builder-field">
+        <div class="field-label"><span class="field-num">5</span> Constraints</div>
+        <input type="text" class="field-input" id="fieldConstraints" placeholder="e.g. Under 150 words. Warm and personal tone. No emojis..." oninput="updatePreview()">
+      </div>
+    </div>
+
+    <div class="completeness-bar-wrap">
+      <div class="completeness-label">
+        <span>Prompt completeness</span>
+        <span id="completenessText">0 of 5 components</span>
+      </div>
+      <div class="completeness-bar"><div class="completeness-fill" id="completenessFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="builder-preview-wrap">
+      <div class="preview-label">✨ Your assembled prompt</div>
+      <div class="builder-preview" id="promptPreview">
+        <span class="preview-placeholder">Fill in the fields above and your prompt will appear here, colour-coded by component.</span>
+      </div>
+    </div>
+
+    <div class="builder-actions">
+      <button class="builder-btn btn-run" onclick="runPrompt()">▶ Try on Claude →</button>
+      <button class="builder-btn btn-copy" onclick="copyPrompt()">📋 Copy prompt</button>
+      <button class="builder-btn btn-clear" onclick="clearBuilder()">Clear</button>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>You don't always need<br><em>all five</em></h2>
+    <p>A quick question doesn't need a five-part prompt. The goal isn't to fill out a form every time — it's to know which component is missing when you get a bad response.</p>
+    <p>Get a vague output? Add more context. Get a wall of text? Add a format. Get something off-tone? Add constraints. The five components are a diagnostic tool as much as a writing framework.</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ Quick rule of thumb</div>
+    <p>For any task that matters — a work email, a presentation, a difficult conversation to plan — spend 60 seconds adding context, format, and constraints before you send. That minute will save you 10 minutes of editing after.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🔑 The power of the task verb</div>
+    <p>Of the five components, the <strong>task verb</strong> is the most consistently under-used. Compare: "tell me about marketing" vs "give me 5 specific marketing tactics a solo freelancer can implement this week with no budget, ranked by time-to-result." Same topic. Completely different usefulness.</p>
+  </div>
+
+  <div class="content-block reveal">
+    <h2>A formula that<br><em>almost always works</em></h2>
+    <p>If you want one template you can apply to almost any situation, this is it:</p>
+  </div>
+
+  <div class="callout callout-ink reveal">
+    <div class="callout-label">📐 The universal prompt template</div>
+    <p style="font-family: 'Fraunces', serif; font-size: 18px; font-style: italic; line-height: 1.7;">
+      "You are [role]. I am [brief context about you]. I need you to [precise task verb + specifics]. Present it as [format]. [Key constraints: tone, length, audience, what to include/exclude]."
+    </p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Every great prompt is built from the same five pieces. <em>You don't need all five every time — you just need to know which one you're missing.</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-1.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">What is a prompt?</span></span>
+    </a>
+    <a href="lesson-3.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Prompting for different tasks</span></span>
+      <span>→</span>
+    </a>
+  </div>
+
+</div>
+
+<footer style="background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; font-family: 'DM Sans', sans-serif;">
+  <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:800; color:var(--rust); margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const templates = {
+    email: {
+      role: 'Act as an experienced email copywriter who writes warm, professional business emails',
+      context: 'I run a small online ceramics shop. I have 800 email subscribers who have purchased from me before. I\'m running a 20% off summer sale starting July 1st.',
+      task: 'Write a promotional email announcing my summer sale',
+      format: 'Subject line + 3 short paragraphs + one clear call-to-action button label',
+      constraints: 'Under 180 words. Warm and personal tone — I know my customers by name. No corporate jargon. No exclamation marks.'
+    },
+    explain: {
+      role: 'Act as a patient teacher who is brilliant at explaining complex topics using everyday analogies',
+      context: 'I\'m a 52-year-old retired teacher with no technical background. I want to understand why everyone is talking about AI.',
+      task: 'Explain what a "large language model" is in plain English',
+      format: 'Three short paragraphs followed by one memorable analogy',
+      constraints: 'No technical jargon. No acronyms unless you immediately explain them. Under 250 words.'
+    },
+    plan: {
+      role: 'Act as an experienced productivity coach',
+      context: 'I\'m a freelance illustrator with three client projects due this week: Project A needs 5 hours, Project B needs 3 hours, Project C needs 2 hours. I work best from 9am–1pm. I have a doctor\'s appointment Wednesday afternoon.',
+      task: 'Create a realistic daily work schedule for Monday to Friday',
+      format: 'A table with columns for Day, Morning focus, Afternoon focus, and Notes',
+      constraints: 'Build in 30 min of buffer each day. Don\'t overload any single day. Be realistic about creative energy.'
+    },
+    feedback: {
+      role: 'Act as a senior product designer with 15 years of experience at consumer apps',
+      context: 'I\'ve designed my first mobile app — a habit tracking app. The main screen shows a list of habits, a progress ring for each, and a daily streak counter at the top. I\'m an intermediate designer, 2 years of experience.',
+      task: 'Review my app\'s main screen concept and give me honest, actionable feedback',
+      format: 'Three specific strengths, three specific weaknesses, and two concrete changes I should make first',
+      constraints: 'Be direct. Don\'t sugarcoat. Focus on UX fundamentals. Skip general design theory — I want specific, actionable critique.'
+    }
+  };
+
+  function loadTemplate(name) {
+    const t = templates[name];
+    document.getElementById('fieldRole').value = t.role;
+    document.getElementById('fieldContext').value = t.context;
+    document.getElementById('fieldTask').value = t.task;
+    document.getElementById('fieldFormat').value = t.format;
+    document.getElementById('fieldConstraints').value = t.constraints;
+    updatePreview();
+  }
+
+  function updatePreview() {
+    const role = document.getElementById('fieldRole').value.trim();
+    const context = document.getElementById('fieldContext').value.trim();
+    const task = document.getElementById('fieldTask').value.trim();
+    const format = document.getElementById('fieldFormat').value.trim();
+    const constraints = document.getElementById('fieldConstraints').value.trim();
+
+    const parts = [];
+    if (role) parts.push(`<span class="preview-piece role">${escHtml(role)}.</span>`);
+    if (context) parts.push(`<span class="preview-piece context">${escHtml(context)}</span>`);
+    if (task) parts.push(`<span class="preview-piece task">${escHtml(task)}.</span>`);
+    if (format) parts.push(`<span class="preview-piece format">Present it as: ${escHtml(format)}.</span>`);
+    if (constraints) parts.push(`<span class="preview-piece constraint">${escHtml(constraints)}.</span>`);
+
+    const preview = document.getElementById('promptPreview');
+    if (parts.length === 0) {
+      preview.innerHTML = '<span class="preview-placeholder">Fill in the fields above and your prompt will appear here, colour-coded by component.</span>';
+    } else {
+      preview.innerHTML = parts.join(' ');
+    }
+
+    // Completeness
+    const filled = [role, context, task, format, constraints].filter(Boolean).length;
+    const pct = (filled / 5) * 100;
+    document.getElementById('completenessFill').style.width = pct + '%';
+    document.getElementById('completenessText').textContent = filled + ' of 5 components';
+
+    // Highlight anatomy pieces
+    ['piece-1','piece-2','piece-3','piece-4','piece-5'].forEach((id, i) => {
+      const vals = [role, context, task, format, constraints];
+      document.getElementById(id).classList.toggle('active', !!vals[i]);
+    });
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function getFullPrompt() {
+    const role = document.getElementById('fieldRole').value.trim();
+    const context = document.getElementById('fieldContext').value.trim();
+    const task = document.getElementById('fieldTask').value.trim();
+    const format = document.getElementById('fieldFormat').value.trim();
+    const constraints = document.getElementById('fieldConstraints').value.trim();
+    return [role, context, task, format ? 'Present it as: ' + format : '', constraints].filter(Boolean).join(' ');
+  }
+
+  function runPrompt() {
+    const p = getFullPrompt();
+    if (!p) { alert('Add at least a task first!'); return; }
+    window.open('https://claude.ai/new?q=' + encodeURIComponent(p), '_blank');
+  }
+
+  function copyPrompt() {
+    const p = getFullPrompt();
+    if (!p) { alert('Nothing to copy yet!'); return; }
+    navigator.clipboard.writeText(p).then(() => {
+      const btn = document.querySelector('.btn-copy');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy prompt', 2000);
+    });
+  }
+
+  function clearBuilder() {
+    ['fieldRole','fieldContext','fieldTask','fieldFormat','fieldConstraints'].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = '';
+    });
+    updatePreview();
+  }
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const progress = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Completion
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('tai-2-complete', checked);
+  }
+  if (localStorage.getItem('tai-2-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

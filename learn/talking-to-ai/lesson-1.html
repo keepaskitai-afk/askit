@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1: What Is a Prompt? — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1714;
+    --rust: #C8521A; --rust-light: #F0784A; --gold: #E8A230;
+    --sage: #4A7C59; --sage-light: #EDF4EF; --muted: #7A7168;
+    --border: #E5DDD0; --card-bg: #FFFFFF;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(250,247,242,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta { background: var(--rust); color: #fff; padding: 10px 22px; border-radius: 100px; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  .progress-bar-wrap { position: fixed; top: 73px; left: 0; right: 0; z-index: 99; height: 3px; background: var(--border); }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--rust-light)); transition: width 0.1s linear; }
+
+  .lesson-hero { padding: 140px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+  .lesson-hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 60% 50% at 20% 30%, rgba(232,162,48,0.09) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 80% 70%, rgba(200,82,26,0.06) 0%, transparent 70%); }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 28px; animation: fadeUp 0.6s ease both; }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .track-breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both; }
+  .lesson-title { font-family: 'Fraunces', serif; font-size: clamp(26px, 5vw, 64px); font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; color: var(--ink); margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both; }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-meta { display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 14px; color: var(--muted); animation: fadeUp 0.6s 0.15s ease both; }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .content-block { margin-bottom: 48px; animation: fadeUp 0.6s ease both; }
+  .lesson-body h2 { font-family: 'Fraunces', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink); }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-body p { font-size: 17px; line-height: 1.75; color: #3D3A36; font-weight: 300; margin-bottom: 20px; }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  .callout { border-radius: 20px; padding: 28px 32px; margin-bottom: 32px; border: 1px solid var(--border); }
+  .callout-plain { background: var(--warm-white); }
+  .callout-rust { background: rgba(200,82,26,0.06); border-color: rgba(200,82,26,0.2); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-gold { background: rgba(232,162,48,0.08); border-color: rgba(232,162,48,0.3); }
+  .callout-ink { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .callout-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; color: var(--rust); }
+  .callout-gold .callout-label { color: #B87D1A; }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout-ink .callout-label { color: var(--gold); }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+  .callout-ink p { color: rgba(250,247,242,0.8); }
+
+  .analogy-card { background: var(--ink); border-radius: 24px; padding: 40px 36px; margin-bottom: 32px; position: relative; overflow: hidden; }
+  .analogy-card::before { content: '"'; position: absolute; top: -10px; right: 24px; font-family: 'Fraunces', serif; font-size: 120px; font-weight: 800; color: rgba(255,255,255,0.05); line-height: 1; }
+  .analogy-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+  .analogy-text { font-family: 'Fraunces', serif; font-size: clamp(20px, 2.5vw, 26px); font-weight: 300; font-style: italic; color: var(--cream); line-height: 1.5; margin-bottom: 0 !important; }
+
+  .key-takeaway { background: linear-gradient(135deg, var(--gold), #d4911e); border-radius: 24px; padding: 36px; margin: 48px 0; text-align: center; }
+  .kt-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+  .key-takeaway p { font-family: 'Fraunces', serif; font-size: clamp(20px, 2.5vw, 26px); font-weight: 600; line-height: 1.45; color: var(--ink) !important; margin-bottom: 0 !important; }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  .exercise-block { background: var(--ink); border-radius: 24px; padding: 40px 36px; margin: 48px 0; position: relative; overflow: hidden; }
+  .exercise-block::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 70% at 90% 10%, rgba(232,162,48,0.08), transparent); pointer-events: none; }
+  .exercise-label { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .exercise-label-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .exercise-block h3 { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--cream); margin-bottom: 12px; }
+  .exercise-block p { color: rgba(250,247,242,0.7) !important; font-size: 16px !important; }
+  .exercise-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--rust); color: #fff; padding: 14px 26px; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .exercise-btn:hover { background: var(--rust-light); transform: translateY(-1px); }
+  .exercise-btn-gold { background: var(--gold); color: var(--ink); }
+  .exercise-btn-gold:hover { background: #d4911e; color: var(--ink); }
+
+  .completion-check { display: flex; align-items: center; gap: 12px; padding: 20px 24px; border-radius: 14px; background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25); cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 32px; }
+  .completion-check:hover { border-color: var(--sage); }
+  .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .completion-check.checked .check-box { background: var(--sage); border-color: var(--sage); }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  .lesson-nav { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; border-top: 1px solid var(--border); margin-top: 64px; gap: 16px; }
+  .lesson-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 500; border: 1.5px solid var(--border); color: var(--ink); background: var(--warm-white); transition: all 0.2s; }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next { background: var(--rust); color: #fff; border-color: var(--rust); font-weight: 600; }
+  .lesson-nav-btn.next:hover { background: var(--rust-light); border-color: var(--rust-light); color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── BEFORE/AFTER INTERACTIVE ── */
+  .comparison-widget {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 24px; overflow: hidden; margin-bottom: 32px;
+  }
+  .comparison-tabs {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-tab {
+    padding: 14px 20px; font-size: 14px; font-weight: 600;
+    text-align: center; cursor: pointer; transition: all 0.2s;
+    border: none; background: transparent; font-family: 'DM Sans', sans-serif;
+  }
+  .comp-tab.bad { color: var(--rust); }
+  .comp-tab.bad.active { background: rgba(200,82,26,0.06); border-bottom: 2px solid var(--rust); }
+  .comp-tab.good { color: var(--sage); }
+  .comp-tab.good.active { background: var(--sage-light); border-bottom: 2px solid var(--sage); }
+  .comparison-body { padding: 28px 32px; }
+  .comp-prompt-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .comp-tab.bad ~ .comparison-body .comp-prompt-label { color: var(--rust); }
+  .comp-prompt {
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px;
+    font-size: 15px; font-style: italic; color: var(--ink); line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .comp-result-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .comp-result {
+    border-radius: 12px; padding: 18px 20px;
+    font-size: 15px; line-height: 1.65; color: #3D3A36;
+  }
+  .comp-result.bad-result { background: rgba(200,82,26,0.05); border: 1px solid rgba(200,82,26,0.15); }
+  .comp-result.good-result { background: var(--sage-light); border: 1px solid rgba(74,124,89,0.2); }
+  .comp-why { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); line-height: 1.55; }
+  .comp-why strong { color: var(--ink); font-weight: 500; }
+
+  .scenario-selector {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .scenario-btn {
+    padding: 8px 16px; border-radius: 100px; font-size: 13px; font-weight: 500;
+    border: 1.5px solid var(--border); background: var(--cream); color: var(--muted);
+    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .scenario-btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .scenario-btn:hover:not(.active) { border-color: var(--ink); color: var(--ink); }
+
+  .improvement-score {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px; background: rgba(232,162,48,0.08);
+    border: 1px solid rgba(232,162,48,0.25); border-radius: 12px; margin-bottom: 20px;
+  }
+  .score-label { font-size: 13px; color: var(--muted); }
+  .score-bar-wrap { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .score-bar { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+  .score-bar.bad-score { background: var(--rust); }
+  .score-bar.good-score { background: var(--sage); }
+  .score-val { font-size: 14px; font-weight: 700; color: var(--ink); min-width: 36px; text-align: right; }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 110px 20px 56px; }
+    .lesson-meta { flex-wrap: wrap; gap: 10px; }
+    .callout { padding: 20px 22px; }
+    .analogy-card { padding: 28px 24px; }
+    .exercise-block { padding: 28px 22px; }
+    .comparison-body { padding: 20px 22px; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>✍️ Talking to AI</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/talking-to-ai/">✍️ Talking to AI</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 1</span>
+    </div>
+    <div class="lesson-number">Lesson 1 of 5 · Premium Track</div>
+    <h1 class="lesson-title">What is a prompt —<br>and why most people<br><em>get it wrong</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 18 min read</span><span class="meta-dot"></span>
+      <span>⚡ Interactive</span><span class="meta-dot"></span>
+      <span>6 before/after examples</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>Most people type a question into an AI tool the same way they'd type it into Google. Short, vague, a couple of words. They get a mediocre answer, shrug, and think "I guess AI isn't that impressive."</p>
+    <p>The problem isn't the AI. <strong>The problem is the prompt.</strong></p>
+    <p>A prompt is simply everything you type to the AI before it responds. But what you put in that box — how much detail, in what order, framed in what way — determines everything about what comes back.</p>
+  </div>
+
+  <div class="analogy-card reveal">
+    <div class="analogy-label">💡 Think of it this way</div>
+    <p class="analogy-text">"A bad prompt is like calling a contractor and saying 'build me something.' A good prompt is like handing them blueprints, a budget, a deadline, and your favourite materials."</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The gap between bad<br>and good prompts is <em>enormous</em></h2>
+    <p>This isn't a small difference. We're talking about the difference between a useless paragraph and something you'd be happy to send straight to a client. Between a confusing explanation and one that clicks immediately. Between wasting 20 minutes and saving two hours.</p>
+    <p>Let's look at real examples. Select a scenario, then toggle between the bad and good version to see the difference.</p>
+  </div>
+
+  <!-- INTERACTIVE BEFORE/AFTER -->
+  <div class="reveal">
+    <div class="scenario-selector" id="scenarioSelector">
+      <button class="scenario-btn active" onclick="loadScenario(0, this)">📧 Email</button>
+      <button class="scenario-btn" onclick="loadScenario(1, this)">📋 Planning</button>
+      <button class="scenario-btn" onclick="loadScenario(2, this)">💡 Brainstorm</button>
+      <button class="scenario-btn" onclick="loadScenario(3, this)">📖 Explain</button>
+      <button class="scenario-btn" onclick="loadScenario(4, this)">✍️ Writing</button>
+      <button class="scenario-btn" onclick="loadScenario(5, this)">🔍 Research</button>
+    </div>
+
+    <div class="comparison-widget">
+      <div class="comparison-tabs">
+        <button class="comp-tab bad active" id="tabBad" onclick="showVersion('bad')">❌ Bad prompt</button>
+        <button class="comp-tab good" id="tabGood" onclick="showVersion('good')">✅ Good prompt</button>
+      </div>
+      <div class="comparison-body">
+        <div class="improvement-score">
+          <span class="score-label">Response quality</span>
+          <div class="score-bar-wrap"><div class="score-bar" id="scoreBar" style="width:15%"></div></div>
+          <span class="score-val" id="scoreVal">15%</span>
+        </div>
+        <div class="comp-prompt-label" id="promptLabel">THE PROMPT</div>
+        <div class="comp-prompt" id="compPrompt"></div>
+        <div class="comp-result-label">AI RESPONSE</div>
+        <div class="comp-result" id="compResult"></div>
+        <div class="comp-why" id="compWhy"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>So what makes a prompt <em>good?</em></h2>
+    <p>You've seen the gap. Now let's name what created it. Good prompts consistently do four things that bad prompts don't:</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">1. They give context</div>
+    <p>Good prompts explain the situation. Who are you? What's the background? Why does this matter? Context is the raw material the AI works with.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">2. They specify the task clearly</div>
+    <p>Not "help me with X" but "write / analyse / summarise / compare / create." A precise verb changes everything. The AI knows exactly what action to take.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">3. They define the output format</div>
+    <p>Should it be a bulleted list? A 200-word paragraph? A table? Three options to choose from? Without format guidance, the AI guesses — and often guesses wrong for your needs.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">4. They set the right tone or audience</div>
+    <p>Is this for a technical expert or a 10-year-old? Is it formal or casual? Empathetic or direct? Telling the AI who will read this changes how it writes.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The most common<br><em>prompting mistakes</em></h2>
+    <p>After looking at thousands of prompts, the same mistakes come up again and again. Recognising these in your own writing is the first step to fixing them.</p>
+  </div>
+
+  <div class="callout callout-rust reveal">
+    <div class="callout-label">🚫 Mistake 1: The one-liner</div>
+    <p>"Write me a marketing email." Full stop. No product, no audience, no goal, no tone. The AI has to invent everything — and it will, just not in the way you wanted.</p>
+  </div>
+  <div class="callout callout-rust reveal">
+    <div class="callout-label">🚫 Mistake 2: The vague ask</div>
+    <p>"Make this better." Better how? More concise? More persuasive? Better grammar? More emotional? Vague requests get vague improvements.</p>
+  </div>
+  <div class="callout callout-rust reveal">
+    <div class="callout-label">🚫 Mistake 3: Piling everything in</div>
+    <p>"Write a 500-word blog post that is SEO-optimised, funny, professional, targeted at beginners, experts, and includes 5 examples but is also concise." Contradictory instructions produce confused outputs.</p>
+  </div>
+  <div class="callout callout-rust reveal">
+    <div class="callout-label">🚫 Mistake 4: Giving up after one try</div>
+    <p>Great prompting is a conversation, not a single request. If the first response isn't what you wanted, that's not failure — that's iteration. More on this in Lesson 3.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">💡 The mindset shift</div>
+    <p>Stop thinking of prompts as search queries. Think of them as briefs you'd give to a very capable assistant. The more clearly you brief them, the better the output. You're not just asking a question — you're directing a collaboration.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>The AI is capable. <em>The prompt is the lever.</em> Every improvement you make to your prompts multiplies the quality of everything you get back.</p>
+  </div>
+
+  <div class="exercise-block reveal">
+    <div class="exercise-label"><span class="exercise-label-dot"></span>Your turn — Exercise 1</div>
+    <h3>Upgrade one of your recent prompts</h3>
+    <p>Think about the last time you used an AI tool and felt underwhelmed by the response. What did you actually type? Now, using the four principles above, rewrite that prompt with more context, a precise task, a format, and an audience.</p>
+    <p style="margin-top:16px;">Open Claude and try both versions back-to-back. The difference will be immediately obvious.</p>
+    <a href="https://claude.ai" target="_blank" class="exercise-btn exercise-btn-gold" style="margin-top:24px;">Try it on Claude →</a>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="/learn/talking-to-ai/" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Back to</span><span class="nav-btn-title">Track overview</span></span>
+    </a>
+    <a href="lesson-2.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">The anatomy of a perfect prompt</span></span>
+      <span>→</span>
+    </a>
+  </div>
+
+</div>
+
+<footer style="background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; font-family: 'DM Sans', sans-serif;">
+  <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:800; color:var(--rust); margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const scenarios = [
+    {
+      label: '📧 Email',
+      bad: { prompt: 'write me an email', score: 12, result: 'Subject: Hello\n\nDear [Name],\n\nI hope this email finds you well. I am writing to get in touch with you regarding [topic]. Please let me know your thoughts.\n\nBest regards,\n[Your Name]', why: '<strong>Why this is useless:</strong> The AI had zero information to work with, so it invented generic placeholders. You still have to fill in everything yourself. This saved no time at all.' },
+      good: { prompt: 'Write a professional but warm email to a client named Sarah who ordered a custom wedding cake 3 weeks ago and still hasn\'t received a delivery update from us. I want to apologise, explain there was a supply delay with our fondant supplier, confirm her cake will be ready 2 days before her wedding (June 14th), and offer her a 15% discount on her next order. Keep it under 150 words.', score: 94, result: 'Subject: Update on Your Wedding Cake — We\'re Sorry for the Wait\n\nHi Sarah,\n\nI wanted to personally reach out and apologise for the lack of updates on your wedding cake — that\'s not the experience we want for you.\n\nWe hit an unexpected delay with our fondant supplier, but I\'m happy to confirm your cake will be fully ready by June 12th — two days before your big day.\n\nAs a small thank-you for your patience, I\'d like to offer you 15% off your next order with us.\n\nWishing you the most wonderful wedding day.\n\nWarmly,\n[Your name]', why: '<strong>Why this works:</strong> Context (who Sarah is, the situation), clear task (apologise, explain, confirm, offer), format (under 150 words), tone (professional but warm). The AI could write something genuinely useful.' }
+    },
+    {
+      label: '📋 Planning',
+      bad: { prompt: 'help me plan my week', score: 10, result: 'Here\'s a general weekly plan:\n\n• Monday: Start the week strong\n• Tuesday: Focus on important tasks\n• Wednesday: Midweek check-in\n• Thursday: Prepare for end of week\n• Friday: Wrap up and review\n• Weekend: Rest and recharge\n\nWould you like me to go into more detail?', why: '<strong>Why this is useless:</strong> This could apply to literally any person on earth. Without knowing anything about your actual life, the AI produced a meaningless template.' },
+      good: { prompt: 'I\'m a freelance graphic designer with two client projects due Friday. Project A (logo redesign) needs 4 hours of focused work. Project B (social media kit) needs 6 hours. I also have a dentist appointment Tuesday at 2pm and I work best in the mornings. Create a realistic daily schedule Mon-Fri that front-loads the creative work, includes buffer time for revisions, and doesn\'t overload any single day. Present it as a table.', score: 96, result: 'Day | Morning (9–12) | Afternoon (1–5) | Notes\nMon | Project B – social kit (3h) | Project A – logo concepts (2h) | Fresh start, tackle creative work\nTue | Project B – finalise (3h) | Dentist 2pm. Buffer + email (1h) | Lighter afternoon\nWed | Project A – revisions (2h) | Project B – revisions (2h) | Revision day\nThu | Final polish both projects (2h) | Client review prep + packaging | Buffer built in\nFri | Final delivery + admin | Wrap-up, invoice, plan next week | Done by midday', why: '<strong>Why this works:</strong> Specific constraints (hours per project, appointment, work style), clear deliverable (realistic schedule), explicit format (table). The output is immediately actionable.' }
+    },
+    {
+      label: '💡 Brainstorm',
+      bad: { prompt: 'give me business ideas', score: 8, result: '1. Start a restaurant\n2. Open an online store\n3. Offer consulting services\n4. Create a mobile app\n5. Start a YouTube channel\n6. Sell handmade crafts\n7. Offer tutoring services\n8. Start a cleaning business', why: '<strong>Why this is useless:</strong> These are the most generic ideas imaginable. Without knowing anything about you — your skills, resources, interests, or market — this list is meaningless.' },
+      good: { prompt: 'I\'m a 34-year-old HR manager with 10 years of experience in tech companies. I want to start a side business that uses my expertise, can be run evenings and weekends, requires under £2,000 to start, and could realistically earn £1,500/month within 12 months. I\'m good at writing, coaching, and simplifying complex processes. Give me 5 specific business ideas with a brief explanation of the opportunity and one concrete first step for each.', score: 92, result: '1. HR Document Templates Shop — Sell ready-made HR policy templates on Gumroad/Etsy. Tech companies always need compliant, modern templates. First step: list your 3 most-requested documents and price them at £15–£30 each.\n\n2. Interview Coaching for Senior ICs — 1-on-1 coaching for engineers wanting to move into management. 4 clients at £375/month = your target. First step: write a 500-word LinkedIn post about the most common interview mistake you see.\n\n3. HR Process Audit (Fractional) — Small startups (10–50 people) need HR help but can\'t hire full-time. Offer a 2-day audit package at £750. First step: identify 3 startups on LinkedIn that recently raised seed funding.\n\n4. "People Ops" Newsletter — Weekly email for founders on building healthy teams. Monetise with sponsors or a paid tier. First step: write your first issue this weekend.\n\n5. Redundancy Support Coaching — Help employees navigate unexpected job loss (CV, mindset, interview prep). Charge £150–£200 per session. First step: contact a local outplacement firm about referrals.', why: '<strong>Why this works:</strong> Real constraints (experience, time, budget, income goal), specific skills mentioned, precise output format (5 ideas + explanation + first step). The AI had everything it needed to be genuinely useful.' }
+    },
+    {
+      label: '📖 Explain',
+      bad: { prompt: 'explain machine learning', score: 11, result: 'Machine learning is a subset of artificial intelligence that enables systems to learn and improve from experience without being explicitly programmed. It focuses on developing computer programs that can access data and use it to learn for themselves. The process begins with observations or data, such as examples, direct experience, or instruction, to look for patterns in data and make better decisions in the future.', why: '<strong>Why this is weak:</strong> Textbook definition, aimed at no one in particular. You\'ve probably read this exact explanation already. It doesn\'t connect to anything you care about.' },
+      good: { prompt: 'Explain machine learning to me like I\'m a 45-year-old bakery owner who has never studied tech. Use only analogies from running a small business. Keep it under 200 words and end with one concrete example of how I could use it in my bakery right now.', score: 95, result: 'Think of machine learning the way you think about getting better at baking over time.\n\nWhen you first made croissants, you followed the recipe exactly. But over the years, you\'ve noticed things — this flour works better in humid weather, customers buy more almond croissants on Fridays, the second batch always rises better than the first. You didn\'t read those things in a book. You learned them from experience.\n\nMachine learning is just software doing the same thing. You feed it a lot of examples ("here are 10,000 customer orders"), it finds patterns you\'d never spot manually ("customers who buy sourdough on Tuesday almost always come back on Friday"), and it gets better the more data it sees.\n\n<strong>In your bakery right now:</strong> A simple ML tool could analyse your past sales data and predict exactly how many croissants to bake each day of the week — reducing waste and preventing sellouts. Square and Shopify both offer this built-in.', why: '<strong>Why this works:</strong> Specific audience (45-year-old bakery owner), explicit analogy domain (small business), format (under 200 words + concrete example), relevant application. The explanation is memorable because it connects to her world.' }
+    },
+    {
+      label: '✍️ Writing',
+      bad: { prompt: 'write a LinkedIn post', score: 9, result: 'Excited to share some thoughts today! 🚀\n\nIn today\'s fast-paced world, it\'s important to stay ahead of the curve. I\'ve been reflecting on my journey and wanted to share some key lessons:\n\n1. Always keep learning\n2. Network consistently\n3. Stay positive\n\nWhat are your thoughts? Share in the comments below! 👇\n\n#LinkedIn #Growth #Mindset', why: '<strong>Why this is bad:</strong> This is the most stereotypically generic LinkedIn post imaginable — the kind that gets zero engagement. The AI had nothing to work with so it produced the average of every LinkedIn post ever written.' },
+      good: { prompt: 'Write a LinkedIn post for me. I\'m a UX designer. Last week I ran a user research session where we discovered that 8 out of 10 users couldn\'t find the checkout button on a client\'s app — it was hidden below the fold on mobile. We fixed it with a small design change and conversion went up 34% in one week. I want the post to open with a surprising stat, tell the story briefly, and end with a practical takeaway for other designers. 200 words max. No hashtags. No "I\'m excited to share" opener.', score: 97, result: '8 out of 10 users couldn\'t find the checkout button.\n\nLast week I ran a usability session for a client\'s e-commerce app. The task was simple: buy something. Most users failed — not because the flow was broken, but because the button was hidden below the fold on mobile.\n\nThey were literally trying to buy. The app was making it impossible.\n\nA small change — moving the CTA above the fold and increasing its size — went live Friday. By Thursday, conversion was up 34%.\n\nNo new features. No redesign. One decision, fixed in an afternoon.\n\nThe lesson I keep relearning: the most impactful UX fixes are rarely glamorous. They\'re obvious — once someone shows you. That\'s why user research isn\'t optional. You cannot see your own blindspots.\n\nRun a session. Watch someone try to use your product. The first 15 minutes will be uncomfortable and worth every second.', why: '<strong>Why this works:</strong> Specific story (real numbers, real outcome), precise instructions (no hashtags, no clichéd opener), word count, structure (stat → story → takeaway). The output is authentic and shareable.' }
+    },
+    {
+      label: '🔍 Research',
+      bad: { prompt: 'tell me about solar panels', score: 10, result: 'Solar panels are devices that convert sunlight into electricity using photovoltaic cells. They are an increasingly popular form of renewable energy. Solar panels can reduce electricity bills and your carbon footprint. The average home solar system costs between £5,000 and £15,000 but can pay for itself over time through energy savings and government incentives.', why: '<strong>Why this is weak:</strong> Generic Wikipedia-level summary. It doesn\'t answer any question you actually have, because you didn\'t ask one. It\'s information without insight.' },
+      good: { prompt: 'I own a 3-bedroom semi-detached house in Manchester, UK. My current electricity bill is £180/month. I\'m considering installing solar panels and want to know: 1) Realistic payback period given Manchester\'s low sunshine hours, 2) Current UK government incentives or grants available in 2024-2025, 3) Whether a battery storage system is worth adding, 4) What questions I should ask installers to avoid getting ripped off. Answer each question separately and be honest about the downsides.', score: 93, result: '1. Payback period in Manchester: Expect 11–15 years, not the 7–9 years you\'ll see in brochures (those assume southern England). Manchester averages 1,300 sunshine hours/year vs 1,750 in London. A 4kW system (typical for your home) costs ~£7,000 and will generate roughly 3,200 kWh/year. At current prices, that\'s ~£900/year in savings — giving a real payback of 8–10 years if energy prices stay high.\n\n2. UK incentives: Smart Export Guarantee (SEG) pays you for excess electricity exported to the grid — typically 5–15p/kWh depending on your supplier. No upfront grants currently exist for standard homeowners, though the ECO4 scheme helps low-income households. Check your local council — some offer interest-free loans.\n\n3. Battery storage: Marginally worth it. A 10kWh battery (£2,500–£4,000) lets you use your daytime solar at night. Payback adds 4–6 years. More valuable if you have an EV. Skip it on first install; add later if costs drop.\n\n4. Questions for installers: Are you MCS certified? (Required for SEG.) What\'s the actual annual yield estimate for my postcode, not a national average? Who handles warranty claims — you or the manufacturer? Get 3 quotes; prices vary by 40%.', why: '<strong>Why this works:</strong> Specific situation (Manchester, actual bill, house type), four precise questions, explicit format (answer each separately), instruction to include downsides. The AI gave genuinely useful, honest, tailored analysis.' }
+    }
+  ];
+
+  let currentScenario = 0;
+  let currentVersion = 'bad';
+
+  function loadScenario(index, btn) {
+    currentScenario = index;
+    document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showVersion(currentVersion);
+  }
+
+  function showVersion(version) {
+    currentVersion = version;
+    const s = scenarios[currentScenario];
+    const data = version === 'bad' ? s.bad : s.good;
+
+    document.getElementById('tabBad').classList.toggle('active', version === 'bad');
+    document.getElementById('tabGood').classList.toggle('active', version === 'good');
+
+    document.getElementById('promptLabel').textContent = version === 'bad' ? '❌ THE BAD PROMPT' : '✅ THE GOOD PROMPT';
+    document.getElementById('compPrompt').textContent = data.prompt;
+    document.getElementById('compResult').className = 'comp-result ' + (version === 'bad' ? 'bad-result' : 'good-result');
+    document.getElementById('compResult').textContent = data.result;
+    document.getElementById('compWhy').innerHTML = data.why;
+
+    const bar = document.getElementById('scoreBar');
+    bar.className = 'score-bar ' + (version === 'bad' ? 'bad-score' : 'good-score');
+    bar.style.width = data.score + '%';
+    document.getElementById('scoreVal').textContent = data.score + '%';
+  }
+
+  // Init
+  loadScenario(0, document.querySelector('.scenario-btn'));
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const progress = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Completion
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('tai-1-complete', checked);
+  }
+  if (localStorage.getItem('tai-1-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

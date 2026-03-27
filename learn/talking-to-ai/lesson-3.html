@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3: Prompting for Different Tasks — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1714;
+    --rust: #C8521A; --rust-light: #F0784A; --gold: #E8A230;
+    --sage: #4A7C59; --sage-light: #EDF4EF; --muted: #7A7168;
+    --border: #E5DDD0; --card-bg: #FFFFFF;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(250,247,242,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta { background: var(--rust); color: #fff; padding: 10px 22px; border-radius: 100px; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  .progress-bar-wrap { position: fixed; top: 73px; left: 0; right: 0; z-index: 99; height: 3px; background: var(--border); }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--rust-light)); transition: width 0.1s linear; }
+
+  .lesson-hero { padding: 140px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+  .lesson-hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 55% 50% at 15% 35%, rgba(74,124,89,0.08) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 85% 65%, rgba(232,162,48,0.07) 0%, transparent 70%); }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 28px; animation: fadeUp 0.6s ease both; }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both; }
+  .lesson-title { font-family: 'Fraunces', serif; font-size: clamp(26px, 5vw, 60px); font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; color: var(--ink); margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both; }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-meta { display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 14px; color: var(--muted); animation: fadeUp 0.6s 0.15s ease both; }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .content-block { margin-bottom: 48px; }
+  .lesson-body h2 { font-family: 'Fraunces', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink); }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-body p { font-size: 17px; line-height: 1.75; color: #3D3A36; font-weight: 300; margin-bottom: 20px; }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  .callout { border-radius: 20px; padding: 28px 32px; margin-bottom: 32px; border: 1px solid var(--border); }
+  .callout-plain { background: var(--warm-white); }
+  .callout-gold { background: rgba(232,162,48,0.08); border-color: rgba(232,162,48,0.3); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; color: var(--rust); }
+  .callout-gold .callout-label { color: #B87D1A; }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+
+  .key-takeaway { background: linear-gradient(135deg, var(--gold), #d4911e); border-radius: 24px; padding: 36px; margin: 48px 0; text-align: center; }
+  .kt-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+  .key-takeaway p { font-family: 'Fraunces', serif; font-size: clamp(20px, 2.5vw, 26px); font-weight: 600; line-height: 1.45; color: var(--ink) !important; margin-bottom: 0 !important; }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  .completion-check { display: flex; align-items: center; gap: 12px; padding: 20px 24px; border-radius: 14px; background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25); cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 32px; }
+  .completion-check:hover { border-color: var(--sage); }
+  .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .completion-check.checked .check-box { background: var(--sage); border-color: var(--sage); }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  .lesson-nav { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; border-top: 1px solid var(--border); margin-top: 64px; gap: 16px; }
+  .lesson-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 500; border: 1.5px solid var(--border); color: var(--ink); background: var(--warm-white); transition: all 0.2s; }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next { background: var(--rust); color: #fff; border-color: var(--rust); font-weight: 600; }
+  .lesson-nav-btn.next:hover { background: var(--rust-light); border-color: var(--rust-light); color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── TASK TABS ── */
+  .task-tabs-nav {
+    display: flex; gap: 0; border-bottom: 1px solid var(--border);
+    margin-bottom: 0; overflow-x: auto; scrollbar-width: none;
+  }
+  .task-tabs-nav::-webkit-scrollbar { display: none; }
+  .task-tab-btn {
+    padding: 14px 20px; font-size: 14px; font-weight: 500;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--muted); border-bottom: 2px solid transparent;
+    white-space: nowrap; transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+    margin-bottom: -1px;
+  }
+  .task-tab-btn:hover { color: var(--ink); }
+  .task-tab-btn.active { color: var(--rust); border-bottom-color: var(--rust); font-weight: 600; }
+
+  .task-tab-content { display: none; }
+  .task-tab-content.active { display: block; }
+
+  .task-section { background: var(--warm-white); border: 1.5px solid var(--border); border-radius: 24px; overflow: hidden; margin-bottom: 32px; }
+  .task-section-header { padding: 24px 28px; border-bottom: 1px solid var(--border); }
+  .task-section-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .task-section-desc { font-size: 15px; color: var(--muted); line-height: 1.55; }
+
+  .prompt-examples { padding: 20px 28px; display: flex; flex-direction: column; gap: 12px; }
+  .prompt-example-card {
+    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    background: var(--cream);
+  }
+  .prompt-example-head {
+    padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px;
+    cursor: pointer;
+  }
+  .prompt-example-text { flex: 1; font-size: 14px; color: var(--ink); line-height: 1.5; font-style: italic; }
+  .run-this-btn {
+    flex-shrink: 0; padding: 8px 16px; border-radius: 100px;
+    background: var(--rust); color: #fff; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    transition: background 0.2s; white-space: nowrap;
+  }
+  .run-this-btn:hover { background: var(--rust-light); }
+  .run-this-btn:disabled { background: var(--border); color: var(--muted); cursor: default; }
+  .prompt-result-area {
+    padding: 0 18px; max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+  }
+  .prompt-result-area.open { max-height: 600px; padding: 0 18px 16px; }
+  .result-inner {
+    background: var(--sage-light); border: 1px solid rgba(74,124,89,0.2);
+    border-radius: 10px; padding: 16px 18px;
+    font-size: 14px; line-height: 1.7; color: #3D3A36; white-space: pre-wrap;
+  }
+  .result-loading { color: var(--muted); font-style: italic; }
+
+  .task-try-own { padding: 20px 28px; border-top: 1px solid var(--border); }
+  .try-own-label { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .try-own-input {
+    width: 100%; background: var(--cream); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 14px 18px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--ink); resize: vertical; outline: none; line-height: 1.5;
+    transition: border-color 0.2s; min-height: 90px;
+  }
+  .try-own-input:focus { border-color: var(--gold); }
+  .try-own-actions { display: flex; gap: 10px; margin-top: 10px; }
+  .try-own-run {
+    padding: 12px 22px; border-radius: 100px; background: var(--ink); color: var(--cream);
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    transition: background 0.2s;
+  }
+  .try-own-run:hover { background: #2d2825; }
+  .try-own-run:disabled { background: var(--border); color: var(--muted); cursor: default; }
+  .try-own-result {
+    margin-top: 12px; background: var(--sage-light); border: 1px solid rgba(74,124,89,0.2);
+    border-radius: 12px; padding: 16px 18px;
+    font-size: 15px; line-height: 1.7; color: #3D3A36; white-space: pre-wrap;
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 110px 20px 56px; }
+    .prompt-example-head { flex-direction: column; gap: 8px; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>✍️ Talking to AI</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/talking-to-ai/">✍️ Talking to AI</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 3</span>
+    </div>
+    <div class="lesson-number">Lesson 3 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Prompting for<br><em>different tasks</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 28 min</span><span class="meta-dot"></span>
+      <span>🤖 Live AI responses</span><span class="meta-dot"></span>
+      <span>4 task types</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>The same five-component framework applies to every task — but <em>how</em> you apply it changes depending on what you're trying to do. Writing an email requires a different approach than doing research. Planning needs different specifics than creative work.</p>
+    <p>In this lesson, we'll cover the four task types you'll use most, show you the patterns that work, and let you try them with a live AI response right here — no separate tab needed.</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">🤖 How this works</div>
+    <p>Click "Run" next to any example prompt to see a real AI response generated live. Then use the text area at the bottom of each section to try your own prompt for the same task type.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- TASK TYPE TABS -->
+  <div class="reveal">
+    <div class="task-tabs-nav">
+      <button class="task-tab-btn active" onclick="switchTab('email', this)">📧 Email & Writing</button>
+      <button class="task-tab-btn" onclick="switchTab('research', this)">🔍 Research</button>
+      <button class="task-tab-btn" onclick="switchTab('planning', this)">📋 Planning</button>
+      <button class="task-tab-btn" onclick="switchTab('creative', this)">🎨 Creative</button>
+    </div>
+
+    <!-- EMAIL TAB -->
+    <div class="task-tab-content active" id="tab-email">
+      <div class="task-section">
+        <div class="task-section-header">
+          <div class="task-section-title">📧 Email & Professional Writing</div>
+          <div class="task-section-desc">The key for emails: give the AI the relationship context, the emotional tone you want to strike, and the specific outcome. It can't read the dynamic between you and the recipient — you have to tell it.</div>
+        </div>
+        <div class="prompt-examples">
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"Write a polite but firm follow-up email to a client who owes me £2,400 for work completed 45 days ago. This is the second follow-up. Tone: professional, not aggressive. 100 words max."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'Write a polite but firm follow-up email to a client who owes £2,400 for work completed 45 days ago. This is the second follow-up. Tone: professional, not aggressive. 100 words max.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"Rewrite this email to sound more confident and less apologetic, while keeping it professional: [I'm sorry to bother you, but I was just wondering if maybe you had a chance to look at my proposal yet? No rush of course!]"</div>
+              <button class="run-this-btn" onclick="runExample(this, 'Rewrite this email to sound more confident and less apologetic, while keeping it professional: \"I\'m sorry to bother you, but I was just wondering if maybe you had a chance to look at my proposal yet? No rush of course!\"')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"Write 3 different subject line options for a sales email promoting a new project management software to small business owners. Goal: high open rate. Make them curiosity-driven, not salesy."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'Write 3 different subject line options for a sales email promoting a new project management software to small business owners. Goal: high open rate. Make them curiosity-driven, not salesy.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+        </div>
+        <div class="task-try-own">
+          <div class="try-own-label">Try your own email prompt</div>
+          <textarea class="try-own-input" id="own-email" placeholder="Describe an email you need to write — be specific about the situation, recipient, and what you want the email to achieve..."></textarea>
+          <div class="try-own-actions">
+            <button class="try-own-run" onclick="runOwn('email')">▶ Generate</button>
+          </div>
+          <div class="try-own-result" id="own-email-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESEARCH TAB -->
+    <div class="task-tab-content" id="tab-research">
+      <div class="task-section">
+        <div class="task-section-header">
+          <div class="task-section-title">🔍 Research & Analysis</div>
+          <div class="task-section-desc">For research, the key is being specific about your situation, asking for structured output, and explicitly requesting honest trade-offs — AI tends to be balanced when you ask for it to be. Always verify important facts.</div>
+        </div>
+        <div class="prompt-examples">
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"I'm a first-time homebuyer in the UK. Explain the difference between a fixed-rate and tracker mortgage in plain English, include a concrete example with numbers, and tell me which scenarios each suits best."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'I\'m a first-time homebuyer in the UK. Explain the difference between a fixed-rate and tracker mortgage in plain English, include a concrete example with numbers, and tell me which scenarios each suits best.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"Compare Shopify and WooCommerce for a small handmade jewellery business with no technical background. Cover: ease of use, monthly costs, payment fees, scalability. Present as a comparison table, then give a direct recommendation."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'Compare Shopify and WooCommerce for a small handmade jewellery business with no technical background. Cover: ease of use, monthly costs, payment fees, scalability. Present as a comparison table, then give a direct recommendation.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"What are the strongest arguments both for and against a 4-day work week? I'm preparing for a debate and need the best case for each side, with at least one real-world example per argument."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'What are the strongest arguments both for and against a 4-day work week? I\'m preparing for a debate and need the best case for each side, with at least one real-world example per argument.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+        </div>
+        <div class="task-try-own">
+          <div class="try-own-label">Try your own research prompt</div>
+          <textarea class="try-own-input" id="own-research" placeholder="Ask a research question — give your context, what you want to know, and how you'd like the answer structured..."></textarea>
+          <div class="try-own-actions">
+            <button class="try-own-run" onclick="runOwn('research')">▶ Generate</button>
+          </div>
+          <div class="try-own-result" id="own-research-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANNING TAB -->
+    <div class="task-tab-content" id="tab-planning">
+      <div class="task-section">
+        <div class="task-section-header">
+          <div class="task-section-title">📋 Planning & Organisation</div>
+          <div class="task-section-desc">Planning prompts work best when you give real constraints (time, budget, skills, blockers) and ask for output in a usable format — tables, step-by-step lists, prioritised actions. The more specific your situation, the more actionable the plan.</div>
+        </div>
+        <div class="prompt-examples">
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"I want to learn Spanish to a conversational level in 6 months. I have 45 minutes per day, I'm a complete beginner, and I learn best by listening and speaking rather than reading grammar rules. Create a month-by-month learning plan with specific resources."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'I want to learn Spanish to a conversational level in 6 months. I have 45 minutes per day, I\'m a complete beginner, and I learn best by listening and speaking rather than reading grammar rules. Create a month-by-month learning plan with specific resources.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"I'm organising a 40th birthday dinner for 12 people at my home. Budget: £200 for food. I can cook but I'm not a chef. Two guests are vegetarian, one is gluten-free. Give me a full menu, a shopping list, and a prep timeline for the day."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'I\'m organising a 40th birthday dinner for 12 people at my home. Budget: £200 for food. I can cook but I\'m not a chef. Two guests are vegetarian, one is gluten-free. Give me a full menu, a shopping list, and a prep timeline for the day.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"I have 12 tasks to do this week and I'm already overwhelmed. Here's my list: [write proposal, update website, invoice clients, attend 3 meetings, fix bug in app, post on social media, reply to 40 emails, do tax prep, call supplier, prepare presentation, review contract, plan Q3 strategy]. Sort these by urgency and impact, cut the ones I should delegate or drop, and give me a daily schedule."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'I have 12 tasks to do this week and I\'m already overwhelmed. Sort these by urgency and impact, cut the ones I should delegate or drop, and give me a realistic daily schedule. Tasks: write proposal, update website, invoice clients, attend 3 meetings, fix bug in app, post on social media, reply to 40 emails, do tax prep, call supplier, prepare presentation, review contract, plan Q3 strategy.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+        </div>
+        <div class="task-try-own">
+          <div class="try-own-label">Try your own planning prompt</div>
+          <textarea class="try-own-input" id="own-planning" placeholder="Describe something you need to plan — be specific about your goals, constraints, time, budget, and what format you want the plan in..."></textarea>
+          <div class="try-own-actions">
+            <button class="try-own-run" onclick="runOwn('planning')">▶ Generate</button>
+          </div>
+          <div class="try-own-result" id="own-planning-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATIVE TAB -->
+    <div class="task-tab-content" id="tab-creative">
+      <div class="task-section">
+        <div class="task-section-header">
+          <div class="task-section-title">🎨 Creative Work</div>
+          <div class="task-section-desc">Creative prompts benefit most from giving the AI a specific mood, reference point, or constraint — "in the style of" or "with the feeling of" signals what you're after far better than vague words like "good" or "interesting." Constraints unlock creativity.</div>
+        </div>
+        <div class="prompt-examples">
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"Write a product description for a handmade soy candle called 'Quiet Sunday'. It should feel poetic and atmospheric — the kind of copy that makes someone feel the experience before they buy. 80 words max. No clichés like 'cosy' or 'luxurious'."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'Write a product description for a handmade soy candle called \"Quiet Sunday\". It should feel poetic and atmospheric — the kind of copy that makes someone feel the experience before they buy. 80 words max. No clichés like \"cosy\" or \"luxurious\".')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"Give me 8 Instagram caption ideas for a photo of a flat white coffee on a wooden table, taken on a rainy morning. Mix tones: some minimal and aesthetic, some slightly witty, one that would work for a coffee shop's brand account. No hashtags."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'Give me 8 Instagram caption ideas for a photo of a flat white coffee on a wooden table, taken on a rainy morning. Mix tones: some minimal and aesthetic, some slightly witty, one that would work for a coffee shop\'s brand account. No hashtags.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+          <div class="prompt-example-card">
+            <div class="prompt-example-head">
+              <div class="prompt-example-text">"I'm starting a newsletter about slow living and sustainable habits. Help me brainstorm 10 possible names. They should feel warm, a little literary, and not try-hard. Avoid words like 'mindful', 'sustainable', 'eco', or 'green'. Include a one-line vibe description for each."</div>
+              <button class="run-this-btn" onclick="runExample(this, 'I\'m starting a newsletter about slow living and sustainable habits. Help me brainstorm 10 possible names. They should feel warm, a little literary, and not try-hard. Avoid words like mindful, sustainable, eco, or green. Include a one-line vibe description for each.')">▶ Run</button>
+            </div>
+            <div class="prompt-result-area"><div class="result-inner result-loading">Generating...</div></div>
+          </div>
+        </div>
+        <div class="task-try-own">
+          <div class="try-own-label">Try your own creative prompt</div>
+          <textarea class="try-own-input" id="own-creative" placeholder="Describe the creative output you want — give tone references, specific constraints, what to avoid, and who it's for..."></textarea>
+          <div class="try-own-actions">
+            <button class="try-own-run" onclick="runOwn('creative')">▶ Generate</button>
+          </div>
+          <div class="try-own-result" id="own-creative-result"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The iteration habit —<br><em>prompting is a conversation</em></h2>
+    <p>One thing the best AI users do that beginners don't: they don't stop at the first response. They treat it as a first draft to react to. Here are the follow-ups that reliably improve any response:</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🔄 Most useful follow-up prompts</div>
+    <p>
+      <strong>"Make it shorter/longer"</strong> — adjust length without losing the core.<br><br>
+      <strong>"Make it more [direct / warm / casual / formal]"</strong> — shift tone instantly.<br><br>
+      <strong>"Give me 3 alternative versions"</strong> — when you know what you got isn't right but can't articulate why.<br><br>
+      <strong>"What are you assuming here? Is that right?"</strong> — surfaces hidden assumptions.<br><br>
+      <strong>"What would you add if you had no word limit?"</strong> — unlocks fuller thinking.
+    </p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Different tasks need different prompt shapes — but the follow-up is always the same. <em>React to the first draft. One good follow-up often doubles the quality.</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-2.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Anatomy of a perfect prompt</span></span>
+    </a>
+    <a href="lesson-4.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Advanced techniques</span></span>
+      <span>→</span>
+    </a>
+  </div>
+
+</div>
+
+<footer style="background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; font-family: 'DM Sans', sans-serif;">
+  <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:800; color:var(--rust); margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  function switchTab(name, btn) {
+    document.querySelectorAll('.task-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.task-tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  async function callClaude(prompt) {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 600,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    throw new Error(data.error?.message || 'API error');
+  }
+
+  async function runExample(btn, prompt) {
+    const card = btn.closest('.prompt-example-card');
+    const resultArea = card.querySelector('.prompt-result-area');
+    const resultInner = card.querySelector('.result-inner');
+
+    btn.disabled = true;
+    btn.textContent = '⏳';
+    resultArea.classList.add('open');
+    resultInner.textContent = 'Generating response...';
+    resultInner.classList.add('result-loading');
+
+    try {
+      const text = await callClaude(prompt);
+      resultInner.textContent = text;
+      resultInner.classList.remove('result-loading');
+      btn.textContent = '✓ Done';
+    } catch (e) {
+      resultInner.textContent = 'Error: ' + e.message + '. Check that ANTHROPIC_API_KEY is set in Netlify environment variables.';
+      resultInner.classList.remove('result-loading');
+      btn.disabled = false;
+      btn.textContent = '▶ Run';
+    }
+  }
+
+  async function runOwn(type) {
+    const input = document.getElementById('own-' + type);
+    const result = document.getElementById('own-' + type + '-result');
+    const btn = input.closest('.task-try-own').querySelector('.try-own-run');
+    const prompt = input.value.trim();
+
+    if (!prompt) { alert('Write a prompt first!'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Generating...';
+    result.style.display = 'block';
+    result.textContent = 'Generating response...';
+
+    try {
+      const text = await callClaude(prompt);
+      result.textContent = text;
+      btn.textContent = '▶ Generate';
+      btn.disabled = false;
+    } catch (e) {
+      result.textContent = 'Error: ' + e.message + '. Make sure ANTHROPIC_API_KEY is set in Netlify.';
+      btn.textContent = '▶ Generate';
+      btn.disabled = false;
+    }
+  }
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Completion
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('tai-3-complete', checked);
+  }
+  if (localStorage.getItem('tai-3-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

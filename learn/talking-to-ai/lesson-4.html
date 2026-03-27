@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4: Advanced Techniques — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1714;
+    --rust: #C8521A; --rust-light: #F0784A; --gold: #E8A230;
+    --sage: #4A7C59; --sage-light: #EDF4EF; --muted: #7A7168;
+    --border: #E5DDD0; --card-bg: #FFFFFF;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(250,247,242,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-track-label { font-size: 13px; color: var(--muted); }
+  .nav-track-label strong { color: var(--ink); font-weight: 500; }
+  .nav-cta { background: var(--rust); color: #fff; padding: 10px 22px; border-radius: 100px; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  .progress-bar-wrap { position: fixed; top: 73px; left: 0; right: 0; z-index: 99; height: 3px; background: var(--border); }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), var(--rust-light)); transition: width 0.1s linear; }
+
+  .lesson-hero { padding: 140px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+  .lesson-hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 55% 50% at 10% 30%, rgba(200,82,26,0.07) 0%, transparent 70%), radial-gradient(ellipse 60% 60% at 90% 70%, rgba(232,162,48,0.08) 0%, transparent 70%); }
+  .lesson-hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .track-breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 28px; animation: fadeUp 0.6s ease both; }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .breadcrumb-sep { color: var(--border); }
+  .lesson-number { display: inline-block; font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; animation: fadeUp 0.6s 0.05s ease both; }
+  .lesson-title { font-family: 'Fraunces', serif; font-size: clamp(26px, 5vw, 60px); font-weight: 800; line-height: 1.08; letter-spacing: -1.5px; color: var(--ink); margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both; }
+  .lesson-title em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-meta { display: flex; align-items: center; justify-content: center; gap: 20px; font-size: 14px; color: var(--muted); animation: fadeUp 0.6s 0.15s ease both; }
+  .meta-dot { width: 4px; height: 4px; background: var(--border); border-radius: 50%; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .lesson-body { max-width: 720px; margin: 0 auto; padding: 0 24px 120px; }
+  .content-block { margin-bottom: 48px; }
+  .lesson-body h2 { font-family: 'Fraunces', serif; font-size: clamp(24px, 3vw, 32px); font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; color: var(--ink); }
+  .lesson-body h2 em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .lesson-body p { font-size: 17px; line-height: 1.75; color: #3D3A36; font-weight: 300; margin-bottom: 20px; }
+  .lesson-body p strong { font-weight: 500; color: var(--ink); }
+  .lesson-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  .callout { border-radius: 20px; padding: 28px 32px; margin-bottom: 32px; border: 1px solid var(--border); }
+  .callout-plain { background: var(--warm-white); }
+  .callout-gold { background: rgba(232,162,48,0.08); border-color: rgba(232,162,48,0.3); }
+  .callout-sage { background: var(--sage-light); border-color: rgba(74,124,89,0.25); }
+  .callout-ink { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .callout-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; color: var(--rust); }
+  .callout-gold .callout-label { color: #B87D1A; }
+  .callout-sage .callout-label { color: var(--sage); }
+  .callout-ink .callout-label { color: var(--gold); }
+  .callout p { font-size: 16px; line-height: 1.7; margin-bottom: 0 !important; }
+  .callout-ink p { color: rgba(250,247,242,0.8); }
+
+  .key-takeaway { background: linear-gradient(135deg, var(--gold), #d4911e); border-radius: 24px; padding: 36px; margin: 48px 0; text-align: center; }
+  .kt-label { font-size: 11px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
+  .key-takeaway p { font-family: 'Fraunces', serif; font-size: clamp(20px, 2.5vw, 26px); font-weight: 600; line-height: 1.45; color: var(--ink) !important; margin-bottom: 0 !important; }
+  .key-takeaway p em { font-style: italic; font-weight: 300; }
+
+  .completion-check { display: flex; align-items: center; gap: 12px; padding: 20px 24px; border-radius: 14px; background: var(--sage-light); border: 1px solid rgba(74,124,89,0.25); cursor: pointer; transition: all 0.2s; user-select: none; margin-bottom: 32px; }
+  .completion-check:hover { border-color: var(--sage); }
+  .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid rgba(74,124,89,0.4); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .completion-check.checked .check-box { background: var(--sage); border-color: var(--sage); }
+  .check-inner { font-size: 13px; color: #fff; opacity: 0; transition: opacity 0.2s; }
+  .completion-check.checked .check-inner { opacity: 1; }
+  .check-text { font-size: 15px; font-weight: 500; color: var(--sage); }
+
+  .lesson-nav { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; border-top: 1px solid var(--border); margin-top: 64px; gap: 16px; }
+  .lesson-nav-btn { display: flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 14px; text-decoration: none; font-size: 14px; font-weight: 500; border: 1.5px solid var(--border); color: var(--ink); background: var(--warm-white); transition: all 0.2s; }
+  .lesson-nav-btn:hover { border-color: var(--rust); color: var(--rust); transform: translateY(-2px); }
+  .lesson-nav-btn.next { background: var(--rust); color: #fff; border-color: var(--rust); font-weight: 600; }
+  .lesson-nav-btn.next:hover { background: var(--rust-light); border-color: var(--rust-light); color: #fff; }
+  .nav-btn-label { font-size: 11px; font-weight: 400; opacity: 0.6; display: block; margin-bottom: 2px; }
+  .nav-btn-title { display: block; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── TECHNIQUE BLOCKS ── */
+  .technique-block {
+    background: var(--ink); border-radius: 28px; padding: 40px;
+    margin: 40px 0; position: relative; overflow: hidden;
+  }
+  .technique-block::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 100% 0%, rgba(232,162,48,0.07), transparent); pointer-events: none; }
+  .technique-number { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .technique-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 800; color: var(--cream); margin-bottom: 12px; line-height: 1.1; }
+  .technique-desc { font-size: 16px; color: rgba(250,247,242,0.65); line-height: 1.7; margin-bottom: 28px; }
+
+  .technique-example {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 20px 24px; margin-bottom: 20px;
+  }
+  .example-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(250,247,242,0.4); margin-bottom: 10px; }
+  .example-prompt { font-size: 15px; color: var(--cream); line-height: 1.6; font-style: italic; }
+
+  .live-exercise {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 24px;
+  }
+  .live-ex-label { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .live-ex-prompt {
+    width: 100%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; padding: 14px 18px; font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--cream); resize: vertical; outline: none; line-height: 1.55;
+    transition: border-color 0.2s; min-height: 80px;
+  }
+  .live-ex-prompt::placeholder { color: rgba(250,247,242,0.25); }
+  .live-ex-prompt:focus { border-color: rgba(232,162,48,0.4); }
+  .live-ex-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .live-btn {
+    padding: 12px 22px; border-radius: 100px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; transition: all 0.2s;
+  }
+  .live-btn-run { background: var(--gold); color: var(--ink); }
+  .live-btn-run:hover { background: #d4911e; }
+  .live-btn-run:disabled { background: rgba(232,162,48,0.3); color: rgba(26,23,20,0.5); cursor: default; }
+  .live-btn-load { background: rgba(255,255,255,0.1); color: var(--cream); font-size: 13px; }
+  .live-btn-load:hover { background: rgba(255,255,255,0.18); }
+  .live-ex-result {
+    margin-top: 16px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 18px 20px;
+    font-size: 15px; line-height: 1.7; color: rgba(250,247,242,0.85); white-space: pre-wrap;
+    display: none;
+  }
+  .live-ex-result.visible { display: block; }
+
+  /* Chain prompt steps */
+  .chain-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
+  .chain-step {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .chain-step:last-child { border-bottom: none; }
+  .chain-step-num {
+    width: 28px; height: 28px; border-radius: 50%; background: rgba(232,162,48,0.2);
+    color: var(--gold); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .chain-step-body { flex: 1; }
+  .chain-step-title { font-size: 14px; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
+  .chain-step-prompt { font-size: 14px; color: rgba(250,247,242,0.55); line-height: 1.5; font-style: italic; }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-track-label { display: none; }
+    .lesson-hero { padding: 110px 20px 56px; }
+    .technique-block { padding: 28px 22px; }
+    .lesson-nav { flex-direction: column; }
+    .lesson-nav-btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>✍️ Talking to AI</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/talking-to-ai/">✍️ Talking to AI</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 4</span>
+    </div>
+    <div class="lesson-number">Lesson 4 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Advanced techniques:<br>personas, constraints<br>&amp; <em>chain prompting</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 30 min</span><span class="meta-dot"></span>
+      <span>🤖 Live exercises</span><span class="meta-dot"></span>
+      <span>3 techniques</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>You've mastered the fundamentals. Now let's go deeper. These three techniques are what distinguish people who get consistently brilliant AI outputs from those who get occasionally good ones. Each one unlocks a different dimension of what AI can do.</p>
+    <p>Every technique below has a live exercise. Don't just read — try it. The difference between understanding these intellectually and feeling them work is significant.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- TECHNIQUE 1: PERSONAS -->
+  <div class="technique-block reveal" id="persona-block">
+    <div class="technique-number">Technique 1 of 3</div>
+    <div class="technique-title">Persona Prompting</div>
+    <div class="technique-desc">When you give the AI a specific persona or role, you're not just changing the tone — you're activating a whole cluster of expertise, vocabulary, assumptions, and perspective. "Act as a sceptical investor" gets you completely different feedback than "act as an enthusiastic friend." The persona shapes everything.</div>
+
+    <div class="technique-example">
+      <div class="example-label">Without persona</div>
+      <div class="example-prompt">"What do you think of my business idea?"</div>
+    </div>
+    <div class="technique-example">
+      <div class="example-label">With persona</div>
+      <div class="example-prompt">"Act as a venture capitalist who has seen 500 pitches and funded 8 of them. You're known for asking the uncomfortable questions founders don't want to answer. Review this business idea and tell me the three hardest questions an investor would ask, and whether you think this is fundable: [idea]"</div>
+    </div>
+
+    <div class="live-exercise">
+      <div class="live-ex-label"><span class="live-dot"></span> Live Exercise — Try Persona Prompting</div>
+      <textarea class="live-ex-prompt" id="persona-input" placeholder="The pre-loaded example will show you the technique — or write your own persona prompt..."></textarea>
+      <div class="live-ex-actions">
+        <button class="live-btn live-btn-run" onclick="runTechnique('persona')">▶ Run</button>
+        <button class="live-btn live-btn-load" onclick="loadPersonaExample()">Load example</button>
+      </div>
+      <div class="live-ex-result" id="persona-result"></div>
+    </div>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">💡 Powerful persona patterns</div>
+    <p>
+      <strong>"Act as a hostile critic"</strong> — reveals weaknesses in your work you'd miss from a friendly read<br><br>
+      <strong>"Act as someone who knows nothing about this topic"</strong> — forces clarity in explanations<br><br>
+      <strong>"Act as a [specific expert] with [specific viewpoint]"</strong> — the more specific, the more useful<br><br>
+      <strong>"Act as two people debating this"</strong> — gets you multiple perspectives in one response
+    </p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- TECHNIQUE 2: CONSTRAINTS -->
+  <div class="technique-block reveal" id="constraints-block">
+    <div class="technique-number">Technique 2 of 3</div>
+    <div class="technique-title">Strategic Constraints</div>
+    <div class="technique-desc">Counterintuitively, adding constraints to a prompt often produces <em>better</em> and more creative output, not worse. When you tell the AI "no clichés", "avoid X", "don't use Y structure" — you push it past its default, averaged responses toward something genuinely distinct. Constraints are creative leverage.</div>
+
+    <div class="technique-example">
+      <div class="example-label">Without constraints</div>
+      <div class="example-prompt">"Write me a tagline for my bakery."</div>
+    </div>
+    <div class="technique-example">
+      <div class="example-label">With strategic constraints</div>
+      <div class="example-prompt">"Write 6 tagline options for my artisan bakery in Edinburgh called 'Crumb & Thread'. Constraints: no words like 'handcrafted', 'artisan', 'local', 'love', or 'passion'. No exclamation marks. Each tagline must be under 6 words. At least two should be slightly unexpected or subversive. The overall feel should be dry-witted and confident, not warm-and-fuzzy."</div>
+    </div>
+
+    <div class="live-exercise">
+      <div class="live-ex-label"><span class="live-dot"></span> Live Exercise — Try Strategic Constraints</div>
+      <textarea class="live-ex-prompt" id="constraints-input" placeholder="Write a prompt where you use constraints to push the AI toward something more specific and less generic..."></textarea>
+      <div class="live-ex-actions">
+        <button class="live-btn live-btn-run" onclick="runTechnique('constraints')">▶ Run</button>
+        <button class="live-btn live-btn-load" onclick="loadConstraintsExample()">Load example</button>
+      </div>
+      <div class="live-ex-result" id="constraints-result"></div>
+    </div>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🔑 Types of constraints to use</div>
+    <p>
+      <strong>Exclusion constraints:</strong> "Don't use the word X", "No bullet points", "Avoid passive voice"<br><br>
+      <strong>Form constraints:</strong> "Exactly 3 sentences", "One paragraph only", "Haiku format"<br><br>
+      <strong>Audience constraints:</strong> "A 10-year-old should understand this", "Written for someone who already knows the topic"<br><br>
+      <strong>Quality constraints:</strong> "Make it publishable in a national newspaper", "As if written by someone who has done this themselves"
+    </p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- TECHNIQUE 3: CHAIN PROMPTING -->
+  <div class="technique-block reveal" id="chain-block">
+    <div class="technique-number">Technique 3 of 3</div>
+    <div class="technique-title">Chain Prompting</div>
+    <div class="technique-desc">Complex tasks produce better results when broken into a sequence of focused prompts, each building on the last. Instead of one massive prompt that tries to do everything, you run a chain — each step refining or expanding on what came before. This mirrors how experts actually think through difficult problems.</div>
+
+    <div class="chain-steps">
+      <div class="chain-step">
+        <div class="chain-step-num">1</div>
+        <div class="chain-step-body">
+          <div class="chain-step-title">Explore the landscape</div>
+          <div class="chain-step-prompt">"What are the 5 most important considerations when choosing a business name? Be concise."</div>
+        </div>
+      </div>
+      <div class="chain-step">
+        <div class="chain-step-num">2</div>
+        <div class="chain-step-body">
+          <div class="chain-step-title">Generate options</div>
+          <div class="chain-step-prompt">"Using those 5 criteria, generate 10 name options for a productivity app targeting remote workers. Apply all the criteria."</div>
+        </div>
+      </div>
+      <div class="chain-step">
+        <div class="chain-step-num">3</div>
+        <div class="chain-step-body">
+          <div class="chain-step-title">Narrow and critique</div>
+          <div class="chain-step-prompt">"Of those 10, which 3 best meet all 5 criteria? Explain why each works and what its main risk is."</div>
+        </div>
+      </div>
+      <div class="chain-step">
+        <div class="chain-step-num">4</div>
+        <div class="chain-step-body">
+          <div class="chain-step-title">Go deeper on the winner</div>
+          <div class="chain-step-prompt">"For the top choice, suggest 5 domain name variations that are likely to be available, and write a one-sentence brand story for each."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="live-exercise">
+      <div class="live-ex-label"><span class="live-dot"></span> Live Exercise — Chain Prompting Step 1</div>
+      <p style="font-size:14px; color: rgba(250,247,242,0.5); margin-bottom:16px; line-height:1.55;">Run step 1 below to start the chain. Then take the AI's output and feed it into step 2 in a new Claude window to complete the sequence — that's the full chain prompting workflow.</p>
+      <textarea class="live-ex-prompt" id="chain-input" placeholder="Start a chain by asking a foundational question, then use the answer to build your next prompt..."></textarea>
+      <div class="live-ex-actions">
+        <button class="live-btn live-btn-run" onclick="runTechnique('chain')">▶ Run Step 1</button>
+        <button class="live-btn live-btn-load" onclick="loadChainExample()">Load example</button>
+      </div>
+      <div class="live-ex-result" id="chain-result"></div>
+    </div>
+  </div>
+
+  <div class="callout callout-sage reveal">
+    <div class="callout-label">✅ When to use each technique</div>
+    <p>
+      <strong>Persona:</strong> When you need a specific expert perspective, honest critique, or a particular voice.<br><br>
+      <strong>Constraints:</strong> When you keep getting generic results and need to push past the AI's default patterns.<br><br>
+      <strong>Chain prompting:</strong> When the task is complex, multi-stage, or requires building on previous thinking.
+    </p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Combining all<br><em>three techniques</em></h2>
+    <p>The most powerful prompts often stack all three. A persona that brings specific expertise, constraints that prevent generic outputs, and a chain structure that builds toward a complex result.</p>
+    <p>Here's what that looks like in practice:</p>
+  </div>
+
+  <div class="callout callout-ink reveal">
+    <div class="callout-label">🔥 A prompt using all three</div>
+    <p style="font-style:italic; font-size:16px; line-height:1.8; color:rgba(250,247,242,0.85);">
+      "Act as a brand strategist with 20 years of experience naming technology companies — you've named 3 products that became household names. [PERSONA]<br><br>
+      I'm naming a B2B SaaS tool that helps law firms track billable hours automatically. My target buyers are managing partners aged 40–60 who are deeply sceptical of 'tech hype'. [CONTEXT]<br><br>
+      Step 1: Give me the 4 naming principles you'd apply for this specific buyer. Don't give me names yet — just the principles. [CHAIN STEP 1]<br><br>
+      Constraints: No made-up words, no names ending in -ly or -ify, no references to time/clock imagery (overused in this category). [CONSTRAINTS]"
+    </p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Personas activate expertise. Constraints eliminate mediocrity. Chain prompting handles complexity. <em>Together, they're unstoppable.</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-3.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Prompting for different tasks</span></span>
+    </a>
+    <a href="lesson-5.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Build your prompt library</span></span>
+      <span>→</span>
+    </a>
+  </div>
+
+</div>
+
+<footer style="background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; font-family: 'DM Sans', sans-serif;">
+  <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:800; color:var(--rust); margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const examples = {
+    persona: "Act as a battle-hardened product manager who has shipped 20 products and seen 12 of them fail. You're brutally honest and have no patience for wishful thinking. Review this startup idea and give me: (1) the three most likely reasons it fails, (2) the one assumption the founder is probably most wrong about, and (3) the single question you'd ask in the first investor meeting. The idea: a subscription service that delivers curated, pre-portioned ingredients for classic cocktails, with recipe cards, delivered weekly.",
+    constraints: "Write 5 opening lines for a cold email to a marketing director at a mid-size B2B company. Constraints: no question openers ('Have you ever...?'), no statistics-as-opener ('Did you know 87% of...'), no flattery ('I love what you're doing at...'), must be under 20 words each, must feel like a human wrote it not a template, at least two should create genuine curiosity without being clickbait.",
+    chain: "What are the 5 most important factors that determine whether a freelancer can successfully raise their rates without losing clients? I want to use your answer as the foundation for building a strategy — be concise and specific, no generic advice."
+  };
+
+  function loadPersonaExample() { document.getElementById('persona-input').value = examples.persona; }
+  function loadConstraintsExample() { document.getElementById('constraints-input').value = examples.constraints; }
+  function loadChainExample() { document.getElementById('chain-input').value = examples.chain; }
+
+  async function callClaude(prompt) {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 700,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    throw new Error(data.error?.message || 'API error');
+  }
+
+  async function runTechnique(name) {
+    const input = document.getElementById(name + '-input');
+    const result = document.getElementById(name + '-result');
+    const block = document.getElementById(name + '-block');
+    const btn = block.querySelector('.live-btn-run');
+    const prompt = input.value.trim();
+
+    if (!prompt) { alert('Write or load a prompt first!'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Generating...';
+    result.textContent = 'Generating response...';
+    result.classList.add('visible');
+
+    try {
+      const text = await callClaude(prompt);
+      result.textContent = text;
+      btn.textContent = '▶ Run';
+      btn.disabled = false;
+    } catch (e) {
+      result.textContent = 'Error: ' + e.message + '. Ensure ANTHROPIC_API_KEY is set in Netlify environment variables.';
+      btn.textContent = '▶ Run';
+      btn.disabled = false;
+    }
+  }
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Completion
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('tai-4-complete', checked);
+  }
+  if (localStorage.getItem('tai-4-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>
