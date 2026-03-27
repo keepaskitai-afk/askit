@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Ethics & Safety — AskIt Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2; --warm-white: #FFFDF9; --ink: #1A1714;
+    --rust: #C8521A; --rust-light: #F0784A; --gold: #E8A230;
+    --sage: #4A7C59; --sage-light: #EDF4EF; --muted: #7A7168;
+    --border: #E5DDD0; --card-bg: #FFFFFF;
+    --teal: #2A6E8A; --teal-light: #E8F4F7;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(250,247,242,0.88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-link { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-link:hover { color: var(--ink); }
+  .nav-cta { background: var(--rust); color: #fff; padding: 10px 22px; border-radius: 100px; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  .track-hero { padding: 140px 24px 80px; position: relative; overflow: hidden; }
+  .track-hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 60% 70% at 5% 20%, rgba(42,110,138,0.1) 0%, transparent 65%), radial-gradient(ellipse 50% 60% at 95% 80%, rgba(200,82,26,0.07) 0%, transparent 65%), radial-gradient(ellipse 40% 40% at 50% 50%, rgba(42,110,138,0.05) 0%, transparent 60%); }
+  .hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 380px; gap: 64px; align-items: center; }
+  .track-breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 24px; animation: fadeUp 0.6s ease both; }
+  .track-breadcrumb a { color: var(--rust); text-decoration: none; font-weight: 500; }
+  .track-breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb-sep { color: var(--border); }
+  .premium-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(42,110,138,0.15), rgba(42,110,138,0.05)); border: 1px solid rgba(42,110,138,0.35); color: var(--teal); font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 20px; animation: fadeUp 0.6s 0.05s ease both; }
+  .premium-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .track-title { font-family: 'Fraunces', serif; font-size: clamp(28px, 5.5vw, 72px); font-weight: 800; line-height: 1.05; letter-spacing: -2px; color: var(--ink); margin-bottom: 20px; animation: fadeUp 0.6s 0.1s ease both; }
+  .track-title em { font-style: italic; font-weight: 300; color: var(--teal); }
+  .track-desc { font-size: 18px; color: var(--muted); line-height: 1.7; font-weight: 300; max-width: 520px; margin-bottom: 32px; animation: fadeUp 0.6s 0.15s ease both; }
+  .hero-stats { display: flex; gap: 28px; flex-wrap: wrap; animation: fadeUp 0.6s 0.2s ease both; }
+  .hero-stat-num { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 800; color: var(--ink); line-height: 1; }
+  .hero-stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .progress-card { background: var(--warm-white); border: 1.5px solid var(--border); border-radius: 28px; padding: 32px; animation: fadeUp 0.6s 0.25s ease both; position: sticky; top: 100px; }
+  .progress-card-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 16px; }
+  .progress-ring-wrap { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+  .ring-svg { width: 72px; height: 72px; flex-shrink: 0; }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+  .ring-fill { fill: none; stroke: var(--teal); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 188.5; stroke-dashoffset: 188.5; transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 1s ease; }
+  .ring-text { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 800; fill: var(--ink); }
+  .progress-big { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 800; color: var(--ink); }
+  .progress-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .progress-lessons { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .progress-lesson-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; transition: background 0.15s; }
+  .progress-lesson-row.done { background: var(--teal-light); }
+  .lesson-check { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .lesson-check.done { background: var(--teal); color: #fff; }
+  .lesson-check.locked { background: var(--border); color: var(--muted); }
+  .lesson-row-text { flex: 1; font-size: 14px; color: var(--ink); }
+  .lesson-row-text.muted { color: var(--muted); }
+  .start-btn { display: block; width: 100%; padding: 16px; border-radius: 14px; background: var(--teal); color: #fff; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; text-align: center; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .start-btn:hover { background: #235d76; transform: translateY(-1px); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .track-body { max-width: 1100px; margin: 0 auto; padding: 0 24px 120px; }
+  .section-label { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--rust); margin-bottom: 16px; }
+  .section-title { font-family: 'Fraunces', serif; font-size: clamp(28px, 3.5vw, 44px); font-weight: 700; line-height: 1.1; letter-spacing: -0.5px; color: var(--ink); margin-bottom: 16px; }
+  .section-title em { font-style: italic; font-weight: 300; color: var(--teal); }
+  .section-sub { font-size: 17px; color: var(--muted); line-height: 1.65; font-weight: 300; max-width: 540px; margin-bottom: 48px; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  .lessons-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 80px; }
+  .lesson-card { background: var(--warm-white); border: 1.5px solid var(--border); border-radius: 24px; overflow: hidden; display: grid; grid-template-columns: 80px 1fr auto; align-items: stretch; transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; text-decoration: none; color: inherit; position: relative; }
+  .lesson-card.unlocked:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(26,23,20,0.08); border-color: var(--teal); }
+  .lesson-card.completed { border-color: rgba(42,110,138,0.3); }
+  .lesson-card.completed:hover { border-color: var(--teal); }
+  .lesson-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+  .lesson-card.completed::before { background: var(--teal); }
+  .lesson-card.current::before { background: var(--teal); }
+  .lesson-card.unlocked:not(.current):not(.completed)::before { background: var(--border); }
+  .lesson-num-col { display: flex; align-items: center; justify-content: center; padding: 28px 0; border-right: 1px solid var(--border); }
+  .lesson-num-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; }
+  .lesson-num-badge.done { background: var(--teal); color: #fff; font-size: 16px; }
+  .lesson-num-badge.active { background: var(--teal); color: #fff; }
+  .lesson-num-badge.todo { background: var(--border); color: var(--muted); }
+  .lesson-card-body { padding: 24px 28px; }
+  .lesson-card-number { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .lesson-card-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1.25; margin-bottom: 8px; }
+  .lesson-card-desc { font-size: 14px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+  .lesson-card-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .lesson-tag { font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 100px; }
+  .tag-time { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
+  .tag-teal { background: rgba(42,110,138,0.1); color: var(--teal); border: 1px solid rgba(42,110,138,0.25); }
+  .tag-interactive { background: rgba(232,162,48,0.1); color: #B87D1A; border: 1px solid rgba(232,162,48,0.25); }
+  .lesson-card-arrow { display: flex; align-items: center; padding: 0 28px; font-size: 20px; color: var(--muted); transition: color 0.2s, transform 0.2s; }
+  .lesson-card.unlocked:hover .lesson-card-arrow { color: var(--teal); transform: translateX(4px); }
+
+  .outcomes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 80px; }
+  .outcome-item { background: var(--warm-white); border: 1.5px solid var(--border); border-radius: 20px; padding: 28px 24px; }
+  .outcome-icon { font-size: 28px; margin-bottom: 12px; }
+  .outcome-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .outcome-text { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+  @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } .progress-card { position: static; } .outcomes-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { nav { padding: 16px 20px; } .lesson-card { grid-template-columns: 64px 1fr; } .lesson-card-arrow { display: none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">← All tracks</a>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+
+<section class="track-hero">
+  <div class="track-hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="track-breadcrumb">
+        <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+        <span>Tracks</span><span class="breadcrumb-sep">›</span>
+        <span>🛡️ AI Ethics & Safety</span>
+      </div>
+      <div class="premium-badge"><span class="premium-dot"></span> Premium Track</div>
+      <h1 class="track-title">AI Ethics<br>&amp; <em>Safety</em></h1>
+      <p class="track-desc">Not a lecture. A practical guide to navigating AI in the real world — spotting misinformation, protecting your privacy, recognising bias, and making decisions you can stand behind.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">5</div><div class="hero-stat-label">lessons</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">~2h</div><div class="hero-stat-label">total time</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">30+</div><div class="hero-stat-label">interactive scenarios</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="progress-card" id="progressCard">
+        <div class="progress-card-label">🛡️ Your progress</div>
+        <div class="progress-ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 72 72">
+            <circle class="ring-bg" cx="36" cy="36" r="30"/>
+            <circle class="ring-fill" id="progressRing" cx="36" cy="36" r="30"/>
+            <text class="ring-text" x="36" y="41" text-anchor="middle" id="ringLabel">0%</text>
+          </svg>
+          <div><div class="progress-big" id="progressBig">0 of 5</div><div class="progress-sub">lessons complete</div></div>
+        </div>
+        <div class="progress-lessons" id="progressLessons"></div>
+        <a href="lesson-1.html" class="start-btn" id="startBtn">Start lesson 1 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="track-body">
+  <div class="reveal" style="margin-bottom:64px;">
+    <p class="section-label">The curriculum</p>
+    <h2 class="section-title">Five lessons.<br><em>Real clarity.</em></h2>
+    <p class="section-sub">Every lesson puts you in realistic situations — not hypotheticals. You'll sort fake from real content, audit your own privacy, spot biased AI outputs, and ultimately write the personal AI code you'll actually live by.</p>
+  </div>
+
+  <div class="lessons-list reveal">
+    <a href="lesson-1.html" class="lesson-card unlocked" id="card-1">
+      <div class="lesson-num-col"><div class="lesson-num-badge todo" id="badge-1">1</div></div>
+      <div class="lesson-card-body">
+        <div class="lesson-card-number">Lesson 1</div>
+        <div class="lesson-card-title">Spotting AI misinformation</div>
+        <div class="lesson-card-desc">Sort real from fake AI-generated content in an interactive challenge. Learn the telltale signs that reveal whether text, quotes, and claims were AI-generated — and why they spread so easily.</div>
+        <div class="lesson-card-meta">
+          <span class="lesson-tag tag-time">⏱ 22 min</span>
+          <span class="lesson-tag tag-teal">🕵️ Real vs fake sorter</span>
+          <span class="lesson-tag tag-interactive">✦ Score tracker</span>
+        </div>
+      </div>
+      <div class="lesson-card-arrow">→</div>
+    </a>
+
+    <a href="lesson-2.html" class="lesson-card unlocked" id="card-2">
+      <div class="lesson-num-col"><div class="lesson-num-badge todo" id="badge-2">2</div></div>
+      <div class="lesson-card-body">
+        <div class="lesson-card-number">Lesson 2</div>
+        <div class="lesson-card-title">Protecting your privacy with AI</div>
+        <div class="lesson-card-desc">See exactly what data the AI tools you already use are collecting. Then complete a personalised privacy audit with an interactive checklist covering your work tools, apps, and habits.</div>
+        <div class="lesson-card-meta">
+          <span class="lesson-tag tag-time">⏱ 25 min</span>
+          <span class="lesson-tag tag-teal">🔒 Privacy audit</span>
+          <span class="lesson-tag tag-interactive">📋 Personal checklist</span>
+        </div>
+      </div>
+      <div class="lesson-card-arrow">→</div>
+    </a>
+
+    <a href="lesson-3.html" class="lesson-card unlocked" id="card-3">
+      <div class="lesson-num-col"><div class="lesson-num-badge todo" id="badge-3">3</div></div>
+      <div class="lesson-card-body">
+        <div class="lesson-card-number">Lesson 3</div>
+        <div class="lesson-card-title">AI bias and why it matters</div>
+        <div class="lesson-card-desc">Look at real examples where AI got it wrong in ways that hurt real people. Six interactive scenarios where you identify the bias — then we reveal what actually happened and why it matters.</div>
+        <div class="lesson-card-meta">
+          <span class="lesson-tag tag-time">⏱ 24 min</span>
+          <span class="lesson-tag tag-teal">⚖️ Bias scenarios</span>
+          <span class="lesson-tag tag-interactive">🔍 Spot the problem</span>
+        </div>
+      </div>
+      <div class="lesson-card-arrow">→</div>
+    </a>
+
+    <a href="lesson-4.html" class="lesson-card unlocked" id="card-4">
+      <div class="lesson-num-col"><div class="lesson-num-badge todo" id="badge-4">4</div></div>
+      <div class="lesson-card-body">
+        <div class="lesson-card-number">Lesson 4</div>
+        <div class="lesson-card-title">Using AI responsibly at work and school</div>
+        <div class="lesson-card-desc">Eight real ethical dilemmas — you vote yes, no, or it depends. See how others responded, then get the nuanced analysis that most AI ethics guides skip entirely. Covers plagiarism, disclosure, and fair use.</div>
+        <div class="lesson-card-meta">
+          <span class="lesson-tag tag-time">⏱ 28 min</span>
+          <span class="lesson-tag tag-teal">🗳️ Dilemma voting</span>
+          <span class="lesson-tag tag-interactive">💬 Real nuance</span>
+        </div>
+      </div>
+      <div class="lesson-card-arrow">→</div>
+    </a>
+
+    <a href="lesson-5.html" class="lesson-card unlocked" id="card-5">
+      <div class="lesson-num-col"><div class="lesson-num-badge todo" id="badge-5">5</div></div>
+      <div class="lesson-card-body">
+        <div class="lesson-card-number">Lesson 5</div>
+        <div class="lesson-card-title">Your personal AI ethics code</div>
+        <div class="lesson-card-desc">Work through guided prompts to define what you actually believe about AI — and use live Claude to help you articulate it. Walk away with a real document: your personal principles for how you'll use AI.</div>
+        <div class="lesson-card-meta">
+          <span class="lesson-tag tag-time">⏱ 30 min</span>
+          <span class="lesson-tag tag-teal">🤖 Live Claude</span>
+          <span class="lesson-tag tag-interactive">📄 Your ethics code</span>
+        </div>
+      </div>
+      <div class="lesson-card-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="reveal" style="margin-bottom:48px;">
+    <p class="section-label">What you'll walk away with</p>
+    <h2 class="section-title">Not anxiety.<br><em>Confidence.</em></h2>
+  </div>
+
+  <div class="outcomes-grid reveal">
+    <div class="outcome-item"><div class="outcome-icon">🕵️</div><div class="outcome-title">A reliable BS detector</div><div class="outcome-text">You'll know exactly what to look for when a quote, statistic, or news story seems AI-generated — and you'll catch things most people scroll straight past.</div></div>
+    <div class="outcome-item"><div class="outcome-icon">🔒</div><div class="outcome-title">Real control over your data</div><div class="outcome-text">You'll know what every major AI tool actually collects, what the risks are, and the specific steps to limit your exposure without giving up the tools you rely on.</div></div>
+    <div class="outcome-item"><div class="outcome-icon">⚖️</div><div class="outcome-title">A framework for hard calls</div><div class="outcome-text">When the answer isn't obvious — at work, at school, in life — you'll have a clear process for thinking it through, not just a vague feeling that something might be wrong.</div></div>
+    <div class="outcome-item"><div class="outcome-icon">📄</div><div class="outcome-title">Your own written ethics code</div><div class="outcome-text">Not someone else's principles adapted for you. Your actual beliefs, articulated clearly. Something you can return to when a situation gets complicated.</div></div>
+  </div>
+</div>
+
+<footer style="background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; font-family: 'DM Sans', sans-serif;">
+  <div style="font-family:'Fraunces',serif; font-size:22px; font-weight:800; color:var(--rust); margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const lessons = [
+    { key: 'aes-1', label: 'Spotting AI misinformation' },
+    { key: 'aes-2', label: 'Protecting your privacy' },
+    { key: 'aes-3', label: 'AI bias & why it matters' },
+    { key: 'aes-4', label: 'Responsible use at work/school' },
+    { key: 'aes-5', label: 'Your personal ethics code' },
+  ];
+
+  function buildProgress() {
+    const completed = lessons.filter(l => localStorage.getItem(l.key + '-complete') === 'true').length;
+    const pct = Math.round((completed / lessons.length) * 100);
+    const circumference = 188.5;
+    document.getElementById('progressRing').style.strokeDashoffset = circumference - (circumference * pct / 100);
+    document.getElementById('ringLabel').textContent = pct + '%';
+    document.getElementById('progressBig').textContent = completed + ' of 5';
+
+    document.getElementById('progressLessons').innerHTML = lessons.map((l, i) => {
+      const done = localStorage.getItem(l.key + '-complete') === 'true';
+      return `<div class="progress-lesson-row ${done ? 'done' : ''}">
+        <div class="lesson-check ${done ? 'done' : 'locked'}">${done ? '✓' : i + 1}</div>
+        <div class="lesson-row-text ${done ? '' : 'muted'}">${l.label}</div>
+      </div>`;
+    }).join('');
+
+    const nextLesson = lessons.findIndex(l => localStorage.getItem(l.key + '-complete') !== 'true') + 1 || 5;
+    const btn = document.getElementById('startBtn');
+    if (completed === 5) { btn.textContent = '✓ Track complete!'; btn.style.background = '#1a4f63'; }
+    else if (completed > 0) { btn.textContent = `Continue → Lesson ${nextLesson}`; btn.href = `lesson-${nextLesson}.html`; }
+
+    lessons.forEach((l, i) => {
+      const done = localStorage.getItem(l.key + '-complete') === 'true';
+      const badge = document.getElementById(`badge-${i+1}`);
+      const card = document.getElementById(`card-${i+1}`);
+      if (done) { badge.className = 'lesson-num-badge done'; badge.textContent = '✓'; card.classList.add('completed'); }
+    });
+  }
+
+  buildProgress();
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 60); observer.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

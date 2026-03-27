@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5: Your Personal AI Ethics Code — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;--teal:#2A6E8A;--teal-light:#E8F4F7; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(42,110,138,0.08) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 70%,rgba(232,162,48,0.06) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-teal{background:var(--teal-light);border-color:rgba(42,110,138,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-teal .callout-label{color:var(--teal);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--teal-light);border:1px solid rgba(42,110,138,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--teal);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(42,110,138,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--teal);border-color:var(--teal);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--teal);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:#235d76;border-color:#235d76;color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── ETHICS CODE BUILDER ── */
+  .code-builder{background:var(--ink);border-radius:28px;overflow:hidden;margin:32px 0;}
+  .code-builder-header{padding:28px 32px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .builder-badge{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .builder-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--cream);}
+  .builder-sub{font-size:14px;color:rgba(250,247,242,0.5);margin-top:4px;}
+
+  .code-steps{padding:0 32px;}
+  .code-step{padding:24px 0;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .code-step:last-child{border-bottom:none;}
+  .step-num{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(250,247,242,0.3);margin-bottom:6px;}
+  .step-prompt{font-size:15px;font-weight:500;color:var(--cream);line-height:1.5;margin-bottom:6px;}
+  .step-hint{font-size:13px;color:rgba(250,247,242,0.4);margin-bottom:14px;line-height:1.45;}
+  .step-input{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--cream);outline:none;transition:border-color 0.2s;width:100%;resize:vertical;min-height:80px;line-height:1.55;}
+  .step-input::placeholder{color:rgba(250,247,242,0.2);}
+  .step-input:focus{border-color:rgba(42,110,138,0.5);}
+
+  .refine-section{padding:24px 32px;border-top:1px solid rgba(255,255,255,0.08);}
+  .refine-title{font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:14px;}
+  .refine-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .refine-btn{padding:9px 18px;border-radius:100px;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:rgba(250,247,242,0.65);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+  .refine-btn:hover:not(:disabled){border-color:rgba(42,110,138,0.5);color:var(--cream);}
+  .refine-btn:disabled{opacity:0.35;cursor:default;}
+
+  .generate-section{padding:0 32px 24px;}
+  .gen-btn{padding:16px 32px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;background:var(--teal);color:#fff;transition:all 0.2s;display:block;width:100%;}
+  .gen-btn:hover:not(:disabled){background:#235d76;}
+  .gen-btn:disabled{background:rgba(42,110,138,0.3);cursor:default;}
+
+  .code-output{display:none;border-top:1px solid rgba(255,255,255,0.08);}
+  .code-output.visible{display:block;}
+  .output-header{padding:24px 32px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .output-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(250,247,242,0.4);}
+  .output-actions{display:flex;gap:8px;}
+  .out-btn{padding:8px 16px;border-radius:100px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(250,247,242,0.7);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .out-btn:hover{background:rgba(255,255,255,0.12);color:var(--cream);}
+  .code-text{padding:24px 32px;font-size:15px;line-height:1.8;color:rgba(250,247,242,0.85);white-space:pre-wrap;}
+
+  /* ── CELEBRATION ── */
+  .track-complete{display:none;background:linear-gradient(135deg,var(--teal),#1a4f63);border-radius:28px;padding:48px 40px;margin:48px 0;text-align:center;}
+  .celebrate-icon{font-size:48px;margin-bottom:16px;}
+  .celebrate-title{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,40px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:16px;}
+  .celebrate-text{font-size:17px;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:28px;}
+  .celebrate-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .cel-btn{padding:14px 28px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;text-decoration:none;transition:all 0.2s;}
+  .cel-btn-primary{background:#fff;color:var(--teal);}
+  .cel-btn-primary:hover{background:rgba(255,255,255,0.9);}
+  .cel-btn-secondary{background:rgba(255,255,255,0.12);color:#fff;border:1.5px solid rgba(255,255,255,0.25);}
+  .cel-btn-secondary:hover{background:rgba(255,255,255,0.2);}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .code-builder-header,.code-steps,.refine-section,.generate-section,.output-header,.code-text{padding-left:20px;padding-right:20px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+    .celebrate-btns{flex-direction:column;}
+    .cel-btn{text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🛡️ AI Ethics & Safety</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-ethics-safety/">🛡️ AI Ethics & Safety</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 5</span>
+    </div>
+    <div class="lesson-number">Lesson 5 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Your personal<br><em>AI ethics code</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 30 min</span><span class="meta-dot"></span>
+      <span>🤖 Live Claude</span><span class="meta-dot"></span>
+      <span>📄 Your own document</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>Most people's approach to AI ethics is reactive — they figure out how they feel when a situation forces them to. That works until you're under pressure, in a hurry, or something is genuinely ambiguous. That's when defaults matter, and defaults are just decisions you made in advance.</p>
+    <p>This lesson is about making those decisions consciously — before you need them. You'll work through a set of questions that surface what you actually believe, then use Claude to help you articulate those beliefs into a clear, personal document you'll keep.</p>
+  </div>
+
+  <div class="callout callout-teal reveal">
+    <div class="callout-label">📌 What you're building</div>
+    <p>A written set of personal principles for how you'll use AI — not someone else's guidelines adapted for you, but the actual positions you've arrived at after thinking seriously about the questions in this track. Something you can return to. Something that's yours.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Before you write:<br><em>five questions to sit with</em></h2>
+    <p>Work through these before you start building your ethics code. They're designed to surface what you actually think — not what sounds good.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">Question 1 — The thinking line</div>
+    <p>Where is the line between AI supporting your thinking and AI replacing your thinking? It's probably in a different place for different tasks. Where is it for the things you do every day?</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">Question 2 — Your disclosure standard</div>
+    <p>In what situations do you believe disclosing AI use is required? In what situations is it not? What principle underlies the difference? "I'd want to know if someone did that to me" is a valid test.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">Question 3 — The sensitive data line</div>
+    <p>What categories of information will you never put into an AI system? Other people's personal details? Medical information? Confidential client data? Where do you draw that line, and why?</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">Question 4 — The AI bias question</div>
+    <p>If you use an AI tool to make decisions about people — recommendations, assessments, selections — what's your responsibility to check for bias? What would that check actually look like in practice?</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">Question 5 — The downstream question</div>
+    <p>If AI-generated content you share is wrong and causes harm, what's your responsibility? "I didn't write it, the AI did" is not a satisfying answer to most people. Where does your responsibility begin and end?</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Build your<br><em>ethics code</em></h2>
+    <p>Answer each question honestly — short answers are fine, the AI will help shape them into polished principles. Then generate your code. You can refine it until it says exactly what you mean.</p>
+  </div>
+
+  <!-- ETHICS CODE BUILDER -->
+  <div class="code-builder reveal">
+    <div class="code-builder-header">
+      <div class="builder-badge"><span class="live-dot"></span> Personal ethics code builder</div>
+      <div class="builder-title">Define your principles</div>
+      <div class="builder-sub">Answer honestly — Claude will help you articulate them clearly</div>
+    </div>
+
+    <div class="code-steps">
+      <div class="code-step">
+        <div class="step-num">Step 1 of 6</div>
+        <div class="step-prompt">What's your name or how should the code refer to you?</div>
+        <div class="step-hint">e.g. "Alex", "a student", "a marketing professional" — whatever feels right</div>
+        <input class="step-input" type="text" id="f-name" placeholder="Your name or role…" style="min-height:unset;resize:none;">
+      </div>
+      <div class="code-step">
+        <div class="step-num">Step 2 of 6</div>
+        <div class="step-prompt">Where do you draw the line between AI helping your thinking versus replacing it?</div>
+        <div class="step-hint">What tasks should you always do yourself? Where is AI assistance clearly fine?</div>
+        <textarea class="step-input" id="f-thinking" placeholder="e.g. I'm comfortable using AI to draft, outline, and brainstorm. But for anything that requires my personal judgment — assessments of people, creative decisions that represent my voice, anything I'll sign my name to — I need to do the core thinking myself…"></textarea>
+      </div>
+      <div class="code-step">
+        <div class="step-num">Step 3 of 6</div>
+        <div class="step-prompt">What's your disclosure principle? When will you tell people you used AI?</div>
+        <div class="step-hint">Think about the different contexts in your life — professional, academic, personal</div>
+        <textarea class="step-input" id="f-disclosure" placeholder="e.g. In professional work, I'll disclose when someone would reasonably assume I wrote something myself and AI substantially produced it. In academic work, I'll follow the institution's policy and lean toward disclosure when unclear. In personal communication, I'll use my judgment…"></textarea>
+      </div>
+      <div class="code-step">
+        <div class="step-num">Step 4 of 6</div>
+        <div class="step-prompt">What information will you never put into AI tools?</div>
+        <div class="step-hint">Think about other people's privacy, confidential data, sensitive categories</div>
+        <textarea class="step-input" id="f-privacy" placeholder="e.g. I will never share other people's personal information without their knowledge. I won't put client or employer confidential data into consumer AI tools. I'll treat medical and financial information with extra caution…"></textarea>
+      </div>
+      <div class="code-step">
+        <div class="step-num">Step 5 of 6</div>
+        <div class="step-prompt">What's your commitment when AI affects decisions about people?</div>
+        <div class="step-hint">Hiring, assessing, recommending, or evaluating others using AI assistance</div>
+        <textarea class="step-input" id="f-people" placeholder="e.g. When AI helps me make or inform decisions about people, I take personal responsibility for checking the output. I won't use AI recommendations without applying my own judgment. I'll be aware that AI can reflect bias and actively check for it in high-stakes decisions…"></textarea>
+      </div>
+      <div class="code-step">
+        <div class="step-num">Step 6 of 6</div>
+        <div class="step-prompt">What's your commitment to accuracy and the downstream impact of what you share?</div>
+        <div class="step-hint">Misinformation, verification, and your responsibility for content you put into the world</div>
+        <textarea class="step-input" id="f-accuracy" placeholder="e.g. I will verify AI-generated facts before sharing them, especially statistics and quotes. I take responsibility for content I publish regardless of how it was produced. I will not share content designed to mislead even if I didn't create it…"></textarea>
+      </div>
+    </div>
+
+    <div class="refine-section">
+      <div class="refine-title">Tone preferences</div>
+      <div class="refine-btns">
+        <button class="refine-btn active" id="tone-personal" onclick="selectTone(this,'personal and direct')">Personal & direct</button>
+        <button class="refine-btn" id="tone-formal" onclick="selectTone(this,'formal and professional')">Formal</button>
+        <button class="refine-btn" id="tone-concise" onclick="selectTone(this,'concise with numbered principles')">Concise principles</button>
+        <button class="refine-btn" id="tone-detailed" onclick="selectTone(this,'detailed with reasoning for each principle')">Detailed with reasoning</button>
+      </div>
+    </div>
+
+    <div class="generate-section">
+      <button class="gen-btn" id="genBtn" onclick="generateCode()">▶ Generate my ethics code</button>
+    </div>
+
+    <div class="code-output" id="codeOutput">
+      <div class="output-header">
+        <div class="output-label">📄 Your AI ethics code</div>
+        <div class="output-actions">
+          <button class="out-btn" onclick="copyCode()">📋 Copy</button>
+          <button class="out-btn" onclick="saveCode()">💾 Save</button>
+          <button class="out-btn" onclick="exportCode()">⬇️ Export .txt</button>
+        </div>
+      </div>
+      <div class="code-text" id="codeText"></div>
+      <div class="refine-section" style="padding-top:0;">
+        <div class="refine-title">Refine your code</div>
+        <div class="refine-btns">
+          <button class="refine-btn" id="r-shorter" onclick="refineCode('Make it shorter and more punchy — each principle in one clear sentence')">Shorter</button>
+          <button class="refine-btn" id="r-stronger" onclick="refineCode('Make the language stronger and more committal — less hedging, more conviction')">Stronger language</button>
+          <button class="refine-btn" id="r-personal" onclick="refineCode('Make it sound more personal and written in first person — like a genuine personal commitment, not a policy document')">More personal</button>
+          <button class="refine-btn" id="r-practical" onclick="refineCode('Add specific, concrete examples of what each principle looks like in practice')">Add examples</button>
+          <button class="refine-btn" id="r-regen" onclick="generateCode()">↻ Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ How to actually use this</div>
+    <p>A written ethics code only matters if you return to it. Three suggestions: (1) Save it somewhere you'll see it — the notes app you use most, pinned in your browser, the first page of your work journal. (2) When you face an ambiguous AI situation, read it before deciding. (3) Review it in six months. Your thinking will evolve as AI evolves — the document should too.</p>
+  </div>
+
+  <div class="callout callout-teal reveal">
+    <div class="callout-label">🎯 This is a living document</div>
+    <p>The right ethics code for you today might not be the right one in a year. AI capabilities are changing rapidly. New uses are emerging. New harms are being discovered. The value of having written principles isn't that they're permanent — it's that they make your thinking explicit, so when you change your mind, you know you've changed your mind and why.</p>
+  </div>
+
+  <!-- TRACK COMPLETION CELEBRATION -->
+  <div class="track-complete" id="trackComplete">
+    <div class="celebrate-icon">🛡️</div>
+    <h2 class="celebrate-title">Track complete.</h2>
+    <p class="celebrate-text">You've finished AI Ethics & Safety. You can now spot AI misinformation, you know what data your tools collect, you understand where bias comes from, you can reason through genuinely hard dilemmas — and you have your own written principles to guide you when things get complicated.<br><br>That's not nothing. Most people using AI daily have thought about none of this.</p>
+    <div class="celebrate-btns">
+      <a href="/learn/ai-ethics-safety/" class="cel-btn cel-btn-primary">← Back to track</a>
+      <a href="/" class="cel-btn cel-btn-secondary">Explore more tracks</a>
+    </div>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-4.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Responsible use at work & school</span></span>
+    </a>
+    <a href="/learn/ai-ethics-safety/" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Back to</span><span class="nav-btn-title">Track overview</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  let codeToné = 'personal and direct';
+
+  function selectTone(btn, tone) {
+    document.querySelectorAll('.refine-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    codeToné = tone;
+  }
+
+  async function callClaude(prompt) {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 900, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    if (data.content && data.content[0]) return data.content[0].text;
+    throw new Error(data.error?.message || 'API error');
+  }
+
+  async function generateCode() {
+    const name = document.getElementById('f-name').value.trim() || 'the author';
+    const thinking = document.getElementById('f-thinking').value.trim();
+    const disclosure = document.getElementById('f-disclosure').value.trim();
+    const privacy = document.getElementById('f-privacy').value.trim();
+    const people = document.getElementById('f-people').value.trim();
+    const accuracy = document.getElementById('f-accuracy').value.trim();
+
+    if (!thinking && !disclosure && !privacy) {
+      alert('Please answer at least a few of the questions first.');
+      return;
+    }
+
+    const btn = document.getElementById('genBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Writing your ethics code…';
+    document.getElementById('codeOutput').classList.add('visible');
+    setCodeText('Writing your personal AI ethics code…');
+    setRefineEnabled(false);
+
+    const prompt = `You are helping ${name} write their personal AI ethics code. Based on their answers to these reflection questions, write a clear, thoughtful personal ethics code.
+
+Their name/identity: ${name}
+Their view on AI and thinking: ${thinking || 'not answered'}
+Their disclosure principles: ${disclosure || 'not answered'}
+Their privacy commitments: ${privacy || 'not answered'}
+Their commitments around AI and people: ${people || 'not answered'}
+Their accuracy and sharing commitments: ${accuracy || 'not answered'}
+
+Write their personal AI ethics code in a ${codeToné} tone.
+
+Format it as a personal document with:
+- A short opening statement (1-2 sentences) that captures their overall stance on AI
+- 4-6 clear principles that flow from their answers (not generic advice, but their specific commitments)
+- A brief closing line
+
+Use first person throughout. Make it sound like them, not like a corporate policy. Ground every principle in what they actually said — don't add principles they didn't express. If some questions were unanswered, focus on the ones they did answer.
+
+Write only the ethics code itself — no preamble or explanation.`;
+
+    try {
+      const text = await callClaude(prompt);
+      setCodeText(text);
+      setRefineEnabled(true);
+      localStorage.setItem('aes-ethics-code', text);
+    } catch (e) {
+      setCodeText('Error: ' + e.message + '. Make sure ANTHROPIC_API_KEY is set in Netlify.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '▶ Generate my ethics code';
+    }
+  }
+
+  async function refineCode(instruction) {
+    const current = document.getElementById('codeText').textContent;
+    if (!current || current.startsWith('Error') || current.includes('Writing your')) return;
+
+    setRefineEnabled(false);
+    setCodeText('Refining…');
+
+    try {
+      const text = await callClaude(`Here is a personal AI ethics code:\n\n${current}\n\nInstruction: ${instruction}\n\nRewrite the ethics code following that instruction. Keep it personal and grounded in the original principles. Output only the revised ethics code, no explanation.`);
+      setCodeText(text);
+      localStorage.setItem('aes-ethics-code', text);
+    } catch (e) {
+      setCodeText('Error: ' + e.message);
+    } finally {
+      setRefineEnabled(true);
+    }
+  }
+
+  function setCodeText(text) {
+    document.getElementById('codeText').textContent = text;
+  }
+
+  function setRefineEnabled(on) {
+    document.querySelectorAll('#codeOutput .refine-btn').forEach(b => b.disabled = !on);
+  }
+
+  function copyCode() {
+    const text = document.getElementById('codeText').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector('#codeOutput .out-btn');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
+    });
+  }
+
+  function saveCode() {
+    const text = document.getElementById('codeText').textContent;
+    localStorage.setItem('aes-ethics-code', text);
+    const btn = document.querySelectorAll('#codeOutput .out-btn')[1];
+    btn.textContent = '✓ Saved!';
+    setTimeout(() => btn.textContent = '💾 Save', 2000);
+  }
+
+  function exportCode() {
+    const text = document.getElementById('codeText').textContent;
+    if (!text || text.startsWith('Error') || text.includes('Writing')) return;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'my-ai-ethics-code.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // restore saved code
+  const savedCode = localStorage.getItem('aes-ethics-code');
+  if (savedCode) {
+    document.getElementById('codeOutput').classList.add('visible');
+    setCodeText(savedCode);
+    setRefineEnabled(true);
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function checkTrackComplete() {
+    const keys = ['aes-1-complete','aes-2-complete','aes-3-complete','aes-4-complete','aes-5-complete'];
+    if (keys.every(k => localStorage.getItem(k) === 'true')) {
+      document.getElementById('trackComplete').style.display = 'block';
+    }
+  }
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('aes-5-complete', checked);
+    if (checked) checkTrackComplete();
+  }
+  if (localStorage.getItem('aes-5-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+    checkTrackComplete();
+  }
+</script>
+</body>
+</html>

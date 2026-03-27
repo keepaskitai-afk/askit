@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4: Using AI Responsibly at Work & School — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;--teal:#2A6E8A;--teal-light:#E8F4F7; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(42,110,138,0.08) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 70%,rgba(232,162,48,0.06) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-teal{background:var(--teal-light);border-color:rgba(42,110,138,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-warn{background:rgba(200,82,26,0.06);border-color:rgba(200,82,26,0.25);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-teal .callout-label{color:var(--teal);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .key-takeaway{background:linear-gradient(135deg,var(--teal),#1a4f63);border-radius:24px;padding:36px;margin:48px 0;text-align:center;}
+  .kt-label{font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+  .key-takeaway p{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,26px);font-weight:600;line-height:1.45;color:#fff!important;margin-bottom:0!important;}
+  .key-takeaway p em{font-style:italic;font-weight:300;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--teal-light);border:1px solid rgba(42,110,138,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--teal);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(42,110,138,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--teal);border-color:var(--teal);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--teal);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:#235d76;border-color:#235d76;color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── DILEMMA CARDS ── */
+  .dilemma{background:var(--warm-white);border:1.5px solid var(--border);border-radius:24px;overflow:hidden;margin-bottom:24px;}
+  .dilemma-top{padding:24px 28px;border-bottom:1px solid var(--border);}
+  .dilemma-context{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .dilemma-scenario{font-size:17px;font-weight:500;color:var(--ink);line-height:1.5;}
+  .dilemma-vote{padding:20px 28px;border-bottom:1px solid var(--border);}
+  .vote-question{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:14px;}
+  .vote-btns{display:flex;gap:10px;flex-wrap:wrap;}
+  .vote-btn{padding:12px 22px;border-radius:100px;border:1.5px solid var(--border);background:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--ink);}
+  .vote-btn:hover:not(:disabled){transform:translateY(-1px);}
+  .vote-btn.yes:hover:not(:disabled){border-color:var(--sage);background:var(--sage-light);color:var(--sage);}
+  .vote-btn.no:hover:not(:disabled){border-color:var(--rust);background:rgba(200,82,26,0.07);color:var(--rust);}
+  .vote-btn.depends:hover:not(:disabled){border-color:var(--gold);background:rgba(232,162,48,0.08);color:#8a6000;}
+  .vote-btn.selected-yes{border-color:var(--sage);background:var(--sage-light);color:var(--sage);}
+  .vote-btn.selected-no{border-color:var(--rust);background:rgba(200,82,26,0.07);color:var(--rust);}
+  .vote-btn.selected-depends{border-color:var(--gold);background:rgba(232,162,48,0.08);color:#8a6000;}
+  .vote-btn:disabled{cursor:default;opacity:0.7;}
+  .vote-bars{display:none;margin-top:16px;}
+  .vote-bars.show{display:block;}
+  .vote-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:13px;}
+  .vb-label{width:70px;font-weight:600;color:var(--muted);}
+  .vb-bg{flex:1;height:10px;background:var(--border);border-radius:100px;overflow:hidden;}
+  .vb-fill{height:100%;border-radius:100px;transition:width 0.8s ease;}
+  .vb-fill.yes{background:var(--sage);}
+  .vb-fill.no{background:var(--rust);}
+  .vb-fill.dep{background:var(--gold);}
+  .vb-pct{width:32px;font-weight:600;text-align:right;color:var(--ink);}
+  .dilemma-analysis{display:none;padding:24px 28px;background:var(--teal-light);border-top:1px solid rgba(42,110,138,0.15);}
+  .dilemma-analysis.show{display:block;}
+  .analysis-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+  .analysis-text{font-size:15px;color:var(--ink);line-height:1.65;}
+  .analysis-rule{margin-top:14px;padding:12px 16px;background:rgba(42,110,138,0.1);border-radius:10px;font-size:14px;font-weight:500;color:var(--teal);}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+    .vote-btns{flex-direction:column;}
+    .vote-btn{text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🛡️ AI Ethics & Safety</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-ethics-safety/">🛡️ AI Ethics & Safety</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 4</span>
+    </div>
+    <div class="lesson-number">Lesson 4 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Using AI responsibly<br><em>at work and school</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 28 min</span><span class="meta-dot"></span>
+      <span>🗳️ Dilemma voting</span><span class="meta-dot"></span>
+      <span>💬 Real nuance</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>The rules haven't caught up. Most schools and workplaces are scrambling to write AI policies as AI capabilities evolve faster than any policy can track. Which means right now, in the gap between "AI exists" and "we have clear rules about AI", you're making judgement calls every day.</p>
+    <p>This lesson doesn't tell you what to do. It gives you the thinking tools to work it out for yourself — and tests them against eight real situations where the answer isn't obvious.</p>
+  </div>
+
+  <div class="callout callout-teal reveal">
+    <div class="callout-label">🎯 How this works</div>
+    <p>For each scenario, you vote: Yes (acceptable), No (not acceptable), or It depends. After you vote, you'll see how other learners responded and get the nuanced analysis. There are no easy right answers here — but there are better and worse ways of thinking about each one.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Eight dilemmas.<br><em>Vote honestly.</em></h2>
+  </div>
+
+  <!-- DILEMMA 1 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">University essay</div>
+      <div class="dilemma-scenario">A student uses ChatGPT to outline their essay, then writes every sentence themselves, substantially revising the structure and adding their own argument. The essay is genuinely their own thinking and writing — the AI only helped them organise their ideas before they started. The assignment says nothing about AI use.</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d1','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d1','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d1','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d1-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d1-y"></div></div><div class="vb-pct">62%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d1-n"></div></div><div class="vb-pct">8%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d1-d"></div></div><div class="vb-pct">30%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d1-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">Most people say yes or it depends — and that's the right instinct. Using AI to brainstorm, outline, or check logic is fundamentally similar to talking through your argument with a friend or tutor. The work is yours. The thinking is yours. The argument is yours. This is not plagiarism in any meaningful sense.<br><br>The "it depends" voters are right that context matters: if the institution explicitly bans AI assistance of any kind, using it even this way violates policy. The student should check. If the policy is silent, using AI as a thinking tool — not a writing tool — is defensible. The principle: AI that supports your thinking is different from AI that replaces your thinking.</div>
+      <div class="analysis-rule">Rule: Use AI as a thinking partner, not a thinking replacement. Outline with it, argue against it, use it to stress-test your logic — then write your own work.</div>
+    </div>
+  </div>
+
+  <!-- DILEMMA 2 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">Workplace report</div>
+      <div class="dilemma-scenario">A manager uses Claude to draft a performance review for an employee. The manager reviews and edits the draft, changing roughly 30% of it. The final review captures the manager's genuine assessment. The employee never knows AI was used in the drafting.</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d2','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d2','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d2','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d2-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d2-y"></div></div><div class="vb-pct">55%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d2-n"></div></div><div class="vb-pct">12%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d2-d"></div></div><div class="vb-pct">33%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d2-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">This is generally acceptable, with one important caveat. Managers have always used templates, HR frameworks, and colleagues' input when writing reviews. AI is a more capable version of that. The assessment is the manager's; the drafting assistance is a tool.<br><br>The caveat: if the AI produced language the manager didn't fully scrutinise — for example, a vague criticism or a generic praise phrase that doesn't reflect reality — that's a problem. Not because AI was used, but because the manager failed to own the output. The disclosure question is interesting: most people wouldn't expect a manager to note "I used Word's spellchecker on this." AI drafting assistance is increasingly in that category. But if the company has a disclosure policy, it applies regardless.</div>
+      <div class="analysis-rule">Rule: Own the output completely. If you can't defend every sentence in the review as genuinely reflecting your assessment, that's where the problem lies — not the tool.</div>
+    </div>
+  </div>
+
+  <!-- DILEMMA 3 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">Academic submission</div>
+      <div class="dilemma-scenario">A student submits an essay that is 80% written by ChatGPT. They edited it to make it sound more like them, added a few personal examples, and genuinely understand the argument. The institution's policy says "AI may be used as a tool but submitted work must be the student's own."</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d3','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d3','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d3','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d3-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d3-y"></div></div><div class="vb-pct">9%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d3-n"></div></div><div class="vb-pct">74%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d3-d"></div></div><div class="vb-pct">17%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d3-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">This is not acceptable, and not a close call. The policy explicitly says submitted work must be the student's own — and 80% AI-generated work is not their own by any reasonable interpretation. The student may have edited and understood it, but the core intellectual labour (developing the argument, structuring it, finding the language) was done by AI.<br><br>The "genuinely understands the argument" point is worth addressing directly: understanding the argument you submitted isn't the same as doing the intellectual work of producing it. Assessment is partly about demonstrating that you can perform the thinking, not just that you can recognise good thinking when you see it. Using AI at this level when the policy prohibits it is academic misconduct.</div>
+      <div class="analysis-rule">Rule: If the point of the assignment is to demonstrate that you can do the thinking, submitting AI-generated thinking defeats the purpose — regardless of whether you understand it.</div>
+    </div>
+  </div>
+
+  <!-- DILEMMA 4 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">Job application</div>
+      <div class="dilemma-scenario">A job applicant uses AI to write their cover letter. The cover letter is truthful, reflects their genuine qualifications, and represents how they would speak about themselves in an interview. They don't disclose that AI helped write it.</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d4','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d4','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d4','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d4-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d4-y"></div></div><div class="vb-pct">68%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d4-n"></div></div><div class="vb-pct">11%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d4-d"></div></div><div class="vb-pct">21%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d4-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">Generally acceptable. People have always used professional CV writers, career coaches, and templates to write cover letters. The purpose of a cover letter is to communicate qualifications and fit — not to demonstrate writing ability (unless the role specifically requires writing). Using AI to produce polished, accurate, truthful content is a reasonable extension of tools people have always used.<br><br>There is a genuine concern worth naming: if the cover letter dramatically overstates your communication ability and you can't back that up in writing-based parts of the role, that's a problem. But that's about honesty, not about the AI. The principle that matters: the content must be truthful. The tool that produced it is largely beside the point.</div>
+      <div class="analysis-rule">Rule: In contexts where writing ability isn't what's being assessed, AI writing assistance is generally comparable to other professional editing tools. The content must be truthful regardless.</div>
+    </div>
+  </div>
+
+  <!-- DILEMMA 5 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">Medical education</div>
+      <div class="dilemma-scenario">A medical student uses AI to answer practice case questions during exam preparation. They review the AI's answers carefully and use them to learn. They don't use AI during the actual exam, which is proctored.</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d5','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d5','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d5','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d5-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d5-y"></div></div><div class="vb-pct">71%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d5-n"></div></div><div class="vb-pct">7%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d5-d"></div></div><div class="vb-pct">22%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d5-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">Acceptable, and arguably excellent practice. Using AI as a study partner for practice questions is similar to using textbooks, question banks, or a study group. The student is doing the learning — the AI is a richer, more interactive version of a practice answer book.<br><br>There is one important caveat for medical education specifically: AI can be wrong about clinical facts, and in medical contexts, learning a wrong answer has downstream patient safety implications. This student should cross-reference AI answers against authoritative clinical sources, not treat AI as the gold standard. Used critically, AI study assistance in medicine is valuable. Used uncritically, it could build dangerous misconceptions. The habit of critical verification is the skill being practised — and that's a good habit to build.</div>
+      <div class="analysis-rule">Rule: Using AI as a study tool is legitimate when you're doing the learning. In high-stakes knowledge domains, always verify AI answers against authoritative sources.</div>
+    </div>
+  </div>
+
+  <!-- DILEMMA 6 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">Journalism</div>
+      <div class="dilemma-scenario">A journalist uses AI to draft a news article from notes of interviews they conducted. They verify all facts, make substantial edits, and publish under their byline with no AI disclosure. The outlet has no explicit AI policy.</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d6','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d6','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d6','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d6-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d6-y"></div></div><div class="vb-pct">31%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d6-n"></div></div><div class="vb-pct">24%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d6-d"></div></div><div class="vb-pct">45%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d6-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">This is genuinely contested and context-dependent — hence the very split response. Journalism sits at the intersection of transparency and craft. The case for "acceptable": the journalist did all the actual reporting (interviews, fact-checking, editing). The AI was a drafting tool, like any other writing software. The case for "problematic": journalism has an implicit contract with readers about authorship. Many readers assume the words in a bylined article were chosen by the journalist. AI disclosure is increasingly seen as a professional norm, even without a formal policy.<br><br>The pragmatic answer: the field is moving toward disclosure being standard practice. Getting ahead of that norm, rather than behind it, is both professionally safer and more honest. "Drafted with AI assistance" as a note has very little downside and maintains reader trust.</div>
+      <div class="analysis-rule">Rule: In trust-based professions (journalism, medicine, law), disclose AI assistance proactively rather than reactively. The norm is moving in that direction regardless.</div>
+    </div>
+  </div>
+
+  <!-- DILEMMA 7 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">Creative writing class</div>
+      <div class="dilemma-scenario">A student submits a short story. They used AI to generate an opening paragraph they were stuck on, then wrote the rest themselves — about 600 words of original writing following 80 AI-generated words. The story is genuinely theirs in voice and direction. No AI policy exists for the class.</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d7','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d7','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d7','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d7-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d7-y"></div></div><div class="vb-pct">44%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d7-n"></div></div><div class="vb-pct">22%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d7-d"></div></div><div class="vb-pct">34%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d7-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">This is one of the most genuinely contested dilemmas in creative fields. Professional writers regularly use first-line prompts, writing exercises, and collaborative input to break through blocks. Plenty of published novels started with a line a friend suggested. The spirit of a creative writing class is developing voice and the ability to tell a story — the student did both.<br><br>The counter-argument: the opening line is often where voice is established. If a student can't start a story themselves, the AI opening is doing more than just breaking a block — it's making a creative choice for them. In a class specifically about developing creative skill, that might matter. The honest answer is: transparency with the instructor resolves this entirely. "I was blocked and used an AI-generated opening as a starting point" is a perfectly legitimate conversation to have. The secrecy creates more risk than the use.</div>
+      <div class="analysis-rule">Rule: In creative work, transparency with collaborators (including instructors) about AI assistance is usually the move that converts a grey area into a clear one.</div>
+    </div>
+  </div>
+
+  <!-- DILEMMA 8 -->
+  <div class="dilemma reveal">
+    <div class="dilemma-top">
+      <div class="dilemma-context">Legal practice</div>
+      <div class="dilemma-scenario">A lawyer uses AI to research case law for a client matter. The AI produces a list of relevant cases. The lawyer doesn't independently verify each case, trusting the AI's output, and cites them in a legal brief to the court.</div>
+    </div>
+    <div class="dilemma-vote">
+      <div class="vote-question">Is this acceptable?</div>
+      <div class="vote-btns">
+        <button class="vote-btn yes" onclick="castVote(this,'d8','yes')">Yes, acceptable</button>
+        <button class="vote-btn no" onclick="castVote(this,'d8','no')">No, not acceptable</button>
+        <button class="vote-btn depends" onclick="castVote(this,'d8','depends')">It depends</button>
+      </div>
+      <div class="vote-bars" id="d8-bars">
+        <div class="vote-bar-row"><div class="vb-label">Yes</div><div class="vb-bg"><div class="vb-fill yes" id="d8-y"></div></div><div class="vb-pct">3%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">No</div><div class="vb-bg"><div class="vb-fill no" id="d8-n"></div></div><div class="vb-pct">89%</div></div>
+        <div class="vote-bar-row"><div class="vb-label">Depends</div><div class="vb-bg"><div class="vb-fill dep" id="d8-d"></div></div><div class="vb-pct">8%</div></div>
+      </div>
+    </div>
+    <div class="dilemma-analysis" id="d8-analysis">
+      <div class="analysis-label">The analysis</div>
+      <div class="analysis-text">Not acceptable — and this has already played out in court with severe consequences. AI language models hallucinate cases that don't exist. They produce case citations that sound completely real — correct format, plausible names, plausible dates — that are entirely fabricated. In 2023, multiple lawyers were sanctioned or fined for submitting AI-generated briefs with fictional cases they failed to verify.<br><br>This isn't about whether AI should be used in legal research — it can be a valuable starting point. It's about an absolute professional duty: you must verify every case you cite before submitting it to a court. Using AI as a research starting point is reasonable. Treating AI output as verified legal fact is professional negligence and potentially contempt of court. The rule is simple: never cite a case you haven't personally confirmed exists and says what you claim.</div>
+      <div class="analysis-rule">Rule: In high-stakes professional contexts, AI output is a starting point, never an endpoint. Verification is non-negotiable — especially when failure has consequences for clients or third parties.</div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ The three questions that cut through most dilemmas</div>
+    <p><strong>1. Is the thinking mine?</strong> — Did I do the intellectual work, or did AI do it for me?<br><br><strong>2. Am I being honest?</strong> — Is the work truthful, and would the person receiving it expect it to have been produced this way?<br><br><strong>3. What are the stakes of being wrong?</strong> — If the AI got something wrong and I didn't catch it, who gets hurt? The higher the stakes, the higher the verification burden.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p><em>The ethical question isn't usually "did I use AI?" It's "did I own the output, verify what needed verifying, and tell the truth?"</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-3.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">AI bias & why it matters</span></span>
+    </a>
+    <a href="lesson-5.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Your personal AI ethics code</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const bars = {
+    d1: { y: 62, n: 8, d: 30 },
+    d2: { y: 55, n: 12, d: 33 },
+    d3: { y: 9, n: 74, d: 17 },
+    d4: { y: 68, n: 11, d: 21 },
+    d5: { y: 71, n: 7, d: 22 },
+    d6: { y: 31, n: 24, d: 45 },
+    d7: { y: 44, n: 22, d: 34 },
+    d8: { y: 3, n: 89, d: 8 }
+  };
+
+  function castVote(btn, id, choice) {
+    const btns = btn.parentElement.querySelectorAll('.vote-btn');
+    btns.forEach(b => b.disabled = true);
+    btn.classList.add('selected-' + choice);
+
+    const barsEl = document.getElementById(id + '-bars');
+    const analysis = document.getElementById(id + '-analysis');
+    barsEl.classList.add('show');
+    analysis.classList.add('show');
+
+    const b = bars[id];
+    setTimeout(() => {
+      document.getElementById(id + '-y').style.width = b.y + '%';
+      document.getElementById(id + '-n').style.width = b.n + '%';
+      document.getElementById(id + '-d').style.width = b.d + '%';
+    }, 100);
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('aes-4-complete', checked);
+  }
+  if (localStorage.getItem('aes-4-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

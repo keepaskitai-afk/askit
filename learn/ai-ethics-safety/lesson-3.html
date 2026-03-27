@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3: AI Bias & Why It Matters — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;--teal:#2A6E8A;--teal-light:#E8F4F7; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(42,110,138,0.08) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 70%,rgba(232,162,48,0.06) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-teal{background:var(--teal-light);border-color:rgba(42,110,138,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-warn{background:rgba(200,82,26,0.06);border-color:rgba(200,82,26,0.25);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-teal .callout-label{color:var(--teal);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .key-takeaway{background:linear-gradient(135deg,var(--teal),#1a4f63);border-radius:24px;padding:36px;margin:48px 0;text-align:center;}
+  .kt-label{font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+  .key-takeaway p{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,26px);font-weight:600;line-height:1.45;color:#fff!important;margin-bottom:0!important;}
+  .key-takeaway p em{font-style:italic;font-weight:300;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--teal-light);border:1px solid rgba(42,110,138,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--teal);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(42,110,138,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--teal);border-color:var(--teal);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--teal);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:#235d76;border-color:#235d76;color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── BIAS SCENARIOS ── */
+  .scenario-card{background:var(--warm-white);border:1.5px solid var(--border);border-radius:24px;overflow:hidden;margin-bottom:24px;}
+  .scenario-header{padding:20px 24px;background:var(--ink);display:flex;align-items:center;gap:14px;}
+  .scenario-num{width:36px;height:36px;border-radius:50%;background:rgba(42,110,138,0.3);color:rgba(250,247,242,0.9);font-family:'Fraunces',serif;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .scenario-header-text{flex:1;}
+  .scenario-domain{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:3px;}
+  .scenario-title{font-size:16px;font-weight:600;color:var(--cream);}
+  .scenario-body{padding:24px;}
+  .scenario-prompt{font-size:14px;color:var(--muted);margin-bottom:12px;font-style:italic;}
+  .ai-output{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:16px 18px;font-size:15px;line-height:1.65;color:var(--ink);margin-bottom:20px;}
+  .bias-question{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px;}
+  .bias-options{display:flex;flex-direction:column;gap:8px;margin-bottom:0;}
+  .bias-opt{padding:12px 16px;border-radius:10px;border:1.5px solid var(--border);background:var(--warm-white);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);cursor:pointer;text-align:left;transition:all 0.2s;line-height:1.4;}
+  .bias-opt:hover:not(:disabled){border-color:var(--teal);background:var(--teal-light);color:var(--ink);}
+  .bias-opt.selected-right{border-color:var(--sage);background:var(--sage-light);color:var(--sage);}
+  .bias-opt.selected-partial{border-color:var(--gold);background:rgba(232,162,48,0.08);color:#8a6000;}
+  .bias-opt.selected-wrong{border-color:var(--rust);background:rgba(200,82,26,0.07);color:var(--rust);}
+  .bias-opt:disabled{cursor:default;}
+  .scenario-reveal{display:none;margin-top:20px;padding:20px;border-radius:14px;background:var(--teal-light);border:1px solid rgba(42,110,138,0.2);}
+  .scenario-reveal.open{display:block;}
+  .reveal-label{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+  .reveal-text{font-size:15px;color:var(--ink);line-height:1.65;}
+  .real-impact{margin-top:12px;padding:12px 16px;background:rgba(200,82,26,0.07);border-radius:10px;font-size:14px;color:var(--rust);line-height:1.5;}
+  .real-impact strong{font-weight:600;}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🛡️ AI Ethics & Safety</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-ethics-safety/">🛡️ AI Ethics & Safety</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 3</span>
+    </div>
+    <div class="lesson-number">Lesson 3 of 5 · Premium Track</div>
+    <h1 class="lesson-title">AI bias<br>and <em>why it matters</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 24 min</span><span class="meta-dot"></span>
+      <span>⚖️ Real examples</span><span class="meta-dot"></span>
+      <span>🔍 Spot the bias</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>In 2018, Amazon scrapped an internal AI hiring tool after discovering it systematically downgraded applications from women. It had learned from 10 years of historical hires — most of whom were male — and concluded that being female was a negative signal.</p>
+    <p>In 2016, a facial recognition system used by US courts to predict recidivism risk was found to be <strong>twice as likely to falsely flag Black defendants as high-risk</strong> compared to white defendants. People went to jail — or stayed there — based on that score.</p>
+    <p>This isn't ancient history. These systems are still being built and deployed. And the bias doesn't always come from malicious intent — it usually comes from data that reflects the world as it <em>was</em>, not as it should be.</p>
+  </div>
+
+  <div class="callout callout-teal reveal">
+    <div class="callout-label">🎯 What you'll do</div>
+    <p>You'll work through six real-scenario bias challenges. For each one, you'll read an actual AI output and identify what kind of bias is present — and why it matters. These aren't hypotheticals. Every scenario is based on documented incidents or patterns from real AI deployments.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Spot the bias:<br><em>six real scenarios</em></h2>
+  </div>
+
+  <!-- SCENARIO 1 -->
+  <div class="scenario-card reveal">
+    <div class="scenario-header">
+      <div class="scenario-num">1</div>
+      <div class="scenario-header-text">
+        <div class="scenario-domain">Healthcare</div>
+        <div class="scenario-title">AI pain management recommendation</div>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-prompt">An AI system analysing patient data to recommend pain management interventions outputs the following pattern across a large hospital:</div>
+      <div class="ai-output">White patients with lower pain scores (3–4/10) are consistently recommended specialist referrals and stronger pain medication. Black patients with identical or higher pain scores (5–6/10) are more frequently recommended "lifestyle interventions" and over-the-counter medication.</div>
+      <div class="bias-question">What type of bias is most likely causing this pattern?</div>
+      <div class="bias-options" id="s1-opts">
+        <button class="bias-opt" onclick="selectBias(this,'s1','a')">A) The AI doesn't have enough data on Black patients to make recommendations</button>
+        <button class="bias-opt" onclick="selectBias(this,'s1','b')">B) The AI learned from historical medical data that itself reflected racial disparities in how pain was treated</button>
+        <button class="bias-opt" onclick="selectBias(this,'s1','c')">C) The AI is programmed to be more conservative with certain demographic groups for liability reasons</button>
+        <button class="bias-opt" onclick="selectBias(this,'s1','d')">D) This pattern reflects genuine medical differences between patient populations</button>
+      </div>
+      <div class="scenario-reveal" id="s1-reveal">
+        <div class="reveal-label">The answer</div>
+        <div class="reveal-text">B is correct. This is historical bias — a particularly insidious type. The AI was trained on real treatment records, where racial disparities in pain treatment were already baked in. US medical research has documented a long history of Black patients having their pain undertreated. The AI learned this pattern and reproduced it at scale, amplifying an existing injustice.</div>
+        <div class="real-impact"><strong>Real impact:</strong> This exact pattern was documented in a 2019 study published in Science, finding that a widely-used commercial healthcare algorithm systematically disadvantaged Black patients. The algorithm affected treatment recommendations for millions of patients across hundreds of hospitals.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 2 -->
+  <div class="scenario-card reveal">
+    <div class="scenario-header">
+      <div class="scenario-num">2</div>
+      <div class="scenario-header-text">
+        <div class="scenario-domain">Language generation</div>
+        <div class="scenario-title">AI writing assistant associations</div>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-prompt">A user asks an AI writing assistant to complete sentences. Here are its completions:</div>
+      <div class="ai-output">"The nurse checked her patient's vitals..."<br>"The engineer reviewed his blueprints..."<br>"The CEO signed his quarterly report..."<br>"The receptionist confirmed her appointment..."</div>
+      <div class="bias-question">What's the problem with these completions?</div>
+      <div class="bias-options" id="s2-opts">
+        <button class="bias-opt" onclick="selectBias(this,'s2','a')">A) Nothing — these reflect realistic statistical averages for these professions</button>
+        <button class="bias-opt" onclick="selectBias(this,'s2','b')">B) The AI should have used "they" as a neutral default for all professional roles</button>
+        <button class="bias-opt" onclick="selectBias(this,'s2','c')">C) Gender associations are reinforced: female for support roles, male for leadership/technical roles</button>
+        <button class="bias-opt" onclick="selectBias(this,'s2','d')">D) The AI should have refused to complete the sentences without knowing the subject's gender</button>
+      </div>
+      <div class="scenario-reveal" id="s2-reveal">
+        <div class="reveal-label">The answer</div>
+        <div class="reveal-text">C is the most important answer. While B is also reasonable, C identifies the core bias: the AI has learned to associate low-status/support roles with women and high-status/technical/leadership roles with men. This reinforces stereotypes in every piece of writing the tool helps produce — job descriptions, articles, reports. A and D miss the point. The issue isn't statistical accuracy — it's that encoding "average" patterns into AI tools normalises and perpetuates them.</div>
+        <div class="real-impact"><strong>Real impact:</strong> Studies on language models have consistently found systematic gender-profession associations. When AI tools are used to write job descriptions, they consistently produce language that attracts fewer women to technical roles — even when given neutral inputs.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 3 -->
+  <div class="scenario-card reveal">
+    <div class="scenario-header">
+      <div class="scenario-num">3</div>
+      <div class="scenario-header-text">
+        <div class="scenario-domain">Facial recognition</div>
+        <div class="scenario-title">AI system deployed by police</div>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-prompt">A facial recognition AI system deployed by a police department is tested for accuracy across demographic groups:</div>
+      <div class="ai-output">
+        White male faces: 99.1% accuracy<br>
+        White female faces: 98.2% accuracy<br>
+        Black male faces: 93.6% accuracy<br>
+        Black female faces: 65.2% accuracy
+      </div>
+      <div class="bias-question">What is the most likely cause of this accuracy disparity?</div>
+      <div class="bias-options" id="s3-opts">
+        <button class="bias-opt" onclick="selectBias(this,'s3','a')">A) Black female faces have features that are inherently more difficult for any system to recognise</button>
+        <button class="bias-opt" onclick="selectBias(this,'s3','b')">B) The training dataset contained far more white male faces than Black female faces, so the model is better calibrated for that group</button>
+        <button class="bias-opt" onclick="selectBias(this,'s3','c')">C) Police databases contain fewer photos of white faces, causing the model to over-index on them</button>
+        <button class="bias-opt" onclick="selectBias(this,'s3','d')">D) This is within acceptable margin of error for law enforcement use</button>
+      </div>
+      <div class="scenario-reveal" id="s3-reveal">
+        <div class="reveal-label">The answer</div>
+        <div class="reveal-text">B is correct. This is representation bias in training data. The benchmark figures shown here are close to real findings published by MIT researcher Joy Buolamwini in a landmark 2018 study. The systems she tested had been trained primarily on lighter-skinned, male faces — and their accuracy reflected that exactly. A is false — facial recognition technology works perfectly well on diverse faces when trained on diverse data. D is deeply wrong: a 34.8% error rate on any demographic in a law enforcement context is not acceptable.</div>
+        <div class="real-impact"><strong>Real impact:</strong> Robert Williams, a Black man in Detroit, was arrested in 2020 after a facial recognition algorithm wrongly identified him as a suspect. He spent 30 hours in jail. Multiple similar wrongful arrests have been documented in the US, all involving Black individuals misidentified by low-accuracy facial recognition.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 4 -->
+  <div class="scenario-card reveal">
+    <div class="scenario-header">
+      <div class="scenario-num">4</div>
+      <div class="scenario-header-text">
+        <div class="scenario-domain">Lending & finance</div>
+        <div class="scenario-title">AI credit scoring algorithm</div>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-prompt">An AI credit scoring model produces the following outcome when analysed:</div>
+      <div class="ai-output">Applicants from ZIP codes with majority white populations receive credit scores that are on average 40 points higher than applicants from majority-minority ZIP codes with identical income, debt-to-income ratios, and credit history. The model was not given racial data — only financial data and location.</div>
+      <div class="bias-question">This is an example of what type of bias?</div>
+      <div class="bias-options" id="s4-opts">
+        <button class="bias-opt" onclick="selectBias(this,'s4','a')">A) There is no bias — the model wasn't given racial data, so it can't be racially biased</button>
+        <button class="bias-opt" onclick="selectBias(this,'s4','b')">B) Proxy bias — location acts as a proxy for race due to historical residential segregation, achieving the same discriminatory outcome without using race explicitly</button>
+        <button class="bias-opt" onclick="selectBias(this,'s4','c')">C) Confirmation bias — the model is confirming the prejudices of the people who built it</button>
+        <button class="bias-opt" onclick="selectBias(this,'s4','d')">D) Sampling bias — the model was only tested on a subset of the population</button>
+      </div>
+      <div class="scenario-reveal" id="s4-reveal">
+        <div class="reveal-label">The answer</div>
+        <div class="reveal-text">B is correct. This is proxy discrimination — one of the most legally and ethically significant forms of AI bias. Because residential segregation means ZIP code correlates strongly with race, using ZIP code as a variable effectively discriminates by race even when race is never explicitly included. A is a common misconception: removing a protected characteristic doesn't remove bias if correlated variables remain in the data. The law in many jurisdictions is clear — disparate impact counts as discrimination regardless of intent.</div>
+        <div class="real-impact"><strong>Real impact:</strong> In 2019, an investigation found that Apple's credit card (backed by Goldman Sachs) offered women significantly lower credit limits than men with similar financial profiles. Goldman used an algorithm that regulators said created discriminatory outcomes without explicit gender inputs.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 5 -->
+  <div class="scenario-card reveal">
+    <div class="scenario-header">
+      <div class="scenario-num">5</div>
+      <div class="scenario-header-text">
+        <div class="scenario-domain">Content moderation</div>
+        <div class="scenario-title">AI hate speech detection</div>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-prompt">A social media platform's AI content moderation system is audited. Researchers find:</div>
+      <div class="ai-output">Tweets written in African American Vernacular English (AAVE) — for example "we out here," "they be tripping" — are flagged as harmful content at nearly twice the rate of equivalent tweets in Standard American English expressing the same sentiment. Posts that are genuinely hateful but written in formal language pass moderation at higher rates.</div>
+      <div class="bias-question">What is the bias here, and what is its effect?</div>
+      <div class="bias-options" id="s5-opts">
+        <button class="bias-opt" onclick="selectBias(this,'s5','a')">A) The AAVE posts are being correctly flagged — informal language correlates with harmful content</button>
+        <button class="bias-opt" onclick="selectBias(this,'s5','b')">B) The AI was trained on data that labelled AAVE as harmful more often, because the human labellers had biases about language associated with Black communities</button>
+        <button class="bias-opt" onclick="selectBias(this,'s5','c')">C) The AI doesn't understand linguistic variation, which is a technical limitation rather than a bias</button>
+        <button class="bias-opt" onclick="selectBias(this,'s5','d')">D) This is a minor edge case that doesn't significantly affect real users</button>
+      </div>
+      <div class="scenario-reveal" id="s5-reveal">
+        <div class="reveal-label">The answer</div>
+        <div class="reveal-text">B is the most complete answer. This is annotation bias — bias introduced by the human labellers who created the training data. Research has consistently found that crowd-sourced data labellers rate AAVE-adjacent language as more toxic even when content is equivalent. The AI learned this pattern. C describes a consequence, not a cause. D is wrong — researchers at Georgia Tech found this pattern causes Black Twitter users' content to be disproportionately silenced or removed, amounting to a systematic suppression of speech from a specific community.</div>
+        <div class="real-impact"><strong>Real impact:</strong> A 2021 study (Sap et al., ACL) documented this exact pattern. The real-world effect is asymmetric silencing: harmful content in formal language survives moderation while benign expression in AAVE is removed. This is a civil liberties issue as much as a technical one.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 6 -->
+  <div class="scenario-card reveal">
+    <div class="scenario-header">
+      <div class="scenario-num">6</div>
+      <div class="scenario-header-text">
+        <div class="scenario-domain">Conversational AI</div>
+        <div class="scenario-title">AI career advice disparity</div>
+      </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-prompt">A researcher tests an AI career assistant with identical prompts, changing only the name at the start:</div>
+      <div class="ai-output">
+        "My name is Emily. What careers should I consider with a computer science degree?"<br>→ AI suggests: UX design, data analyst, front-end development, product management<br><br>
+        "My name is Jamal. What careers should I consider with a computer science degree?"<br>→ AI suggests: software engineering, systems architecture, backend development, cybersecurity
+      </div>
+      <div class="bias-question">What is happening here and why does it matter?</div>
+      <div class="bias-options" id="s6-opts">
+        <button class="bias-opt" onclick="selectBias(this,'s6','a')">A) The AI is personalising recommendations — Emily and Jamal may have different implied preferences</button>
+        <button class="bias-opt" onclick="selectBias(this,'s6','b')">B) The AI is making assumptions about gender (Emily = female) and possibly race (Jamal = Black) that steer career recommendations toward different — and historically more vs. less prestigious — paths</button>
+        <button class="bias-opt" onclick="selectBias(this,'s6','c')">C) The career options are equally valid — this is not a bias issue</button>
+        <button class="bias-opt" onclick="selectBias(this,'s6','d')">D) The model is simply reflecting different historical career patterns for these names</button>
+      </div>
+      <div class="scenario-reveal" id="s6-reveal">
+        <div class="reveal-label">The answer</div>
+        <div class="reveal-text">B is correct. The only variable was the name — and names carry demographic signals (gender, likely ethnicity) that the AI model has learned associations with. The suggestions differ in ways that track historical gender and racial gaps in tech: "software engineering" and "systems architecture" are higher-paying, more senior paths than "UX design" and "product management" — which themselves track where women have historically been steered in tech. D acknowledges this but misses why it matters: reflecting historical patterns isn't neutral — it actively perpetuates them.</div>
+        <div class="real-impact"><strong>Real impact:</strong> Studies have found name-based discrimination patterns in AI tools used for hiring, lending, and now career guidance. When the tool a young person uses to plan their future gives different advice based on their name, it compounds the very inequalities it should be neutral about.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Where bias <em>comes from</em></h2>
+    <p>Understanding the source matters — it changes what the fix looks like. The same bias can have completely different causes.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📚 Historical bias</div>
+    <p>The AI learns from data that reflects past discrimination. Healthcare, hiring, and lending all have documented histories of unequal treatment — and AI trained on historical records inherits those patterns.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">📊 Representation bias</div>
+    <p>Some groups are underrepresented in training data. The model becomes less accurate for them. This is common in face recognition, language models, and medical AI trained predominantly on data from certain demographics.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">🔄 Proxy bias</div>
+    <p>The model doesn't use a protected characteristic directly — but uses correlated variables (ZIP code, name, vocabulary) that achieve the same discriminatory outcome. Removing the obvious variable doesn't remove the bias.</p>
+  </div>
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">👤 Annotation bias</div>
+    <p>The humans who labelled training data brought their own biases. If human labellers consistently rated certain language or certain people differently, the model learns that judgement as ground truth.</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ What you can actually do</div>
+    <p>When you get AI output that involves people or decisions about people: ask who might be harmed by this pattern if it were applied at scale. Ask whether the training data could have reflected historical disparities. Ask whether there's a correlated variable doing discriminatory work invisibly. You don't have to be a machine learning engineer to ask those questions — you just have to think to ask them.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>AI doesn't create bias from nothing. <em>It finds bias in data and scales it — efficiently, at speed, without anyone noticing.</em> That's what makes it dangerous.</p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-2.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Protecting your privacy</span></span>
+    </a>
+    <a href="lesson-4.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Responsible use at work & school</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const answers = { s1:'b', s2:'c', s3:'b', s4:'b', s5:'b', s6:'b' };
+  const partial = { s2:'b' }; // b is also valid for s2
+
+  function selectBias(btn, scenario, choice) {
+    const opts = document.querySelectorAll(`#${scenario}-opts .bias-opt`);
+    opts.forEach(b => b.disabled = true);
+    const correct = answers[scenario];
+    const isCorrect = choice === correct;
+    const isPartial = partial[scenario] && choice === partial[scenario];
+    btn.classList.add(isCorrect ? 'selected-right' : isPartial ? 'selected-partial' : 'selected-wrong');
+    // Also highlight the right answer if wrong
+    if (!isCorrect) {
+      opts.forEach(b => {
+        if (b.textContent.trim().startsWith(correct.toUpperCase() + ')')) b.classList.add('selected-right');
+      });
+    }
+    document.getElementById(`${scenario}-reveal`).classList.add('open');
+  }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('aes-3-complete', checked);
+  }
+  if (localStorage.getItem('aes-3-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

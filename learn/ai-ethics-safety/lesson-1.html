@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1: Spotting AI Misinformation — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;--teal:#2A6E8A;--teal-light:#E8F4F7; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(42,110,138,0.08) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 70%,rgba(232,162,48,0.06) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-teal{background:var(--teal-light);border-color:rgba(42,110,138,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-warn{background:rgba(200,82,26,0.06);border-color:rgba(200,82,26,0.25);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-teal .callout-label{color:var(--teal);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .key-takeaway{background:linear-gradient(135deg,var(--teal),#1a4f63);border-radius:24px;padding:36px;margin:48px 0;text-align:center;}
+  .kt-label{font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+  .key-takeaway p{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,26px);font-weight:600;line-height:1.45;color:#fff!important;margin-bottom:0!important;}
+  .key-takeaway p em{font-style:italic;font-weight:300;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--teal-light);border:1px solid rgba(42,110,138,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--teal);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(42,110,138,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--teal);border-color:var(--teal);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--teal);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:#235d76;border-color:#235d76;color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── SORTER GAME ── */
+  .sorter-wrap{background:var(--ink);border-radius:28px;overflow:hidden;margin:32px 0;}
+  .sorter-header{padding:28px 32px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .sorter-badge{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+  .sorter-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--cream);}
+  .sorter-sub{font-size:14px;color:rgba(250,247,242,0.5);margin-top:4px;}
+
+  .score-bar-wrap{padding:20px 32px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:16px;}
+  .score-label{font-size:13px;color:rgba(250,247,242,0.5);white-space:nowrap;}
+  .score-bar-bg{flex:1;height:8px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden;}
+  .score-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:100px;transition:width 0.5s ease;}
+  .score-num{font-family:'Fraunces',serif;font-size:18px;font-weight:800;color:var(--cream);white-space:nowrap;}
+
+  .card-area{padding:24px 32px;}
+  .sorter-card{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;margin-bottom:0;}
+  .card-category{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.35);margin-bottom:8px;}
+  .card-content{font-size:16px;line-height:1.65;color:var(--cream);margin-bottom:20px;}
+  .card-source{font-size:13px;color:rgba(250,247,242,0.35);margin-bottom:20px;font-style:italic;}
+  .sorter-btns{display:flex;gap:10px;}
+  .sort-btn{flex:1;padding:14px;border-radius:12px;border:1.5px solid;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+  .sort-btn-real{border-color:rgba(74,124,89,0.5);background:rgba(74,124,89,0.1);color:rgba(250,247,242,0.8);}
+  .sort-btn-real:hover{border-color:var(--sage);background:rgba(74,124,89,0.2);color:var(--cream);}
+  .sort-btn-fake{border-color:rgba(200,82,26,0.5);background:rgba(200,82,26,0.1);color:rgba(250,247,242,0.8);}
+  .sort-btn-fake:hover{border-color:var(--rust);background:rgba(200,82,26,0.2);color:var(--cream);}
+  .sort-btn:disabled{opacity:0.4;cursor:default;}
+
+  .card-result{display:none;margin-top:16px;padding:16px 20px;border-radius:12px;}
+  .card-result.correct{background:rgba(74,124,89,0.15);border:1px solid rgba(74,124,89,0.3);}
+  .card-result.wrong{background:rgba(200,82,26,0.12);border:1px solid rgba(200,82,26,0.3);}
+  .result-verdict{font-size:14px;font-weight:600;margin-bottom:4px;}
+  .result-verdict.correct{color:#6FCF97;}
+  .result-verdict.wrong{color:var(--rust-light);}
+  .result-explain{font-size:14px;color:rgba(250,247,242,0.65);line-height:1.55;}
+
+  .next-card-btn{display:block;width:100%;margin-top:12px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(250,247,242,0.7);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center;}
+  .next-card-btn:hover{background:rgba(255,255,255,0.14);color:var(--cream);}
+
+  .sorter-complete{display:none;padding:36px 32px;text-align:center;}
+  .complete-score{font-family:'Fraunces',serif;font-size:52px;font-weight:800;color:var(--cream);line-height:1;}
+  .complete-label{font-size:16px;color:rgba(250,247,242,0.5);margin-bottom:24px;}
+  .complete-feedback{font-size:16px;color:rgba(250,247,242,0.8);line-height:1.6;margin-bottom:24px;}
+  .restart-btn{padding:14px 28px;border-radius:100px;border:1.5px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.06);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+  .restart-btn:hover{background:rgba(255,255,255,0.12);}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .sorter-header,.score-bar-wrap,.card-area,.sorter-complete{padding-left:20px;padding-right:20px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🛡️ AI Ethics & Safety</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-ethics-safety/">🛡️ AI Ethics & Safety</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 1</span>
+    </div>
+    <div class="lesson-number">Lesson 1 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Spotting<br>AI <em>misinformation</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 22 min</span><span class="meta-dot"></span>
+      <span>🕵️ Interactive challenge</span><span class="meta-dot"></span>
+      <span>✦ Score tracker</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>In 2023, a photo of an explosion near the Pentagon briefly caused the US stock market to drop. It was AI-generated. A prominent lawyer submitted fake court cases generated by ChatGPT — none of them existed. A deepfake audio clip of a politician saying something they never said spread to millions before it was debunked.</p>
+    <p>This isn't a future problem. <strong>AI-generated misinformation is already everywhere.</strong> The question isn't whether you'll encounter it — you already have. The question is whether you'll recognise it.</p>
+  </div>
+
+  <div class="callout callout-teal reveal">
+    <div class="callout-label">🎯 What this lesson trains</div>
+    <p>You'll sort 10 real examples — quotes, headlines, statistics, and content — as either genuine or AI-generated. After each answer you'll learn <em>exactly</em> what the telltale signs were. By the end, your pattern recognition will be significantly sharper.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <!-- INTERACTIVE SORTER -->
+  <div class="sorter-wrap reveal">
+    <div class="sorter-header">
+      <div class="sorter-badge"><span class="live-dot"></span> Real or AI-generated?</div>
+      <div class="sorter-title">The misinformation challenge</div>
+      <div class="sorter-sub">Read each item carefully. Trust your instincts — then we'll explain what to look for.</div>
+    </div>
+
+    <div class="score-bar-wrap">
+      <div class="score-label">Score</div>
+      <div class="score-bar-bg"><div class="score-bar-fill" id="scoreBar"></div></div>
+      <div class="score-num" id="scoreNum">0 / 10</div>
+    </div>
+
+    <div class="card-area" id="cardArea">
+      <div class="sorter-card" id="currentCard">
+        <div class="card-category" id="cardCategory"></div>
+        <div class="card-content" id="cardContent"></div>
+        <div class="card-source" id="cardSource"></div>
+        <div class="sorter-btns">
+          <button class="sort-btn sort-btn-real" onclick="guess('real')">✓ This is real</button>
+          <button class="sort-btn sort-btn-fake" onclick="guess('fake')">✗ This is AI-generated</button>
+        </div>
+        <div class="card-result" id="cardResult">
+          <div class="result-verdict" id="resultVerdict"></div>
+          <div class="result-explain" id="resultExplain"></div>
+          <button class="next-card-btn" id="nextBtn" onclick="nextCard()">Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sorter-complete" id="sorterComplete">
+      <div class="complete-score" id="completeScore"></div>
+      <div class="complete-label">out of 10</div>
+      <div class="complete-feedback" id="completeFeedback"></div>
+      <button class="restart-btn" onclick="restartGame()">↻ Play again</button>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>The five signs<br><em>every time</em></h2>
+    <p>After enough practice, AI-generated content starts to feel different before you can even articulate why. Here are the patterns that explain that feeling.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">1 — Suspiciously perfect grammar</div>
+    <p>Real human writing has irregularities — a missing comma, a casual "gonna", a sentence fragment for emphasis. AI-generated text tends toward grammatically flawless, neutral prose. When something reads unusually clean and formal, question it.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">2 — No specific sources</div>
+    <p>AI content often states things confidently without pointing to verifiable sources. "Studies show..." with no citation. "Experts agree..." with no named experts. Real reporting names its sources. AI-generated content often can't, because the sources don't exist.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">3 — Overly balanced or vague</div>
+    <p>AI models are trained to avoid controversy. This produces content that's suspiciously even-handed — presenting "both sides" of things that aren't actually disputed, or hedging so heavily that the content says almost nothing. Real human experts take positions.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">4 — The verification test</div>
+    <p>The most powerful check: can you verify the specific claim independently? A specific statistic, a named quote, a specific event. If searching for it only returns the original post and copies of it — not independent corroboration — treat it as unverified.</p>
+  </div>
+
+  <div class="callout callout-plain reveal">
+    <div class="callout-label">5 — Emotional urgency without substance</div>
+    <p>AI-generated misinformation often triggers strong emotion (outrage, fear, disgust) while providing little concrete detail. The outrage-to-substance ratio is very high. Real journalism and research tends to be the opposite — more detail, more nuance, less manufactured emotion.</p>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ The 60-second check</div>
+    <p>Before you share anything that surprises you: (1) Can you find it on a reputable news site? (2) Is the source named and credible? (3) Does it have a specific date and location? (4) Does searching the exact quote return anything real? Four checks, under a minute. You'll catch the vast majority of AI-generated misinformation with just these four questions.</p>
+  </div>
+
+  <div class="callout callout-warn reveal">
+    <div class="callout-label">⚠️ The correction problem</div>
+    <p>Misinformation spreads 6× faster than corrections. The Pentagon explosion story reached millions before the debunking reached hundreds of thousands. This means your job isn't just spotting the fake — it's not sharing it in the first place. One share from you can become a hundred thousand from the people who trust you.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Slow down before you share. <em>The content designed to make you react fast is usually the content most worth double-checking.</em></p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="/learn/ai-ethics-safety/" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Back to</span><span class="nav-btn-title">Track overview</span></span>
+    </a>
+    <a href="lesson-2.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">Protecting your privacy</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const cards = [
+    {
+      category: "📰 News headline",
+      content: "\"Breaking: Scientists at MIT have discovered a mineral compound in deep-sea sediment that can absorb atmospheric CO2 at 400 times the rate of trees, potentially reversing climate change within a decade.\"",
+      source: "Circulating on social media, no source link",
+      answer: "fake",
+      explain: "This is AI-generated misinformation. The claim is extraordinary but unverifiable — there's no MIT study, no named researchers, no paper. The 'too good to be true' framing (400× better, fixes climate change in a decade) is a hallmark of AI-generated viral content designed to spread excitement."
+    },
+    {
+      category: "💬 Celebrity quote",
+      content: "\"I think social media has made us all performers in our own reality shows, and very few of us are good enough actors to survive it.\" — David Bowie, 1997",
+      source: "Widely shared quote image",
+      answer: "fake",
+      explain: "This quote is fabricated. Bowie did give many interviews in 1997 but said nothing like this. AI-generated fake quotes often sound plausible — even profound — because they capture a public figure's known views and extrapolate them into new words. The test: can you find it in a verified interview transcript?"
+    },
+    {
+      category: "📊 Statistic",
+      content: "\"Humans have shorter attention spans than goldfish. A 2015 Microsoft study found the average human attention span dropped from 12 seconds in 2000 to just 8 seconds — a second less than a goldfish.\"",
+      source: "Repeated in countless articles and presentations",
+      answer: "fake",
+      explain: "Surprisingly, this is real misinformation — but not AI-generated. The Microsoft study never made this claim, and 'attention span' doesn't work the way the stat implies. It spread because it felt credible and memorable. This shows misinformation predates AI — but AI massively accelerates the problem."
+    },
+    {
+      category: "🖼️ Image description",
+      content: "A photorealistic image shows former US President Barack Obama and Elon Musk shaking hands in front of a rocket at SpaceX headquarters. Both men are smiling. The image appears in a news article about a new space initiative.",
+      source: "Shared widely in 2023",
+      answer: "fake",
+      explain: "This is a classic deepfake scenario. AI image generation can produce photorealistic images of real people in situations that never happened. Signs to check: unusual hand/finger details, lighting inconsistencies, background oddities, and whether any credible source can confirm the meeting actually happened."
+    },
+    {
+      category: "🔬 Scientific claim",
+      content: "\"In 2023, the American Psychological Association released findings showing that teenagers who sleep with their phone in another room score 19% higher on concentration tests and report 34% lower rates of anxiety than those who keep phones in their bedroom.\"",
+      source: "Health and wellness website",
+      answer: "fake",
+      explain: "This statistic is fabricated. The specific numbers (19%, 34%) sound authoritative, but no such APA study exists. This is a common AI misinformation pattern: attaching invented statistics to real, credible organisations. The fix: search the exact claim on the APA's own website before repeating it."
+    },
+    {
+      category: "📜 Historical fact",
+      content: "\"Napoleon Bonaparte was actually of average height for his time — around 5'7\" (170cm). The myth of his short stature came partly from British propaganda and a confusion between French and English inch measurements.\"",
+      source: "Wikipedia and multiple historical sources",
+      answer: "real",
+      explain: "This is accurate. Napoleon was around 5'6\"–5'7\" — average for a French man of his era. The 'short Napoleon' myth largely stemmed from British caricatures and a unit-of-measurement error. This shows that not every surprising claim is misinformation — some surprising things are genuinely true."
+    },
+    {
+      category: "💬 Expert opinion",
+      content: "\"AI will never truly understand language — it's performing pattern matching at massive scale, which is fundamentally different from comprehension. A very sophisticated autocomplete is not intelligence.\"",
+      source: "Gary Marcus, AI researcher and critic, 2023",
+      answer: "real",
+      explain: "This is a real and well-documented position held by Gary Marcus, a well-known AI critic and cognitive scientist. He has made similar statements in numerous interviews and publications. This is a good example of a verifiable expert opinion with a named, credible source."
+    },
+    {
+      category: "📰 News story",
+      content: "\"A lawyer in New York was fined after submitting a legal brief that cited six non-existent court cases — all generated by ChatGPT. The lawyer said he did not know the AI could 'fabricate' cases.\"",
+      source: "The New York Times, May 2023",
+      answer: "real",
+      explain: "This actually happened. Steven Schwartz and his firm were sanctioned in the case Mata v. Avianca. ChatGPT had invented six fictional precedents that sounded completely real. The judge called it 'a cautionary tale'. This case became one of the most widely covered examples of AI hallucination having real-world legal consequences."
+    },
+    {
+      category: "📊 Health claim",
+      content: "\"New research from Harvard Medical School has found that intermittent fasting activates a cellular process that removes 40% of accumulated toxins from the liver within just 72 hours of beginning a fasting protocol.\"",
+      source: "Wellness blog, no date, no link to study",
+      answer: "fake",
+      explain: "This combines real concepts (fasting, autophagy, liver health) with fabricated specifics (40% of toxins, 72 hours, Harvard source). AI-generated health misinformation is particularly dangerous because it uses real medical vocabulary convincingly. No such Harvard study exists. The 'no link to actual study' is your clearest warning sign."
+    },
+    {
+      category: "💬 Tech prediction",
+      content: "\"The risk of extinction from AI should be treated with the same seriousness as other societal-scale risks such as pandemics and nuclear war.\"",
+      source: "Statement signed by AI researchers, May 2023",
+      answer: "real",
+      explain: "This is the exact wording of a statement published by the Center for AI Safety in May 2023, signed by hundreds of AI researchers including Geoffrey Hinton, Yoshua Bengio, and others. It's verifiable on cais.com. Short, alarming statements from credible people can be real — the test is always whether you can find the original source."
+    }
+  ];
+
+  let currentIndex = 0;
+  let score = 0;
+  let answered = false;
+  const shuffled = [...cards].sort(() => Math.random() - 0.5);
+
+  function showCard(i) {
+    if (i >= shuffled.length) { showComplete(); return; }
+    const c = shuffled[i];
+    answered = false;
+    document.getElementById('cardCategory').textContent = c.category;
+    document.getElementById('cardContent').textContent = c.content;
+    document.getElementById('cardSource').textContent = '— ' + c.source;
+    document.getElementById('cardResult').style.display = 'none';
+    document.querySelectorAll('.sort-btn').forEach(b => b.disabled = false);
+    document.getElementById('nextBtn').textContent = i === shuffled.length - 1 ? 'See results →' : 'Next →';
+  }
+
+  function guess(choice) {
+    if (answered) return;
+    answered = true;
+    const c = shuffled[currentIndex];
+    const correct = choice === c.answer;
+    if (correct) score++;
+
+    const resultEl = document.getElementById('cardResult');
+    const verdictEl = document.getElementById('resultVerdict');
+    const explainEl = document.getElementById('resultExplain');
+
+    resultEl.className = 'card-result ' + (correct ? 'correct' : 'wrong');
+    resultEl.style.display = 'block';
+    verdictEl.className = 'result-verdict ' + (correct ? 'correct' : 'wrong');
+    verdictEl.textContent = correct
+      ? (c.answer === 'fake' ? '✓ Correct — this is AI-generated' : '✓ Correct — this is real')
+      : (c.answer === 'fake' ? '✗ This was actually AI-generated' : '✗ This was actually real');
+    explainEl.textContent = c.explain;
+
+    document.querySelectorAll('.sort-btn').forEach(b => b.disabled = true);
+    updateScore();
+  }
+
+  function nextCard() {
+    currentIndex++;
+    showCard(currentIndex);
+  }
+
+  function updateScore() {
+    const total = Math.min(currentIndex + 1, shuffled.length);
+    const pct = (score / shuffled.length) * 100;
+    document.getElementById('scoreBar').style.width = pct + '%';
+    document.getElementById('scoreNum').textContent = score + ' / ' + shuffled.length;
+  }
+
+  function showComplete() {
+    document.getElementById('cardArea').style.display = 'none';
+    const comp = document.getElementById('sorterComplete');
+    comp.style.display = 'block';
+    document.getElementById('completeScore').textContent = score;
+    let feedback;
+    if (score >= 9) feedback = "Exceptional. You have a sharp eye for AI-generated content. The patterns that trip most people up — authoritative statistics, plausible quotes, real-sounding institutions — didn't fool you.";
+    else if (score >= 7) feedback = "Strong result. You caught most of the fakes and correctly identified the real ones. A few edge cases tripped you up, but your instincts are good. Focus on verifying specific statistics and named sources.";
+    else if (score >= 5) feedback = "Not bad — you're at roughly average for first attempts. The tricky ones are usually the plausible fakes (real-sounding stats, quotes from credible people). The good news: pattern recognition improves fast with practice.";
+    else feedback = "This is a tough challenge — most people underestimate how convincing AI-generated content can be. That's exactly why practising matters. The lesson content below will sharpen your eye significantly.";
+    document.getElementById('completeFeedback').textContent = feedback;
+    updateScore();
+  }
+
+  function restartGame() {
+    currentIndex = 0;
+    score = 0;
+    shuffled.sort(() => Math.random() - 0.5);
+    document.getElementById('cardArea').style.display = 'block';
+    document.getElementById('sorterComplete').style.display = 'none';
+    document.getElementById('scoreBar').style.width = '0%';
+    document.getElementById('scoreNum').textContent = '0 / 10';
+    showCard(0);
+  }
+
+  showCard(0);
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('aes-1-complete', checked);
+  }
+  if (localStorage.getItem('aes-1-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>

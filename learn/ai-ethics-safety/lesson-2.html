@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2: Protecting Your Privacy with AI — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --cream:#FAF7F2;--warm-white:#FFFDF9;--ink:#1A1714;--rust:#C8521A;--rust-light:#F0784A;--gold:#E8A230;--sage:#4A7C59;--sage-light:#EDF4EF;--muted:#7A7168;--border:#E5DDD0;--teal:#2A6E8A;--teal-light:#E8F4F7; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 48px;background:rgba(250,247,242,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:800;color:var(--rust);letter-spacing:-0.5px;text-decoration:none;}
+  .logo span{color:var(--ink);}
+  .nav-right{display:flex;align-items:center;gap:24px;}
+  .nav-track-label{font-size:13px;color:var(--muted);}
+  .nav-track-label strong{color:var(--ink);font-weight:500;}
+  .nav-cta{background:var(--rust);color:#fff;padding:10px 22px;border-radius:100px;font-weight:500;font-size:14px;text-decoration:none;transition:background 0.2s,transform 0.15s;}
+  .nav-cta:hover{background:var(--rust-light);transform:translateY(-1px);}
+  .progress-bar-wrap{position:fixed;top:73px;left:0;right:0;z-index:99;height:3px;background:var(--border);}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width 0.1s linear;}
+  .lesson-hero{padding:140px 24px 80px;text-align:center;position:relative;overflow:hidden;}
+  .lesson-hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 20% 30%,rgba(42,110,138,0.08) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 70%,rgba(232,162,48,0.06) 0%,transparent 70%);}
+  .lesson-hero-inner{position:relative;z-index:1;max-width:720px;margin:0 auto;}
+  .track-breadcrumb{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:28px;animation:fadeUp 0.6s ease both;}
+  .track-breadcrumb a{color:var(--rust);text-decoration:none;font-weight:500;}
+  .breadcrumb-sep{color:var(--border);}
+  .lesson-number{display:inline-block;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:16px;animation:fadeUp 0.6s 0.05s ease both;}
+  .lesson-title{font-family:'Fraunces',serif;font-size:clamp(26px,5vw,60px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;animation:fadeUp 0.6s 0.1s ease both;}
+  .lesson-title em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-meta{display:flex;align-items:center;justify-content:center;gap:20px;font-size:14px;color:var(--muted);animation:fadeUp 0.6s 0.15s ease both;}
+  .meta-dot{width:4px;height:4px;background:var(--border);border-radius:50%;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  .lesson-body{max-width:720px;margin:0 auto;padding:0 24px 120px;}
+  .content-block{margin-bottom:48px;}
+  .lesson-body h2{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,32px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:16px;color:var(--ink);}
+  .lesson-body h2 em{font-style:italic;font-weight:300;color:var(--teal);}
+  .lesson-body p{font-size:17px;line-height:1.75;color:#3D3A36;font-weight:300;margin-bottom:20px;}
+  .lesson-body p strong{font-weight:500;color:var(--ink);}
+  .lesson-divider{border:none;border-top:1px solid var(--border);margin:48px 0;}
+  .callout{border-radius:20px;padding:28px 32px;margin-bottom:32px;border:1px solid var(--border);}
+  .callout-plain{background:var(--warm-white);}
+  .callout-teal{background:var(--teal-light);border-color:rgba(42,110,138,0.25);}
+  .callout-gold{background:rgba(232,162,48,0.08);border-color:rgba(232,162,48,0.3);}
+  .callout-warn{background:rgba(200,82,26,0.06);border-color:rgba(200,82,26,0.25);}
+  .callout-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;color:var(--rust);}
+  .callout-teal .callout-label{color:var(--teal);}
+  .callout-gold .callout-label{color:#B87D1A;}
+  .callout p{font-size:16px;line-height:1.7;margin-bottom:0!important;}
+  .key-takeaway{background:linear-gradient(135deg,var(--teal),#1a4f63);border-radius:24px;padding:36px;margin:48px 0;text-align:center;}
+  .kt-label{font-size:11px;letter-spacing:2px;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;}
+  .key-takeaway p{font-family:'Fraunces',serif;font-size:clamp(20px,2.5vw,26px);font-weight:600;line-height:1.45;color:#fff!important;margin-bottom:0!important;}
+  .key-takeaway p em{font-style:italic;font-weight:300;}
+  .completion-check{display:flex;align-items:center;gap:12px;padding:20px 24px;border-radius:14px;background:var(--teal-light);border:1px solid rgba(42,110,138,0.25);cursor:pointer;transition:all 0.2s;user-select:none;margin-bottom:32px;}
+  .completion-check:hover{border-color:var(--teal);}
+  .check-box{width:22px;height:22px;border-radius:6px;border:2px solid rgba(42,110,138,0.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+  .completion-check.checked .check-box{background:var(--teal);border-color:var(--teal);}
+  .check-inner{font-size:13px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .completion-check.checked .check-inner{opacity:1;}
+  .check-text{font-size:15px;font-weight:500;color:var(--teal);}
+  .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0;border-top:1px solid var(--border);margin-top:64px;gap:16px;}
+  .lesson-nav-btn{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;text-decoration:none;font-size:14px;font-weight:500;border:1.5px solid var(--border);color:var(--ink);background:var(--warm-white);transition:all 0.2s;}
+  .lesson-nav-btn:hover{border-color:var(--rust);color:var(--rust);transform:translateY(-2px);}
+  .lesson-nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600;}
+  .lesson-nav-btn.next:hover{background:#235d76;border-color:#235d76;color:#fff;}
+  .nav-btn-label{font-size:11px;font-weight:400;opacity:0.6;display:block;margin-bottom:2px;}
+  .nav-btn-title{display:block;}
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .reveal.visible{opacity:1;transform:none;}
+
+  /* ── DATA EXPOSURE CARDS ── */
+  .data-tool{background:var(--warm-white);border:1.5px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;cursor:pointer;transition:all 0.2s;}
+  .data-tool:hover{border-color:var(--teal);box-shadow:0 4px 20px rgba(42,110,138,0.08);}
+  .tool-header{display:flex;align-items:center;justify-content:space-between;}
+  .tool-name{display:flex;align-items:center;gap:12px;}
+  .tool-icon{font-size:24px;}
+  .tool-title{font-size:17px;font-weight:600;color:var(--ink);}
+  .tool-risk{padding:4px 12px;border-radius:100px;font-size:12px;font-weight:600;}
+  .risk-high{background:rgba(200,82,26,0.1);color:var(--rust);border:1px solid rgba(200,82,26,0.25);}
+  .risk-medium{background:rgba(232,162,48,0.1);color:#B87D1A;border:1px solid rgba(232,162,48,0.3);}
+  .risk-low{background:rgba(74,124,89,0.1);color:var(--sage);border:1px solid rgba(74,124,89,0.25);}
+  .tool-expand-icon{font-size:16px;color:var(--muted);transition:transform 0.2s;}
+  .tool-detail{display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+  .tool-detail.open{display:block;}
+  .detail-row{display:grid;grid-template-columns:140px 1fr;gap:8px;font-size:14px;line-height:1.55;padding:6px 0;border-bottom:1px solid var(--border);}
+  .detail-row:last-child{border-bottom:none;}
+  .detail-label{font-weight:600;color:var(--muted);}
+  .detail-val{color:var(--ink);}
+  .tool-tip{margin-top:14px;padding:12px 16px;background:var(--teal-light);border-radius:10px;font-size:14px;color:var(--teal);line-height:1.5;}
+
+  /* ── PRIVACY CHECKLIST ── */
+  .checklist-wrap{background:var(--ink);border-radius:28px;overflow:hidden;margin:32px 0;}
+  .checklist-header{padding:28px 32px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .checklist-badge{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+  .checklist-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--cream);}
+  .checklist-sub{font-size:14px;color:rgba(250,247,242,0.5);margin-top:4px;}
+
+  .checklist-progress-row{padding:20px 32px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:16px;}
+  .cl-score-label{font-size:13px;color:rgba(250,247,242,0.5);white-space:nowrap;}
+  .cl-bar-bg{flex:1;height:8px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden;}
+  .cl-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--gold));border-radius:100px;transition:width 0.4s ease;}
+  .cl-score-num{font-family:'Fraunces',serif;font-size:18px;font-weight:800;color:var(--cream);white-space:nowrap;}
+
+  .checklist-section{padding:20px 32px;border-bottom:1px solid rgba(255,255,255,0.07);}
+  .checklist-section:last-child{border-bottom:none;}
+  .cl-section-title{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:14px;}
+  .cl-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all 0.15s;}
+  .cl-item:last-child{border-bottom:none;}
+  .cl-item:hover .cl-cb{border-color:var(--teal);}
+  .cl-cb{width:20px;height:20px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;margin-top:1px;}
+  .cl-item.checked .cl-cb{background:var(--teal);border-color:var(--teal);}
+  .cl-tick{font-size:12px;color:#fff;opacity:0;transition:opacity 0.2s;}
+  .cl-item.checked .cl-tick{opacity:1;}
+  .cl-text{flex:1;}
+  .cl-title{font-size:15px;color:rgba(250,247,242,0.85);line-height:1.4;margin-bottom:2px;}
+  .cl-item.checked .cl-title{color:rgba(250,247,242,0.45);text-decoration:line-through;}
+  .cl-sub{font-size:13px;color:rgba(250,247,242,0.4);line-height:1.4;}
+
+  .checklist-summary{padding:24px 32px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;}
+  .summary-score{font-family:'Fraunces',serif;font-size:40px;font-weight:800;color:var(--cream);}
+  .summary-label{font-size:14px;color:rgba(250,247,242,0.5);margin-bottom:16px;}
+  .summary-feedback{font-size:15px;color:rgba(250,247,242,0.75);line-height:1.6;max-width:480px;margin:0 auto;}
+
+  @media(max-width:768px){
+    nav{padding:16px 24px;}
+    .nav-right .nav-track-label{display:none;}
+    .lesson-hero{padding:110px 20px 56px;}
+    .checklist-header,.checklist-progress-row,.checklist-section,.checklist-summary{padding-left:20px;padding-right:20px;}
+    .lesson-nav{flex-direction:column;}
+    .lesson-nav-btn{width:100%;justify-content:center;}
+    .detail-row{grid-template-columns:1fr;gap:2px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <span class="nav-track-label">Track: <strong>🛡️ AI Ethics & Safety</strong></span>
+    <a href="/#pricing" class="nav-cta">Premium</a>
+  </div>
+</nav>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<section class="lesson-hero">
+  <div class="lesson-hero-bg"></div>
+  <div class="lesson-hero-inner">
+    <div class="track-breadcrumb">
+      <a href="/">AskIt</a><span class="breadcrumb-sep">›</span>
+      <a href="/learn/ai-ethics-safety/">🛡️ AI Ethics & Safety</a><span class="breadcrumb-sep">›</span>
+      <span>Lesson 2</span>
+    </div>
+    <div class="lesson-number">Lesson 2 of 5 · Premium Track</div>
+    <h1 class="lesson-title">Protecting your<br><em>privacy with AI</em></h1>
+    <div class="lesson-meta">
+      <span>⏱ 25 min</span><span class="meta-dot"></span>
+      <span>🔒 Data reality check</span><span class="meta-dot"></span>
+      <span>📋 Personal audit</span>
+    </div>
+  </div>
+</section>
+
+<div class="lesson-body">
+
+  <div class="content-block reveal">
+    <p>When you type a message to ChatGPT, Claude, or Gemini — where does that go? When Grammarly reads your emails, what does it see? When you use an AI image tool, who owns the output?</p>
+    <p>Most people using AI tools every day have genuinely no idea what's being collected, stored, or used. This lesson won't make you paranoid — it'll make you <strong>informed</strong>. Informed is different. You can make real decisions when you know the facts.</p>
+  </div>
+
+  <div class="callout callout-teal reveal">
+    <div class="callout-label">📌 The core principle</div>
+    <p>Your conversations with AI are not like conversations with a friend. They're more like conversations in a room with a transcript, a legal team, and a product roadmap. That doesn't mean you shouldn't use AI — it means you should know what you're sharing and with whom.</p>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>What the major AI tools<br><em>actually collect</em></h2>
+    <p>Click each tool to see what's really happening behind the interface. This isn't scaremongering — it's the actual data from their privacy policies and terms of service.</p>
+  </div>
+
+  <!-- DATA TOOL CARDS -->
+  <div class="reveal">
+    <div class="data-tool" onclick="toggleTool(this)">
+      <div class="tool-header">
+        <div class="tool-name"><div class="tool-icon">💬</div><div class="tool-title">ChatGPT (OpenAI)</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span class="tool-risk risk-high">High exposure</span><span class="tool-expand-icon">▼</span></div>
+      </div>
+      <div class="tool-detail">
+        <div class="detail-row"><div class="detail-label">Stores chats?</div><div class="detail-val">Yes, by default. All conversations are saved and can be reviewed by OpenAI.</div></div>
+        <div class="detail-row"><div class="detail-label">Used for training?</div><div class="detail-val">Yes, unless you opt out in settings. Your conversations help train future models.</div></div>
+        <div class="detail-row"><div class="detail-label">Data location</div><div class="detail-val">US servers. Subject to US law and potential government requests.</div></div>
+        <div class="detail-row"><div class="detail-label">Shared with?</div><div class="detail-val">OpenAI staff, contractors, and potentially partners. Anonymised for research.</div></div>
+        <div class="detail-row"><div class="detail-label">Opt out?</div><div class="detail-val">Yes — Settings → Data Controls → turn off "Improve the model for everyone". Chat history can be disabled separately.</div></div>
+        <div class="tool-tip">🔒 Practical step: Turn off training opt-in in ChatGPT settings. Never share passwords, financial details, medical information, or anything you'd be uncomfortable seeing on a screen.</div>
+      </div>
+    </div>
+
+    <div class="data-tool" onclick="toggleTool(this)">
+      <div class="tool-header">
+        <div class="tool-name"><div class="tool-icon">🤖</div><div class="tool-title">Claude (Anthropic)</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span class="tool-risk risk-medium">Medium exposure</span><span class="tool-expand-icon">▼</span></div>
+      </div>
+      <div class="tool-detail">
+        <div class="detail-row"><div class="detail-label">Stores chats?</div><div class="detail-val">Yes on claude.ai. API calls are not stored by default.</div></div>
+        <div class="detail-row"><div class="detail-label">Used for training?</div><div class="detail-val">Consumer conversations may be used for safety and model improvement. Opt-out available.</div></div>
+        <div class="detail-row"><div class="detail-label">Data location</div><div class="detail-val">US-based. Anthropic has stricter safety review processes than most competitors.</div></div>
+        <div class="detail-row"><div class="detail-label">Privacy stance</div><div class="detail-val">Anthropic's constitutional AI approach includes explicit policies against using sensitive data for training without consent.</div></div>
+        <div class="detail-row"><div class="detail-label">Opt out?</div><div class="detail-val">Account settings on claude.ai. Paid plans offer stronger data controls.</div></div>
+        <div class="tool-tip">🔒 Practical step: For sensitive work, use the API via a tool with a strong data processing agreement, or a business/enterprise account where training opt-outs are guaranteed.</div>
+      </div>
+    </div>
+
+    <div class="data-tool" onclick="toggleTool(this)">
+      <div class="tool-header">
+        <div class="tool-name"><div class="tool-icon">✏️</div><div class="tool-title">Grammarly</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span class="tool-risk risk-high">High exposure</span><span class="tool-expand-icon">▼</span></div>
+      </div>
+      <div class="tool-detail">
+        <div class="detail-row"><div class="detail-label">What it reads</div><div class="detail-val">Everything you type — emails, documents, messages, passwords in forms, everything in text fields in your browser.</div></div>
+        <div class="detail-row"><div class="detail-label">Stores content?</div><div class="detail-val">Yes. Documents you write are stored on Grammarly's servers.</div></div>
+        <div class="detail-row"><div class="detail-label">Used for training?</div><div class="detail-val">Yes, to improve suggestions. Anonymisation is claimed but not independently verifiable.</div></div>
+        <div class="detail-row"><div class="detail-label">Risk level</div><div class="detail-val">Very high for professionals — confidential client emails, unreleased documents, personal messages all pass through Grammarly.</div></div>
+        <div class="detail-row"><div class="detail-label">Alternatives</div><div class="detail-val">LanguageTool (self-hosted option), ProWritingAid with stricter enterprise controls, or Claude/ChatGPT for specific editing tasks.</div></div>
+        <div class="tool-tip">⚠️ Critical note: Many organisations explicitly ban Grammarly on work devices because it reads confidential documents. Check your employer's policy before using it professionally.</div>
+      </div>
+    </div>
+
+    <div class="data-tool" onclick="toggleTool(this)">
+      <div class="tool-header">
+        <div class="tool-name"><div class="tool-icon">🎨</div><div class="tool-title">Midjourney / DALL-E / image AI</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span class="tool-risk risk-medium">Medium exposure</span><span class="tool-expand-icon">▼</span></div>
+      </div>
+      <div class="tool-detail">
+        <div class="detail-row"><div class="detail-label">Your prompts</div><div class="detail-val">Stored and typically public by default on Midjourney. DALL-E prompts are stored by OpenAI.</div></div>
+        <div class="detail-row"><div class="detail-label">Image ownership</div><div class="detail-val">Varies significantly. Midjourney free tier — platform owns usage rights. Paid tiers — you own commercial rights. Read the specific T&Cs before commercial use.</div></div>
+        <div class="detail-row"><div class="detail-label">Training use</div><div class="detail-val">All prompts and generations are used to improve models. No opt-out on most platforms.</div></div>
+        <div class="detail-row"><div class="detail-label">Face images</div><div class="detail-val">Uploading photos of real people (including yourself) for AI processing has significant privacy implications in many jurisdictions, including the EU.</div></div>
+        <div class="tool-tip">🔒 Practical step: Never upload photos of other people to image AI without their knowledge and consent. Be aware that Midjourney prompts are visible to other users by default unless you have a private subscription.</div>
+      </div>
+    </div>
+
+    <div class="data-tool" onclick="toggleTool(this)">
+      <div class="tool-header">
+        <div class="tool-name"><div class="tool-icon">📊</div><div class="tool-title">Microsoft Copilot (in Office)</div></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span class="tool-risk risk-low">Lower exposure</span><span class="tool-expand-icon">▼</span></div>
+      </div>
+      <div class="tool-detail">
+        <div class="detail-row"><div class="detail-label">Data handling</div><div class="detail-val">Enterprise version: data stays within your organisation's Microsoft 365 tenant. Not used for OpenAI model training.</div></div>
+        <div class="detail-row"><div class="detail-label">Consumer version</div><div class="detail-val">More similar to ChatGPT — conversations stored by Microsoft, used for improvement.</div></div>
+        <div class="detail-row"><div class="detail-label">Compliance</div><div class="detail-val">Enterprise: GDPR compliant, SOC 2 certified, data residency options. One of the stronger enterprise data protection stances.</div></div>
+        <div class="detail-row"><div class="detail-label">Who controls</div><div class="detail-val">Your IT admin controls what Copilot can access within your organisation's data.</div></div>
+        <div class="tool-tip">🔒 If your organisation uses M365 Enterprise Copilot, this is generally the safest option for sensitive professional work — assuming your IT team has configured it correctly.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lesson-divider">
+
+  <div class="content-block reveal">
+    <h2>Your personal<br><em>privacy audit</em></h2>
+    <p>Work through this checklist for your own life. Every item you tick is a concrete step that reduces your exposure. You don't have to do everything — but you should make the decision consciously.</p>
+  </div>
+
+  <!-- PRIVACY CHECKLIST -->
+  <div class="checklist-wrap reveal">
+    <div class="checklist-header">
+      <div class="checklist-badge">🔒 Privacy audit</div>
+      <div class="checklist-title">Your AI privacy checklist</div>
+      <div class="checklist-sub">Tick each item you've done or you commit to doing</div>
+    </div>
+
+    <div class="checklist-progress-row">
+      <div class="cl-score-label">Progress</div>
+      <div class="cl-bar-bg"><div class="cl-bar-fill" id="clBar"></div></div>
+      <div class="cl-score-num" id="clNum">0 / 20</div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="cl-section-title">Account settings</div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="a1">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Turn off training opt-in on ChatGPT</div><div class="cl-sub">Settings → Data Controls → Improve the model for everyone → Off</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="a2">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Review chat history settings on every AI tool you use</div><div class="cl-sub">Decide whether stored history poses a risk for you specifically</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="a3">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Read the privacy policy of your most-used AI tool</div><div class="cl-sub">At least the "What we collect" and "How we use it" sections — takes 5 minutes</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="a4">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Use separate accounts for personal and professional AI use</div><div class="cl-sub">Keeps your work data and personal data in separate risk buckets</div></div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="cl-section-title">What you share</div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="b1">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Never paste passwords, API keys, or credentials into an AI chat</div><div class="cl-sub">Even "to check" or "for context" — these go to servers you don't control</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="b2">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Remove identifying details before pasting documents about other people</div><div class="cl-sub">Replace names, emails, addresses with [NAME], [EMAIL] etc. before asking AI to process them</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="b3">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Check your company policy before using AI for client work</div><div class="cl-sub">Many organisations have explicit policies — violating them can be a disciplinary issue</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="b4">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Don't upload photos of other people to AI tools without their consent</div><div class="cl-sub">Especially for face-based tools — privacy laws in many regions require explicit consent</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="b5">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Be cautious with medical or financial information in AI chats</div><div class="cl-sub">These are the highest-sensitivity categories. Anonymise where possible.</div></div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="cl-section-title">Browser & apps</div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="c1">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Audit browser extensions that have "read all site data" permissions</div><div class="cl-sub">Grammarly, Jasper, and writing AI extensions read everything you type. Know which ones you have.</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="c2">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Remove AI extensions from your browser when doing sensitive work</div><div class="cl-sub">Or use a separate browser profile without extensions for confidential tasks</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="c3">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Check what AI your phone keyboard is sending to servers</div><div class="cl-sub">iOS predictive keyboard, Gboard, and others all have AI features with data implications</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="c4">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Review microphone and camera permissions for AI apps</div><div class="cl-sub">Voice AI tools especially — know what's being recorded and when</div></div>
+      </div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="cl-section-title">Your data rights</div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="d1">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Know that you can request deletion of your data from AI companies</div><div class="cl-sub">GDPR (EU/UK), CCPA (California), and similar laws give you the right to request deletion</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="d2">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Download your data archive from AI tools you use frequently</div><div class="cl-sub">ChatGPT, Claude, and others let you export all your conversation history — useful to see what they have</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="d3">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Delete conversation history you wouldn't be comfortable with others seeing</div><div class="cl-sub">Old sensitive conversations don't need to live on AI servers indefinitely</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="d4">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Understand that "free" AI tools are often funded by your data</div><div class="cl-sub">The business model matters. Know whether you're the customer or the product.</div></div>
+      </div>
+      <div class="cl-item" onclick="toggleItem(this)" data-id="d5">
+        <div class="cl-cb"><span class="cl-tick">✓</span></div>
+        <div class="cl-text"><div class="cl-title">Set a recurring reminder to review your AI tool privacy settings</div><div class="cl-sub">Privacy policies change. A quarterly check takes 10 minutes and keeps you current.</div></div>
+      </div>
+    </div>
+
+    <div class="checklist-summary" id="clSummary" style="display:none;">
+      <div class="summary-score" id="summaryScore"></div>
+      <div class="summary-label">items completed</div>
+      <div class="summary-feedback" id="summaryFeedback"></div>
+    </div>
+  </div>
+
+  <div class="callout callout-gold reveal">
+    <div class="callout-label">⚡ The practical rule</div>
+    <p>Don't share anything with an AI that you wouldn't be comfortable sharing with a stranger who works at a tech company. Not because AI companies are malicious — most aren't — but because data you share can be accessed, leaked, or repurposed in ways you didn't intend. This rule rules out about 90% of the situations where people overshare.</p>
+  </div>
+
+  <div class="key-takeaway reveal">
+    <div class="kt-label">Key takeaway</div>
+    <p>Privacy isn't about being paranoid. It's about <em>knowing what you're trading and deciding whether it's worth it</em> — on your terms, not theirs.</p>
+  </div>
+
+  <div class="completion-check" id="completionCheck" onclick="toggleComplete()">
+    <div class="check-box"><span class="check-inner">✓</span></div>
+    <span class="check-text">Mark lesson as complete</span>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="lesson-1.html" class="lesson-nav-btn">
+      <span>←</span>
+      <span><span class="nav-btn-label">Previous</span><span class="nav-btn-title">Spotting AI misinformation</span></span>
+    </a>
+    <a href="lesson-3.html" class="lesson-nav-btn next">
+      <span><span class="nav-btn-label">Next up</span><span class="nav-btn-title">AI bias & why it matters</span></span>
+      <span>→</span>
+    </a>
+  </div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  function toggleTool(el) {
+    const detail = el.querySelector('.tool-detail');
+    const icon = el.querySelector('.tool-expand-icon');
+    const isOpen = detail.classList.contains('open');
+    detail.classList.toggle('open', !isOpen);
+    icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+
+  const totalItems = 20;
+  function updateChecklist() {
+    const checked = document.querySelectorAll('.cl-item.checked').length;
+    const pct = (checked / totalItems) * 100;
+    document.getElementById('clBar').style.width = pct + '%';
+    document.getElementById('clNum').textContent = checked + ' / ' + totalItems;
+
+    const summaryEl = document.getElementById('clSummary');
+    if (checked >= 10) {
+      summaryEl.style.display = 'block';
+      document.getElementById('summaryScore').textContent = checked;
+      let fb;
+      if (checked >= 18) fb = "Outstanding. You're taking privacy seriously and your exposure is minimal. Share this checklist — most people haven't thought through half of these.";
+      else if (checked >= 14) fb = "Strong result. You've addressed the major risks. Focus on the items you haven't ticked yet — they're probably the ones that feel inconvenient, which usually means they matter.";
+      else fb = "Good start. You've covered the basics. Work through the remaining items at your own pace — each one reduces a real risk.";
+      document.getElementById('summaryFeedback').textContent = fb;
+    } else {
+      summaryEl.style.display = 'none';
+    }
+
+    const keys = {};
+    document.querySelectorAll('.cl-item').forEach(item => {
+      keys[item.dataset.id] = item.classList.contains('checked');
+    });
+    localStorage.setItem('aes-privacy-checklist', JSON.stringify(keys));
+  }
+
+  function toggleItem(el) {
+    el.classList.toggle('checked');
+    updateChecklist();
+  }
+
+  // restore saved state
+  const saved = JSON.parse(localStorage.getItem('aes-privacy-checklist') || '{}');
+  document.querySelectorAll('.cl-item').forEach(item => {
+    if (saved[item.dataset.id]) item.classList.add('checked');
+  });
+  updateChecklist();
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('progressBar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100 + '%';
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 50); observer.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  function toggleComplete() {
+    const el = document.getElementById('completionCheck');
+    el.classList.toggle('checked');
+    const checked = el.classList.contains('checked');
+    el.querySelector('.check-text').textContent = checked ? '✓ Lesson complete! Great work.' : 'Mark lesson as complete';
+    localStorage.setItem('aes-2-complete', checked);
+  }
+  if (localStorage.getItem('aes-2-complete') === 'true') {
+    document.getElementById('completionCheck').classList.add('checked');
+    document.getElementById('completionCheck').querySelector('.check-text').textContent = '✓ Lesson complete! Great work.';
+  }
+</script>
+</body>
+</html>
