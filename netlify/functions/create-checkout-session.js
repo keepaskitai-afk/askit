@@ -27,7 +27,7 @@ exports.handler = async (event) => {
       mode: 'subscription',
       line_items: [
         {
-          price: 'price_1TFey2DfTFCtuexdGcfTOA20',
+          price: process.env.STRIPE_PRICE_ID,
           quantity: 1,
         },
       ],
