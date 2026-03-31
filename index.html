@@ -550,9 +550,11 @@
     <a href="#tracks">Tracks</a>
     <a href="/about.html">About</a>
     <a href="#pricing">Pricing</a>
+    <a href="/dashboard.html" id="nav-dashboard" style="display:none;">My Dashboard</a>
     <a href="/learn/" class="nav-cta">Start learning</a>
   </div>
 </nav>
+<script>if(localStorage.getItem('askit-premium')==='true'){document.getElementById('nav-dashboard').style.display='';}</script>
 
 <!-- HERO -->
 <section class="hero">
