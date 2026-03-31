@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a.active { color: var(--ink); }
+  .nav-cta { background: var(--rust); color: #fff !important; padding: 10px 22px; border-radius: 100px; font-weight: 500 !important; transition: background 0.2s, transform 0.15s !important; }
+  .nav-cta:hover { background: var(--rust-light) !important; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .about-hero {
+    padding: 160px 24px 100px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(200,82,26,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(74,124,89,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 60% 20%, rgba(232,162,48,0.06) 0%, transparent 60%);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200,82,26,0.08); border: 1px solid rgba(200,82,26,0.2);
+    color: var(--rust); font-size: 12px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 100px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -2px; color: var(--ink);
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .hero-sub {
+    font-size: clamp(17px, 2vw, 20px);
+    color: var(--muted); line-height: 1.7;
+    font-weight: 300; max-width: 560px; margin: 0 auto;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SHARED ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .container-narrow { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 100px 24px; }
+  .section-label { font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--rust); margin-bottom: 16px; }
+  .section-title { font-family: 'Fraunces', serif; font-size: clamp(32px, 4vw, 52px); font-weight: 700; line-height: 1.1; letter-spacing: -1px; color: var(--ink); margin-bottom: 20px; }
+  .section-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── FOUNDER ── */
+  .founder-section { background: var(--warm-white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .founder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .founder-visual {
+    background: linear-gradient(135deg, var(--ink) 0%, #2D2A26 100%);
+    border-radius: 28px; padding: 48px 40px;
+    position: relative; overflow: hidden;
+  }
+  .founder-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 20% 20%, rgba(200,82,26,0.15), transparent),
+                radial-gradient(ellipse 60% 60% at 80% 80%, rgba(232,162,48,0.08), transparent);
+  }
+  .founder-initial {
+    position: relative; z-index: 1;
+    font-family: 'Fraunces', serif; font-size: 96px; font-weight: 800;
+    color: rgba(250,247,242,0.08); line-height: 1; margin-bottom: 32px;
+  }
+  .founder-quote {
+    position: relative; z-index: 1;
+    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300;
+    font-style: italic; color: rgba(250,247,242,0.85);
+    line-height: 1.5; margin-bottom: 24px;
+  }
+  .founder-quote em { color: var(--gold); font-style: normal; }
+  .founder-name { position: relative; z-index: 1; font-size: 14px; color: rgba(250,247,242,0.4); }
+  .founder-name strong { color: rgba(250,247,242,0.7); font-weight: 500; }
+  .founder-text h2 { font-family: 'Fraunces', serif; font-size: clamp(28px, 3vw, 44px); font-weight: 700; line-height: 1.1; letter-spacing: -0.5px; color: var(--ink); margin-bottom: 24px; }
+  .founder-text h2 em { font-style: italic; font-weight: 300; color: var(--rust); }
+  .founder-text p { font-size: 17px; color: var(--muted); line-height: 1.75; font-weight: 300; margin-bottom: 20px; }
+  .founder-text p:last-child { margin-bottom: 0; }
+  .founder-text p strong { color: var(--ink); font-weight: 500; }
+
+  /* ── MISSION ── */
+  .mission-section { background: var(--ink); }
+  .mission-section .section-label { color: var(--gold); }
+  .mission-section .section-title { color: var(--cream); }
+  .mission-section .section-title em { color: var(--gold); }
+  .mission-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+  .mission-pillar { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 32px 28px; }
+  .pillar-icon { font-size: 32px; margin-bottom: 16px; }
+  .pillar-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--cream); margin-bottom: 10px; }
+  .pillar-desc { font-size: 15px; color: rgba(250,247,242,0.55); line-height: 1.65; font-weight: 300; }
+
+  /* ── DIFFERENT ── */
+  .different-section { background: var(--cream); }
+  .different-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 56px; }
+  .different-card { background: var(--warm-white); border: 1.5px solid var(--border); border-radius: 24px; padding: 36px 32px; position: relative; overflow: hidden; }
+  .different-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .different-card.rust::before { background: linear-gradient(90deg, var(--rust), var(--rust-light)); }
+  .different-card.gold::before { background: linear-gradient(90deg, var(--gold), #F5C842); }
+  .different-card.sage::before { background: linear-gradient(90deg, var(--sage), #6AAD80); }
+  .different-card.ink::before { background: linear-gradient(90deg, #4A6FA5, #6B8FC7); }
+  .different-card-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .different-card-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 12px; line-height: 1.2; }
+  .different-card-desc { font-size: 15px; color: var(--muted); line-height: 1.65; font-weight: 300; }
+  .vs-tag { display: inline-block; background: rgba(200,82,26,0.08); border: 1px solid rgba(200,82,26,0.2); color: var(--rust); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 100px; margin-bottom: 10px; font-style: normal; }
+
+  /* ── TRACKS ── */
+  .tracks-section { background: var(--warm-white); border-top: 1px solid var(--border); }
+  .tracks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 48px; }
+  .track-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 32px 28px; position: relative; overflow: hidden; text-decoration: none; color: inherit; display: block; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .track-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(26,23,20,0.1); }
+  .track-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
+  .track-card.rust::after { background: linear-gradient(90deg, var(--rust), var(--rust-light)); }
+  .track-card.gold::after { background: linear-gradient(90deg, var(--gold), #F5C842); }
+  .track-card.sage::after { background: linear-gradient(90deg, var(--sage), #6AAD80); }
+  .track-card.teal::after { background: linear-gradient(90deg, #2A6E8A, #4A9DBF); }
+  .track-emoji { font-size: 30px; margin-bottom: 16px; }
+  .track-badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; margin-bottom: 10px; }
+  .track-badge.free { background: var(--sage-light); color: var(--sage); border: 1px solid rgba(74,124,89,0.25); }
+  .track-badge.premium { background: rgba(232,162,48,0.12); color: #9B6A0F; border: 1px solid rgba(232,162,48,0.3); }
+  .track-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .track-desc { font-size: 14px; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+  /* ── CTA ── */
+  .cta-section { background: var(--rust); text-align: center; padding: 100px 24px; position: relative; overflow: hidden; }
+  .cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(255,255,255,0.06), transparent); }
+  .cta-section h2 { font-family: 'Fraunces', serif; font-size: clamp(32px, 5vw, 56px); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; color: #fff; margin-bottom: 16px; position: relative; }
+  .cta-section h2 em { font-style: italic; font-weight: 300; }
+  .cta-section p { font-size: 18px; color: rgba(255,255,255,0.75); margin-bottom: 36px; position: relative; font-weight: 300; }
+  .cta-btn { display: inline-block; background: #fff; color: var(--rust) !important; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; padding: 18px 40px; border-radius: 100px; text-decoration: none; transition: transform 0.15s; }
+  .cta-btn:hover { transform: translateY(-2px); }
+
+  /* ── FOOTER ── */
+  footer { background: var(--ink); color: rgba(250,247,242,0.5); text-align: center; padding: 40px 24px; font-size: 13px; }
+  .footer-logo { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 800; color: var(--rust); display: block; margin-bottom: 8px; }
+
+  @media (max-width: 900px) {
+    .founder-grid { grid-template-columns: 1fr; gap: 48px; }
+    .mission-pillars { grid-template-columns: 1fr; }
+    .different-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .about-hero { padding: 120px 24px 72px; }
+    section { padding: 72px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-links">
+    <a href="/#how">How it works</a>
+    <a href="/#tracks">Tracks</a>
+    <a href="/about.html" class="active">About</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/learn/" class="nav-cta">Start learning</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="about-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">Our story</div>
+    <h1 class="hero-title">AI education for<br><em>actual people</em></h1>
+    <p class="hero-sub">AskIt was built by one person in Montréal who got tired of watching the people around them feel left behind by a technology that was changing everything.</p>
+  </div>
+</section>
+
+<!-- FOUNDER STORY -->
+<section class="founder-section">
+  <div class="container">
+    <div class="founder-grid">
+
+      <div class="founder-visual reveal">
+        <div class="founder-initial">A</div>
+        <div class="founder-quote">"The best explanation of AI I could find was written for <em>developers</em>. That's not good enough."</div>
+        <div class="founder-name"><strong>Solo founder</strong> · Montréal, Canada</div>
+      </div>
+
+      <div class="founder-text reveal">
+        <p class="section-label">The founder story</p>
+        <h2>Built out of<br><em>frustration</em></h2>
+
+        <p>I watched my mum try to understand what everyone kept calling "the most important technology of our generation." She's a smart person. She just couldn't find anything that explained it for her, instead of for people who already knew what a language model was.</p>
+
+        <p>I watched colleagues nod along in meetings about AI strategy while quietly having no idea what any of it actually meant in practice. I watched a friend — a brilliant person, a small business owner — turn down a tool that could have saved her ten hours a week because nobody had taken the time to just <strong>show her how it worked</strong>.</p>
+
+        <p>So I built AskIt. One person, one city, one strong conviction: <strong>non-technical people deserve better AI education.</strong> Not a watered-down version. The real thing, taught properly.</p>
+
+        <p>I'm not a big company. I don't have a marketing budget or a VC. I have a laptop, a deep belief that this matters, and a commitment to keeping every lesson honest, practical, and genuinely useful for the people who need it most.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission-section">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Our mission</p>
+      <h2 class="section-title">AI literacy for<br><em>everyone</em></h2>
+      <p style="font-size:18px;color:rgba(250,247,242,0.6);line-height:1.7;font-weight:300;max-width:580px;">Regardless of your age, your background, or whether you've ever written a line of code in your life.</p>
+    </div>
+    <div class="mission-pillars reveal">
+      <div class="mission-pillar">
+        <div class="pillar-icon">🧠</div>
+        <div class="pillar-title">Understanding, not just access</div>
+        <div class="pillar-desc">We don't just want people to use AI tools. We want them to understand what they're using well enough to make good decisions about when, how, and whether to use them at all.</div>
+      </div>
+      <div class="mission-pillar">
+        <div class="pillar-icon">🌍</div>
+        <div class="pillar-title">No prerequisites</div>
+        <div class="pillar-desc">No tech background. No coding experience. No expensive device. If you have an internet connection and 10 minutes, you can learn something real on AskIt.</div>
+      </div>
+      <div class="mission-pillar">
+        <div class="pillar-icon">🎯</div>
+        <div class="pillar-title">Practical above all else</div>
+        <div class="pillar-desc">Every lesson connects to something real. We measure success by whether you actually do something differently — not by how many videos you watch.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT MAKES US DIFFERENT -->
+<section class="different-section">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">What makes AskIt different</p>
+      <h2 class="section-title">We made different<br><em>choices</em></h2>
+      <p style="font-size:17px;color:var(--muted);line-height:1.65;font-weight:300;max-width:540px;margin-bottom:0;">Most AI education is built for developers, or is so simplified it's basically useless. We chose a different path.</p>
+    </div>
+    <div class="different-grid reveal">
+
+      <div class="different-card rust">
+        <div class="vs-tag">vs. jargon-heavy courses</div>
+        <div class="different-card-title">Plain language that actually explains things</div>
+        <div class="different-card-desc">We don't use technical language as a shortcut. Every concept is explained in plain English — not because we think you can't handle complexity, but because clarity is harder and more respectful than jargon.</div>
+      </div>
+
+      <div class="different-card gold">
+        <div class="vs-tag">vs. passive video content</div>
+        <div class="different-card-title">Hands-on from the first lesson</div>
+        <div class="different-card-desc">Every lesson includes interactive exercises and most include a live AI you can talk to right on the page. Learning by doing isn't a feature — it's the whole point. You can't get good at something you've only watched.</div>
+      </div>
+
+      <div class="different-card sage">
+        <div class="vs-tag">vs. generic examples</div>
+        <div class="different-card-title">Built for real life, not demos</div>
+        <div class="different-card-desc">Our scenarios come from the actual lives of the people we built this for — retirees, small business owners, professionals, students. Not developer walkthroughs with toy problems nobody has in the real world.</div>
+      </div>
+
+      <div class="different-card ink">
+        <div class="vs-tag">vs. hype and fear</div>
+        <div class="different-card-title">Honest about what AI is and isn't</div>
+        <div class="different-card-desc">We don't tell you AI will save your job or destroy it. We tell you what it's actually good at, where it fails, and how to think clearly about it — because informed people make better decisions than scared or over-excited ones.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TRACKS -->
+<section class="tracks-section">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">The curriculum</p>
+      <h2 class="section-title">Four tracks.<br><em>One clear path.</em></h2>
+      <p style="font-size:17px;color:var(--muted);line-height:1.65;font-weight:300;max-width:540px;margin-bottom:0;">Start free. Go at your own pace. Every lesson builds toward something you can use in your actual life.</p>
+    </div>
+    <div class="tracks-grid reveal">
+
+      <a href="/learn/" class="track-card rust">
+        <div class="track-emoji">🧠</div>
+        <div class="track-badge free">✓ Free</div>
+        <div class="track-name">Understanding AI</div>
+        <div class="track-desc">What is AI, how does it actually work, and why should you care? Five lessons, ~45 minutes, no background needed.</div>
+      </a>
+
+      <a href="/learn/talking-to-ai/" class="track-card gold">
+        <div class="track-emoji">💬</div>
+        <div class="track-badge premium">Premium</div>
+        <div class="track-name">Talking to AI</div>
+        <div class="track-desc">Learn to write prompts that actually work. The difference between a useful answer and a useless one is how you ask.</div>
+      </a>
+
+      <a href="/learn/ai-for-work/" class="track-card sage">
+        <div class="track-emoji">⚡</div>
+        <div class="track-badge premium">Premium</div>
+        <div class="track-name">AI for Work</div>
+        <div class="track-desc">Emails, research, meetings, marketing — save hours every week with practical tools built around real work tasks.</div>
+      </a>
+
+      <a href="/learn/ai-ethics-safety/" class="track-card teal">
+        <div class="track-emoji">🛡️</div>
+        <div class="track-badge premium">Premium</div>
+        <div class="track-name">AI Ethics & Safety</div>
+        <div class="track-desc">Spot misinformation, protect your privacy, and use these tools responsibly. A must for anyone online today.</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div style="position:relative;z-index:1;">
+    <h2>Ready to <em>get started?</em></h2>
+    <p>The first track is free. No account. No credit card. Just open it and go.</p>
+    <a href="/learn/" class="cta-btn">Start learning free →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Ask<span style="color:rgba(250,247,242,0.5)">It</span></span>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

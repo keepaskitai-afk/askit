@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your free track is waiting</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,800;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  body, html { margin: 0; padding: 0; background: #FAF7F2; }
+  body { font-family: 'DM Sans', Arial, sans-serif; color: #1A1714; }
+  .email-wrap { max-width: 600px; margin: 0 auto; background: #FAF7F2; }
+  .header { background: #FAF7F2; padding: 32px 40px 24px; border-bottom: 1px solid #E5DDD0; }
+  .logo { font-family: 'Fraunces', Georgia, serif; font-size: 28px; font-weight: 800; color: #C8521A; letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: #1A1714; }
+  .body-wrap { padding: 40px 40px 32px; }
+  h1 { font-family: 'Fraunces', Georgia, serif; font-size: 36px; font-weight: 800; line-height: 1.1; letter-spacing: -1px; color: #1A1714; margin: 0 0 20px; }
+  h1 em { font-style: italic; font-weight: 300; color: #C8521A; }
+  p { font-size: 16px; line-height: 1.75; color: #1A1714; margin: 0 0 20px; font-weight: 300; }
+  p.muted { color: #7A7168; font-size: 15px; }
+  .cta-btn { display: inline-block; background: #C8521A; color: #ffffff !important; font-family: 'DM Sans', Arial, sans-serif; font-size: 16px; font-weight: 600; padding: 16px 36px; border-radius: 100px; text-decoration: none; margin: 8px 0 24px; }
+  .free-track-card { background: #FFFDF9; border: 1.5px solid #E5DDD0; border-radius: 16px; padding: 28px; margin: 24px 0; }
+  .free-track-card h3 { font-family: 'Fraunces', Georgia, serif; font-size: 20px; font-weight: 700; color: #1A1714; margin: 0 0 16px; }
+  .lesson-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+  .lesson-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(200,82,26,0.1); border: 1px solid rgba(200,82,26,0.2); color: #C8521A; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; text-align: center; line-height: 28px; }
+  .lesson-text { font-size: 15px; color: #1A1714; line-height: 1.5; padding-top: 4px; }
+  .lesson-time { font-size: 12px; color: #7A7168; }
+  .free-badge { display: inline-block; background: #EDF4EF; border: 1px solid rgba(74,124,89,0.25); color: #4A7C59; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; }
+  .premium-box { background: #1A1714; border-radius: 16px; padding: 32px; margin: 32px 0; }
+  .premium-box h3 { font-family: 'Fraunces', Georgia, serif; font-size: 24px; font-weight: 700; color: #FFFDF9; margin: 0 0 12px; line-height: 1.2; }
+  .premium-box h3 em { font-style: italic; font-weight: 300; color: #E8A230; }
+  .premium-box p { color: rgba(250,247,242,0.7); font-size: 15px; margin-bottom: 0; }
+  .premium-tracks { margin: 20px 0; }
+  .premium-track-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .premium-track-emoji { font-size: 18px; }
+  .premium-track-name { font-size: 15px; font-weight: 500; color: rgba(250,247,242,0.85); }
+  .price-line { margin: 20px 0 16px; }
+  .price { font-family: 'Fraunces', Georgia, serif; font-size: 40px; font-weight: 800; color: #E8A230; line-height: 1; }
+  .price-sub { font-size: 14px; color: rgba(250,247,242,0.5); }
+  .premium-cta { display: inline-block; background: #C8521A; color: #ffffff !important; font-family: 'DM Sans', Arial, sans-serif; font-size: 16px; font-weight: 600; padding: 16px 36px; border-radius: 100px; text-decoration: none; margin-top: 4px; }
+  .divider { border: none; border-top: 1px solid #E5DDD0; margin: 32px 0; }
+  .signature { font-size: 16px; line-height: 1.7; color: #1A1714; }
+  .footer { background: #1A1714; padding: 28px 40px; text-align: center; }
+  .footer p { color: rgba(250,247,242,0.4); font-size: 12px; margin: 0 0 6px; font-weight: 300; }
+  .footer a { color: rgba(250,247,242,0.4); text-decoration: underline; }
+  @media (max-width: 620px) {
+    .body-wrap { padding: 28px 24px 24px; }
+    .header { padding: 24px 24px 20px; }
+    .footer { padding: 24px; }
+    h1 { font-size: 28px; }
+    .premium-box { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FAF7F2;">
+<tr><td align="center">
+<div class="email-wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <a href="https://askit.ca" class="logo">Ask<span>It</span></a>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-wrap">
+
+    <h1>Your free track<br><em>is still waiting.</em></h1>
+
+    <p>Hey *|FNAME|* —</p>
+
+    <p>This is my last nudge, I promise. But I'd feel bad if I didn't send it — because the free track on AskIt is genuinely one of the most useful 45 minutes you can spend if you want to understand what's going on with AI right now.</p>
+
+    <p>Here's everything that's yours, completely free, no account needed:</p>
+
+    <div class="free-track-card">
+      <div class="free-badge">✓ 100% Free · No account needed</div>
+      <h3>🧠 Understanding AI — 5 lessons</h3>
+      <div class="lesson-row">
+        <div class="lesson-num">1</div>
+        <div class="lesson-text">What is AI, actually? <span class="lesson-time">· 8 min</span></div>
+      </div>
+      <div class="lesson-row">
+        <div class="lesson-num">2</div>
+        <div class="lesson-text">How does AI think? <span class="lesson-time">· 10 min</span></div>
+      </div>
+      <div class="lesson-row">
+        <div class="lesson-num">3</div>
+        <div class="lesson-text">What AI can (and can't) do <span class="lesson-time">· 10 min</span></div>
+      </div>
+      <div class="lesson-row">
+        <div class="lesson-num">4</div>
+        <div class="lesson-text">The tools you need to know <span class="lesson-time">· 10 min</span></div>
+      </div>
+      <div class="lesson-row">
+        <div class="lesson-num">5</div>
+        <div class="lesson-text">Your first real AI win 🏆 <span class="lesson-time">· 10–15 min</span></div>
+      </div>
+    </div>
+
+    <a href="https://askit.ca/learn/" class="cta-btn">Start the free track →</a>
+
+    <p class="muted">45 minutes. No signup. Just open it and go.</p>
+
+    <div class="premium-box">
+      <h3>Want to go further?<br><em>Premium unlocks everything.</em></h3>
+      <p>After the free track, three more tracks are waiting behind a paywall — and they're where things get really useful.</p>
+      <div class="premium-tracks">
+        <div class="premium-track-row">
+          <span class="premium-track-emoji">💬</span>
+          <span class="premium-track-name">Talking to AI — write prompts that actually work</span>
+        </div>
+        <div class="premium-track-row">
+          <span class="premium-track-emoji">⚡</span>
+          <span class="premium-track-name">AI for Work — save hours on emails, meetings, research</span>
+        </div>
+        <div class="premium-track-row">
+          <span class="premium-track-emoji">🛡️</span>
+          <span class="premium-track-name">AI Ethics & Safety — spot misinformation, protect your privacy</span>
+        </div>
+      </div>
+      <div class="price-line">
+        <div class="price">$15</div>
+        <div class="price-sub">per month · or $120/year · cancel anytime</div>
+      </div>
+      <a href="https://askit.ca/#pricing" class="premium-cta">See what's included →</a>
+    </div>
+
+    <p>Whatever you decide — I hope AskIt has been useful. Even if it's just given you a clearer picture of what this whole AI thing actually is, that's a win.</p>
+
+    <p>If you ever have questions, just reply to this email. I read every one.</p>
+
+    <hr class="divider">
+
+    <div class="signature">
+      <p>Thanks for being here,</p>
+      <p><strong style="font-family:'Fraunces',Georgia,serif; font-size:18px;">The AskIt team</strong><br>
+      <span style="color:#7A7168; font-size:14px;">askit.ca</span></p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>© 2026 AskIt · Built for everyone</p>
+    <p><a href="*|UNSUB|*">Unsubscribe</a> · <a href="https://askit.ca">askit.ca</a></p>
+  </div>
+
+</div>
+</td></tr>
+</table>
+</body>
+</html>
