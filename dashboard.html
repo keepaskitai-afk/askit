@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Progress — AskIt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,800;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --warm-white: #FFFDF9;
+    --ink: #1A1714;
+    --rust: #C8521A;
+    --rust-light: #F0784A;
+    --gold: #E8A230;
+    --sage: #4A7C59;
+    --sage-light: #EDF4EF;
+    --teal: #2A6E8A;
+    --teal-light: #E8F4F7;
+    --muted: #7A7168;
+    --border: #E5DDD0;
+    --card-bg: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 800; color: var(--rust); letter-spacing: -0.5px; text-decoration: none; }
+  .logo span { color: var(--ink); }
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+  .nav-link { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-link:hover, .nav-link.active { color: var(--ink); }
+  .nav-cta { background: var(--rust); color: #fff; padding: 10px 22px; border-radius: 100px; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.15s; }
+  .nav-cta:hover { background: var(--rust-light); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .dashboard-hero {
+    padding: 120px 24px 56px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 55% 60% at 5% 20%, rgba(200,82,26,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 50% at 95% 80%, rgba(74,124,89,0.06) 0%, transparent 65%);
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+  .hero-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+  .hero-heading { }
+  .hero-eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--rust); margin-bottom: 10px; }
+  .hero-title { font-family: 'Fraunces', serif; font-size: clamp(32px, 5vw, 56px); font-weight: 800; line-height: 1.05; letter-spacing: -1.5px; color: var(--ink); }
+  .hero-title em { font-style: italic; font-weight: 300; color: var(--rust); }
+
+  /* Overall stats row */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat-card {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 24px 28px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .stat-card:nth-child(2) { animation-delay: 0.05s; }
+  .stat-card:nth-child(3) { animation-delay: 0.1s; }
+  .stat-card:nth-child(4) { animation-delay: 0.15s; }
+  .stat-num { font-family: 'Fraunces', serif; font-size: 42px; font-weight: 800; line-height: 1; color: var(--ink); margin-bottom: 4px; }
+  .stat-label { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .stat-card.highlight { background: var(--rust); border-color: var(--rust); }
+  .stat-card.highlight .stat-num { color: #fff; }
+  .stat-card.highlight .stat-label { color: rgba(255,255,255,0.7); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── MAIN CONTENT ── */
+  .dashboard-body { max-width: 1100px; margin: 0 auto; padding: 0 24px 100px; }
+
+  /* ── TRACK SECTION ── */
+  .track-section {
+    background: var(--warm-white); border: 1.5px solid var(--border);
+    border-radius: 28px; overflow: hidden;
+    margin-bottom: 24px;
+    animation: fadeUp 0.5s ease both;
+    position: relative;
+  }
+  .track-section:nth-child(2) { animation-delay: 0.05s; }
+  .track-section:nth-child(3) { animation-delay: 0.1s; }
+  .track-section:nth-child(4) { animation-delay: 0.15s; }
+
+  .track-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 32px; gap: 24px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .track-header-left { display: flex; align-items: center; gap: 16px; }
+  .track-icon {
+    width: 52px; height: 52px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .track-icon.rust { background: rgba(200,82,26,0.1); }
+  .track-icon.gold { background: rgba(232,162,48,0.12); }
+  .track-icon.sage { background: rgba(74,124,89,0.1); }
+  .track-icon.teal { background: rgba(42,110,138,0.1); }
+
+  .track-meta { }
+  .track-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
+    margin-bottom: 5px;
+  }
+  .track-badge.free { background: var(--sage-light); color: var(--sage); border: 1px solid rgba(74,124,89,0.25); }
+  .track-badge.premium { background: rgba(232,162,48,0.12); color: #9B6A0F; border: 1px solid rgba(232,162,48,0.3); }
+  .track-badge.locked { background: var(--cream); color: var(--muted); border: 1px solid var(--border); }
+  .track-name { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink); line-height: 1.1; }
+
+  .track-header-right { display: flex; align-items: center; gap: 20px; }
+  .mini-ring-wrap { display: flex; align-items: center; gap: 12px; }
+  .mini-ring { width: 56px; height: 56px; flex-shrink: 0; }
+  .mini-ring .ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
+  .mini-ring .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 150.8; stroke-dashoffset: 150.8; transform: rotate(-90deg); transform-origin: center; transition: stroke-dashoffset 0.8s ease; }
+  .mini-ring .ring-text { font-family: 'Fraunces', serif; font-size: 14px; font-weight: 800; fill: var(--ink); }
+  .ring-label-wrap { }
+  .ring-pct { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1; }
+  .ring-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .track-cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px; border-radius: 100px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; white-space: nowrap;
+    transition: all 0.18s;
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .track-cta-btn.rust { background: var(--rust); color: #fff; }
+  .track-cta-btn.rust:hover { background: var(--rust-light); }
+  .track-cta-btn.gold { background: var(--gold); color: var(--ink); }
+  .track-cta-btn.gold:hover { background: #d4911e; }
+  .track-cta-btn.sage { background: var(--sage); color: #fff; }
+  .track-cta-btn.sage:hover { background: #3d6b4a; }
+  .track-cta-btn.teal { background: var(--teal); color: #fff; }
+  .track-cta-btn.teal:hover { background: #235d76; }
+  .track-cta-btn.outline { background: transparent; color: var(--rust); border: 1.5px solid var(--rust); }
+  .track-cta-btn.outline:hover { background: rgba(200,82,26,0.06); }
+  .track-cta-btn.muted-btn { background: var(--cream); color: var(--muted); border: 1.5px solid var(--border); cursor: default; }
+
+  /* ── LESSONS LIST ── */
+  .lessons-grid { padding: 8px 0; }
+  .lesson-row {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 0;
+    padding: 14px 32px;
+    border-bottom: 1px solid rgba(229,221,208,0.5);
+    transition: background 0.15s;
+    text-decoration: none; color: inherit;
+  }
+  .lesson-row:last-child { border-bottom: none; }
+  .lesson-row.done:hover { background: rgba(74,124,89,0.04); }
+  .lesson-row.todo:hover { background: rgba(200,82,26,0.03); }
+  .lesson-row.locked-row { opacity: 0.45; cursor: not-allowed; }
+
+  .lesson-check-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+  }
+  .lesson-check-circle.done { background: var(--sage); color: #fff; }
+  .lesson-check-circle.done-gold { background: var(--gold); color: var(--ink); }
+  .lesson-check-circle.done-teal { background: var(--teal); color: #fff; }
+  .lesson-check-circle.todo { background: var(--cream); border: 1.5px solid var(--border); color: var(--muted); font-size: 13px; }
+  .lesson-check-circle.locked-circle { background: var(--cream); border: 1.5px solid var(--border); color: var(--muted); font-size: 12px; }
+
+  .lesson-info { padding: 0 20px; }
+  .lesson-num-label { font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .lesson-title-text { font-size: 15px; font-weight: 400; color: var(--ink); line-height: 1.35; }
+  .lesson-row.done .lesson-title-text { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(122,113,104,0.4); }
+  .lesson-row.locked-row .lesson-title-text { color: var(--muted); }
+
+  .lesson-meta-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .lesson-time-pill { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .lesson-done-pill { font-size: 11px; font-weight: 600; color: var(--sage); background: var(--sage-light); padding: 3px 10px; border-radius: 100px; white-space: nowrap; }
+  .lesson-done-pill.gold-pill { color: #9B6A0F; background: rgba(232,162,48,0.12); }
+  .lesson-done-pill.teal-pill { color: var(--teal); background: var(--teal-light); }
+
+  /* ── LOCKED TRACK OVERLAY ── */
+  .locked-overlay {
+    padding: 40px 32px;
+    text-align: center;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(229,221,208,0.15) 10px,
+      rgba(229,221,208,0.15) 20px
+    );
+  }
+  .locked-overlay h3 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .locked-overlay p { font-size: 15px; color: var(--muted); margin-bottom: 20px; font-weight: 300; line-height: 1.6; }
+  .unlock-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--ink); color: var(--gold);
+    padding: 14px 28px; border-radius: 100px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    transition: background 0.2s;
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+  .unlock-btn:hover { background: #2D2A26; }
+
+  /* ── COMPLETE BANNER ── */
+  .all-done-banner {
+    background: linear-gradient(135deg, var(--sage), #3d6b4a);
+    border-radius: 28px; padding: 40px 40px;
+    margin-bottom: 32px; text-align: center;
+    display: none;
+  }
+  .all-done-banner.show { display: block; animation: fadeUp 0.5s ease both; }
+  .all-done-banner h2 { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .all-done-banner p { font-size: 16px; color: rgba(255,255,255,0.75); }
+
+  /* ── COLOR STRIP TOP ── */
+  .track-section::before { content: ''; display: block; height: 4px; }
+  .track-section.rust::before { background: linear-gradient(90deg, var(--rust), var(--rust-light)); }
+  .track-section.gold::before { background: linear-gradient(90deg, var(--gold), #F5C842); }
+  .track-section.sage::before { background: linear-gradient(90deg, var(--sage), #6AAD80); }
+  .track-section.teal::before { background: linear-gradient(90deg, var(--teal), #4A9DBF); }
+
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .track-header { flex-direction: column; align-items: flex-start; }
+    .track-header-right { width: 100%; justify-content: space-between; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-right .nav-link { display: none; }
+    .dashboard-hero { padding: 100px 24px 40px; }
+    .stats-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .lesson-row { grid-template-columns: 40px 1fr; padding: 14px 20px; }
+    .lesson-meta-right { display: none; }
+    .track-header { padding: 20px 20px; }
+    .lessons-grid .lesson-row { padding: 12px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">Ask<span>It</span></a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/#tracks" class="nav-link">All tracks</a>
+    <a href="/about.html" class="nav-link">About</a>
+    <a href="/dashboard.html" class="nav-link active">Dashboard</a>
+    <a href="/learn/" class="nav-cta">Continue learning</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="dashboard-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="hero-heading">
+        <div class="hero-eyebrow">Progress tracker</div>
+        <h1 class="hero-title">Your<br><em>dashboard</em></h1>
+      </div>
+    </div>
+    <div class="stats-row" id="statsRow">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="dashboard-body">
+
+  <div class="all-done-banner" id="allDoneBanner">
+    <h2>🏆 You've done it all.</h2>
+    <p>Every lesson across every track — completed. That puts you in rare company.</p>
+  </div>
+
+  <div id="trackSections">
+    <!-- populated by JS -->
+  </div>
+
+</div>
+
+<footer style="background:var(--ink);color:rgba(250,247,242,0.5);text-align:center;padding:40px 24px;font-size:13px;font-family:'DM Sans',sans-serif;">
+  <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:800;color:var(--rust);margin-bottom:8px;">Ask<span style="color:rgba(250,247,242,0.5)">It</span></div>
+  <p>© 2026 AskIt. Built for everyone.</p>
+</footer>
+
+<script>
+// ── DATA ──
+const TRACKS = [
+  {
+    id: 'understanding-ai',
+    name: 'Understanding AI',
+    emoji: '🧠',
+    color: 'rust',
+    accent: '#C8521A',
+    free: true,
+    href: '/learn/',
+    trackCompleteKey: 'track-understanding-ai-complete',
+    lessons: [
+      { key: 'lesson-1-complete', title: 'What is AI, actually?', href: '/learn/lesson-1.html', time: '8 min' },
+      { key: 'lesson-2-complete', title: 'How does AI think?', href: '/learn/lesson-2.html', time: '10 min' },
+      { key: 'lesson-3-complete', title: 'What AI can do (and can\'t)', href: '/learn/lesson-3.html', time: '10 min' },
+      { key: 'lesson-4-complete', title: 'The tools you need to know', href: '/learn/lesson-4.html', time: '10 min' },
+      { key: 'lesson-5-complete', title: 'Your first real AI win', href: '/learn/lesson-5.html', time: '10–15 min' },
+    ]
+  },
+  {
+    id: 'talking-to-ai',
+    name: 'Talking to AI',
+    emoji: '💬',
+    color: 'gold',
+    accent: '#E8A230',
+    checkClass: 'done-gold',
+    donePillClass: 'gold-pill',
+    free: false,
+    href: '/learn/talking-to-ai/',
+    lessons: [
+      { key: 'tai-1-complete', title: 'What is a prompt — and why most people get it wrong', href: '/learn/talking-to-ai/lesson-1.html', time: '18 min' },
+      { key: 'tai-2-complete', title: 'The anatomy of a perfect prompt', href: '/learn/talking-to-ai/lesson-2.html', time: '22 min' },
+      { key: 'tai-3-complete', title: 'Prompting for different tasks', href: '/learn/talking-to-ai/lesson-3.html', time: '28 min' },
+      { key: 'tai-4-complete', title: 'Advanced techniques: personas, constraints & chain prompting', href: '/learn/talking-to-ai/lesson-4.html', time: '30 min' },
+      { key: 'tai-5-complete', title: 'Build your personal prompt library', href: '/learn/talking-to-ai/lesson-5.html', time: '25 min' },
+    ]
+  },
+  {
+    id: 'ai-for-work',
+    name: 'AI for Work',
+    emoji: '⚡',
+    color: 'sage',
+    accent: '#4A7C59',
+    free: false,
+    href: '/learn/ai-for-work/',
+    lessons: [
+      { key: 'afw-1-complete', title: 'Writing emails and messages with AI', href: '/learn/ai-for-work/lesson-1.html', time: '25 min' },
+      { key: 'afw-2-complete', title: 'Research and summarising with AI', href: '/learn/ai-for-work/lesson-2.html', time: '22 min' },
+      { key: 'afw-3-complete', title: 'AI for meetings — prep, notes & action items', href: '/learn/ai-for-work/lesson-3.html', time: '28 min' },
+      { key: 'afw-4-complete', title: 'Marketing and social media with AI', href: '/learn/ai-for-work/lesson-4.html', time: '30 min' },
+      { key: 'afw-5-complete', title: 'Building your personal AI workflow', href: '/learn/ai-for-work/lesson-5.html', time: '25 min' },
+    ]
+  },
+  {
+    id: 'ai-ethics-safety',
+    name: 'AI Ethics & Safety',
+    emoji: '🛡️',
+    color: 'teal',
+    accent: '#2A6E8A',
+    checkClass: 'done-teal',
+    donePillClass: 'teal-pill',
+    free: false,
+    href: '/learn/ai-ethics-safety/',
+    lessons: [
+      { key: 'aes-1-complete', title: 'Spotting AI misinformation', href: '/learn/ai-ethics-safety/lesson-1.html', time: '22 min' },
+      { key: 'aes-2-complete', title: 'Protecting your privacy with AI', href: '/learn/ai-ethics-safety/lesson-2.html', time: '25 min' },
+      { key: 'aes-3-complete', title: 'AI bias and why it matters', href: '/learn/ai-ethics-safety/lesson-3.html', time: '24 min' },
+      { key: 'aes-4-complete', title: 'Using AI responsibly at work and school', href: '/learn/ai-ethics-safety/lesson-4.html', time: '28 min' },
+      { key: 'aes-5-complete', title: 'Your personal AI ethics code', href: '/learn/ai-ethics-safety/lesson-5.html', time: '30 min' },
+    ]
+  }
+];
+
+const isPremium = localStorage.getItem('askit-premium') === 'true';
+
+function getLessonDone(key) {
+  return localStorage.getItem(key) === 'true';
+}
+
+function getTrackCompleted(track) {
+  return track.lessons.filter(l => getLessonDone(l.key)).length;
+}
+
+// ── STATS ──
+function renderStats() {
+  const totalLessons = TRACKS.reduce((sum, t) => sum + t.lessons.length, 0);
+  const totalDone = TRACKS.reduce((sum, t) => {
+    if (!t.free && !isPremium) return sum;
+    return sum + getTrackCompleted(t);
+  }, 0);
+  const tracksStarted = TRACKS.filter(t => {
+    if (!t.free && !isPremium) return false;
+    const done = getTrackCompleted(t);
+    return done > 0 && done < t.lessons.length;
+  }).length;
+  const tracksComplete = TRACKS.filter(t => {
+    if (!t.free && !isPremium) return false;
+    return getTrackCompleted(t) === t.lessons.length;
+  }).length;
+
+  // rough time estimate: avg ~20 min per lesson
+  const minutesDone = totalDone * 20;
+  const timeStr = minutesDone >= 60
+    ? Math.floor(minutesDone / 60) + 'h ' + (minutesDone % 60 ? (minutesDone % 60) + 'm' : '')
+    : minutesDone + 'm';
+
+  const container = document.getElementById('statsRow');
+  container.innerHTML = `
+    <div class="stat-card ${totalDone > 0 ? 'highlight' : ''}">
+      <div class="stat-num">${totalDone}<span style="font-size:22px;opacity:0.4">/${totalLessons}</span></div>
+      <div class="stat-label">Lessons complete</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${tracksComplete}</div>
+      <div class="stat-label">Tracks finished</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">${tracksStarted}</div>
+      <div class="stat-label">In progress</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="font-size:${minutesDone >= 60 ? '28px' : '42px'};padding-top:${minutesDone >= 60 ? '7px' : '0'}">${totalDone > 0 ? timeStr : '–'}</div>
+      <div class="stat-label">Time invested</div>
+    </div>
+  `;
+
+  if (totalDone === totalLessons && isPremium) {
+    document.getElementById('allDoneBanner').classList.add('show');
+  }
+}
+
+// ── TRACK SECTIONS ──
+function renderTracks() {
+  const container = document.getElementById('trackSections');
+  container.innerHTML = '';
+
+  TRACKS.forEach(track => {
+    const completedCount = getTrackCompleted(track);
+    const total = track.lessons.length;
+    const pct = Math.round((completedCount / total) * 100);
+    const isLocked = !track.free && !isPremium;
+    const isComplete = completedCount === total;
+    const nextLesson = track.lessons.find(l => !getLessonDone(l.key));
+    const checkClass = track.checkClass || 'done';
+    const donePillClass = track.donePillClass || '';
+
+    // Determine CTA
+    let ctaHtml;
+    if (isLocked) {
+      ctaHtml = `<button class="track-cta-btn muted-btn">🔒 Premium</button>`;
+    } else if (isComplete) {
+      ctaHtml = `<a href="${track.href}" class="track-cta-btn ${track.color}">Review track →</a>`;
+    } else if (completedCount === 0) {
+      ctaHtml = `<a href="${nextLesson ? nextLesson.href : track.href}" class="track-cta-btn ${track.color}">Start Lesson 1 →</a>`;
+    } else {
+      ctaHtml = `<a href="${nextLesson ? nextLesson.href : track.href}" class="track-cta-btn ${track.color}">Continue → Lesson ${track.lessons.indexOf(nextLesson) + 1}</a>`;
+    }
+
+    // Circumference for ring (r=24): 2*PI*24 ≈ 150.8
+    const circumference = 150.8;
+    const offset = circumference - (pct / 100) * circumference;
+
+    // Badge
+    const badgeHtml = isLocked
+      ? `<span class="track-badge locked">🔒 Premium</span>`
+      : track.free
+        ? `<span class="track-badge free">✓ Free</span>`
+        : `<span class="track-badge premium">★ Premium</span>`;
+
+    // Lessons HTML
+    let lessonsHtml;
+    if (isLocked) {
+      lessonsHtml = `
+        <div class="locked-overlay">
+          <h3>This track is locked</h3>
+          <p>Upgrade to AskIt Premium to unlock Talking to AI, AI for Work, and AI Ethics & Safety.</p>
+          <button class="unlock-btn" onclick="startCheckout(this)">🔓 Unlock all tracks — $15/month</button>
+        </div>
+      `;
+    } else {
+      lessonsHtml = `<div class="lessons-grid">` + track.lessons.map((lesson, i) => {
+        const done = getLessonDone(lesson.key);
+        const rowClass = done ? 'done' : 'todo';
+        const circleClass = done ? checkClass : 'todo';
+        const pillHtml = done
+          ? `<span class="lesson-done-pill ${donePillClass}">Done</span>`
+          : `<span class="lesson-time-pill">${lesson.time}</span>`;
+
+        return `
+          <a href="${lesson.href}" class="lesson-row ${rowClass}">
+            <div class="lesson-check-circle ${circleClass}">${done ? '✓' : i + 1}</div>
+            <div class="lesson-info">
+              <div class="lesson-num-label">Lesson ${i + 1}</div>
+              <div class="lesson-title-text">${lesson.title}</div>
+            </div>
+            <div class="lesson-meta-right">${pillHtml}</div>
+          </a>
+        `;
+      }).join('') + `</div>`;
+    }
+
+    const section = document.createElement('div');
+    section.className = `track-section ${track.color}`;
+    section.innerHTML = `
+      <div class="track-header">
+        <div class="track-header-left">
+          <div class="track-icon ${track.color}">${track.emoji}</div>
+          <div class="track-meta">
+            ${badgeHtml}
+            <div class="track-name">${track.name}</div>
+          </div>
+        </div>
+        <div class="track-header-right">
+          ${!isLocked ? `
+          <div class="mini-ring-wrap">
+            <svg class="mini-ring" viewBox="0 0 56 56">
+              <circle class="ring-bg" cx="28" cy="28" r="24"/>
+              <circle class="ring-fill" cx="28" cy="28" r="24" stroke="${track.accent}" style="stroke-dashoffset:${offset}"/>
+              <text class="ring-text" x="28" y="33" text-anchor="middle">${pct}%</text>
+            </svg>
+            <div class="ring-label-wrap">
+              <div class="ring-pct">${completedCount}/${total}</div>
+              <div class="ring-sub">lessons done</div>
+            </div>
+          </div>
+          ` : ''}
+          ${ctaHtml}
+        </div>
+      </div>
+      ${lessonsHtml}
+    `;
+
+    container.appendChild(section);
+  });
+}
+
+// ── STRIPE CHECKOUT ──
+async function startCheckout(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Redirecting…';
+  try {
+    const res = await fetch('/.netlify/functions/create-checkout-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert(data.error || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.textContent = '🔓 Unlock all tracks — $15/month';
+    }
+  } catch {
+    alert('Network error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = '🔓 Unlock all tracks — $15/month';
+  }
+}
+
+// ── INIT ──
+renderStats();
+renderTracks();
+
+// Animate rings after paint
+requestAnimationFrame(() => {
+  setTimeout(() => {
+    document.querySelectorAll('.ring-fill').forEach(ring => {
+      const offset = ring.style.strokeDashoffset;
+      ring.style.strokeDashoffset = '150.8';
+      requestAnimationFrame(() => { ring.style.strokeDashoffset = offset; });
+    });
+  }, 200);
+});
+</script>
+
+</body>
+</html>
